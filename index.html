@@ -317,6 +317,45 @@
             filter: grayscale(0);
             transform: scale(1.05);
         }
+
+        .partners-section {
+            background: #ffffff;
+            /* พื้นหลังขาว */
+            padding: 25px 0;
+            overflow: hidden;
+        }
+
+        .partners-wrapper {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        #partners-logos {
+            display: flex;
+            /* ให้เป็นแนวนอน */
+            gap: 40px;
+            /* ระยะห่างโลโก้ */
+            align-items: center;
+            white-space: nowrap;
+            /* ห้ามตัดบรรทัด */
+            transition: transform 0s linear;
+        }
+
+        #partners-logos img {
+            height: 80px;
+            width: 80px;
+            object-fit: contain;
+            filter: grayscale(0.3);
+            padding: 5px 10px;
+            /* ปรับระยะขอบกันรูปติดกัน */
+            transition: 0.3s;
+        }
+
+        #partners-logos img:hover {
+            filter: grayscale(0);
+            transform: scale(1.08);
+        }
     </style>
 </head>
 
@@ -373,14 +412,14 @@
                 <!-- <img src="https://raw.githubusercontent.com/yarrapower99/my-solar-website-assets_1/main/assets/icons/solar-farm.png"
                     class="stat-icon"> -->
                 <p class="stat-title">ติดตั้งโซลาร์เซลล์ไป</p>
-                <h2 class="stat-number">>100 <span>MWp</span></h2>
+                <h2 class="stat-number">>10 <span>MWp</span></h2>
             </div>
 
             <div class="stat-box">
                 <!-- <img src="https://raw.githubusercontent.com/yarrapower99/my-solar-website-assets_1/main/assets/icons/project.png"
                     class="stat-icon"> -->
                 <p class="stat-title">ผลงานติดตั้ง กว่า</p>
-                <h2 class="stat-number">>2000 <span>โครงการ</span></h2>
+                <h2 class="stat-number">>500 <span>โครงการ</span></h2>
             </div>
 
             <div class="stat-box">
@@ -394,9 +433,11 @@
     </section>
 
 
-    <section class="partners-section">
-        <div class="partners-container" id="partners-logos"></div>
-    </section>
+    <div class="partners-section">
+        <div class="partners-wrapper">
+            <div id="partners-logos" class="partners-container"></div>
+        </div>
+    </div>
 
 
 
@@ -488,27 +529,56 @@
         setInterval(showNextSlide, 4000);
     </script>
     <script>
-        const partnerRepo = "https://raw.githubusercontent.com/yarrapower99/my-solar-website-assets_1/main/assets/Partners/";
+        const partnerRepo = "https://raw.githubusercontent.com/yarrapower99/my-solar-website-assets_1/main/assets/logo/";
 
-        const partnerLogos = [
-            "champaca.png",
-            "nautilus.png",
-            "pigeon.png",
-            "calbee.png",
-            "thai.png",
-            "chic-republic.png",
-            "paolo.png",
-            "ram.png"
+        let partnerLogos = [
+            "sungrow.jpeg",
+            "longi.jpeg",
+            "trina.png",
+            "phelpsdodge.jpeg",
+            "carrier.jpeg",
+            "เมืองไทยประกันภัย.jpeg",
         ];
 
-        const partnersContainer = document.getElementById("partners-logos");
+        const container = document.getElementById("partners-logos");
 
+        // ใส่รูปทั้งหมด
         partnerLogos.forEach(logo => {
             let img = document.createElement("img");
             img.src = partnerRepo + logo;
-            partnersContainer.appendChild(img);
+            container.appendChild(img);
         });
+
+        // ถ้าโลโก้มากกว่า 10 — เปิดโหมดสไลด์
+        if (partnerLogos.length > 5) {
+
+            let position = 0;
+
+            function slide() {
+                const firstImg = container.querySelector("img");
+                const imgWidth = firstImg.offsetWidth + 0; // รวม gap
+
+                position -= 1;
+                container.style.transform = `translateX(${position}px)`;
+                container.style.transition = "transform 1s linear";
+
+                // เมื่อเลื่อนจนรูปแรกพ้นขอบซ้าย → ย้ายไปต่อท้าย
+                if (Math.abs(position) >= imgWidth) {
+                    container.appendChild(firstImg);
+                    position += imgWidth;
+                    container.style.transform = `translateX(${position}px)`;
+                    container.style.transition = "none";
+                }
+
+                requestAnimationFrame(slide);
+            }
+
+            requestAnimationFrame(slide);
+        }
     </script>
+
+
+
 
 
 </body>
