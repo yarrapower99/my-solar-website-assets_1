@@ -973,22 +973,6 @@
 
     <!-- hero-slider -->
     <div class="hero-slider">
-        <div class="slide active"
-            style="background-image: url('https://github.com/yarrapower99/my-solar-website-assets_1/blob/128dbf3a7171204b018f0c82b4271de573fbc1d6/assets/Partners/K.Yo_-2-768x768.png?raw=1');">
-        </div>
-
-        <div class="slide"
-            style="background-image: url('https://github.com/yarrapower99/my-solar-website-assets_1/blob/128dbf3a7171204b018f0c82b4271de573fbc1d6/assets/Partners/K.Yo_-1-768x679.jpeg?raw=1');">
-        </div>
-
-        <div class="slide"
-            style="background-image: url('https://github.com/yarrapower99/my-solar-website-assets_1/blob/128dbf3a7171204b018f0c82b4271de573fbc1d6/assets/Partners/K.Yo_-2-768x690.jpeg?raw=1');">
-        </div>
-
-        <div class="slide"
-            style="background-image: url('https://github.com/yarrapower99/my-solar-website-assets_1/blob/128dbf3a7171204b018f0c82b4271de573fbc1d6/assets/Partners/PV-Panel-7-768x768.png?raw=1');">
-        </div>
-
         <div class="hero-content">
             <h1>YARRA TECHNOLOGY </h1>
             <!-- <p>จำหน่าย – ติดตั้ง – ระบบพลังงาน</p> -->
@@ -1202,16 +1186,44 @@
     </div>
 
     <script>
-        let slides = document.querySelectorAll(".slide");
-        let currentIndex = 0;
+        // Hero Slider - Fetch from GitHub API
+        document.addEventListener("DOMContentLoaded", () => {
+            const sliderContainer = document.querySelector('.hero-slider');
+            const heroContent = document.querySelector('.hero-content');
+            const repoOwner = "yarrapower99";
+            const repoName = "my-solar-website-assets_1";
+            const path = "assets/Partners"; // Path to images
+            const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${path}`;
 
-        function showNextSlide() {
-            slides[currentIndex].classList.remove("active");
-            currentIndex = (currentIndex + 1) % slides.length;
-            slides[currentIndex].classList.add("active");
-        }
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (!Array.isArray(data)) return;
+                    const images = data.filter(item => item.name.match(/\.(jpg|jpeg|png|gif)$/i));
+                    
+                    images.forEach((file, index) => {
+                        const slide = document.createElement('div');
+                        slide.classList.add('slide');
+                        if (index === 0) slide.classList.add('active');
+                        slide.style.backgroundImage = `url('${file.download_url}')`;
+                        // Insert slides before the content so they are in the background
+                        sliderContainer.insertBefore(slide, heroContent);
+                    });
 
-        setInterval(showNextSlide, 4000);
+                    // Start Slider Animation
+                    let slides = document.querySelectorAll(".hero-slider .slide");
+                    let currentIndex = 0;
+
+                    if (slides.length > 1) {
+                        setInterval(() => {
+                            slides[currentIndex].classList.remove("active");
+                            currentIndex = (currentIndex + 1) % slides.length;
+                            slides[currentIndex].classList.add("active");
+                        }, 4000);
+                    }
+                })
+                .catch(err => console.error("Error loading hero slider images:", err));
+        });
     </script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
@@ -1313,16 +1325,37 @@
             // วิธีนี้จะทำให้เมื่อเพิ่มรูปใหม่ใน GitHub รูปจะแสดงบนเว็บอัตโนมัติโดยไม่ต้องแก้โค้ด
             const repoOwner = "yarrapower99";
             const repoName = "my-solar-website-assets_1";
-            const path = "assets/portfolio";
-            const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${path}`;
+            
+            // กำหนดโฟลเดอร์และหมวดหมู่ (ต้องตรงกับชื่อโฟลเดอร์ใน GitHub)
+            const categories = [
+                { path: "assets/portfolio/บ้านพักอาศัย", id: "home" },
+                { path: "assets/portfolio/โรงงาน และอาคารธุรกิจ", id: "factory" }
+            ];
 
-            fetch(apiUrl)
-                .then(response => response.json())
-                .then(data => {
-                    // กรองเอาเฉพาะไฟล์รูปภาพ
-                    const images = data.filter(item => item.name.match(/\.(jpg|jpeg|png|gif)$/i));
-                    
-                    // เรียงลำดับไฟล์ตามตัวเลขในชื่อ (เช่น 1.jpg, 2.jpg, 10.jpg)
+            // สร้าง Promise เพื่อดึงข้อมูลจากทุกโฟลเดอร์พร้อมกัน
+            const fetchPromises = categories.map(cat => {
+                // ใช้ encodeURI เพื่อรองรับภาษาไทยและเว้นวรรคใน URL
+                const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${cat.path}`;
+                return fetch(encodeURI(apiUrl))
+                    .then(response => {
+                        if (!response.ok) return []; // ถ้าหาโฟลเดอร์ไม่เจอ ให้ข้ามไป
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (!Array.isArray(data)) return [];
+                        // กรองเฉพาะไฟล์รูปภาพ และเพิ่ม property category
+                        return data
+                            .filter(item => item.name.match(/\.(jpg|jpeg|png|gif)$/i))
+                            .map(item => ({ ...item, category: cat.id }));
+                    });
+            });
+
+            Promise.all(fetchPromises)
+                .then(results => {
+                    // รวมรูปภาพจากทุกโฟลเดอร์เข้าด้วยกัน
+                    const images = results.flat();
+
+                    // เรียงลำดับตามตัวเลขในชื่อไฟล์ (ถ้ามี)
                     images.sort((a, b) => {
                         const numA = parseInt(a.name.match(/\d+/)) || 0;
                         const numB = parseInt(b.name.match(/\d+/)) || 0;
@@ -1336,11 +1369,7 @@
                         img.src = file.download_url; // ใช้ URL ตรงจาก API ไม่ต้องเดานามสกุล
                         img.alt = file.name;
                         img.loading = "lazy";
-                        
-                        // กำหนดหมวดหมู่ตามตัวเลข (Logic เดิม: <=25 บ้าน, >25 โรงงาน)
-                        const num = parseInt(file.name.match(/\d+/)) || 0;
-                        const category = num <= 25 ? 'home' : 'factory';
-                        img.dataset.category = category;
+                        img.dataset.category = file.category; // กำหนดหมวดหมู่จากโฟลเดอร์ต้นทาง
                         
                         observer.observe(img);
                         fragment.appendChild(img);
