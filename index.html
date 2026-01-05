@@ -4,12 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Yarrapower – ติดตั้งโซล่าเซลล์ครบวงจร</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;900&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700;900&display=swap"
         rel="stylesheet">
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <style>
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 120px; /* แก้ปัญหา Navbar บังเนื้อหาเวลาคลิกเมนู */
+        }
         body {
             font-family: 'Noto Sans Thai', sans-serif;
             /* ใช้ฟอนต์ Inter เพื่อความคมชัดและเป็นมาตรฐาน UI */
@@ -23,21 +27,37 @@
             /* สีตัวอักษรหลัก อ่านง่าย ไม่ดำจนแข็งเกินไป */
         }
 
+        h1, h2, h3 {
+            font-family: 'Kanit', sans-serif;
+        }
+
         /* Navbar */
         .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 40px;
-            background: rgba(10, 26, 58, 0.85);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            padding: 20px 40px;
+            background: transparent;
             color: white;
-            position: sticky;
+            position: fixed;
+            width: 100%;
+            box-sizing: border-box;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            transition: padding 0.3s ease;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            padding: 10px 40px;
+            background: rgba(10, 26, 58, 0.95);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            top: 0; /* เมื่อเลื่อนลง ให้ติดขอบบนสุด */
+        }
+
+        .navbar.hidden {
+            transform: translateY(-100%);
         }
 
         .navbar .menu {
@@ -45,24 +65,55 @@
             gap: 20px;
         }
 
-        .navbar a {
+        .navbar .menu a {
             color: white;
             text-decoration: none;
             font-weight: 400;
             font-size: 16px;
             padding: 5px 10px;
             border-radius: 6px;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            transition: color 0.3s ease;
+            position: relative;
         }
 
-        .navbar a:hover {
-            background-color: rgba(255, 255, 255, 0.1);
+        .navbar .menu a:hover {
             color: #4dabf7;
+        }
+
+        .navbar .menu a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            background-color: #4dabf7;
+            transition: all 0.3s ease;
+        }
+
+        .navbar .menu a:hover::after {
+            width: 100%;
+            left: 0;
+        }
+
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            border-radius: 2px;
+            transition: all 0.3s ease;
         }
 
         .hero-slider {
             position: relative;
-            height: 80vh;
+            height: 90vh; /* ปรับความสูงให้ดูเต็มตาและสวยงามขึ้น */
             width: 100%;
             overflow: hidden;
             /* ปรับจาก visible → สวยกว่า */
@@ -77,6 +128,7 @@
             height: 100%;
             background-size: cover;
             background-position: center;
+            background-attachment:  scroll; /* Parallax Effect */
             opacity: 0;
             transition: opacity 1.2s ease-in-out;
         }
@@ -115,12 +167,47 @@
             color: white;
             text-align: center;
             z-index: 10;
+            animation: fadeInUp 1.2s ease-out;
+        }
+
+        .hero-content h1 {
+            font-size: 48px;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translate(-50%, -40%); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
         }
 
         /* ---- ลดขยาย Hero ทำให้ภาพคมขึ้น ---- */
         .hero {
             padding: 90px 20px;
             /* เดิม 150px → ปรับลดเพื่อความคม */
+        }
+
+        /* Wave Divider */
+        .custom-shape-divider-bottom {
+            position: absolute;
+            bottom: -1px; /* แก้รอยต่อให้เนียนสนิท */
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            line-height: 0;
+            z-index: 5;
+        }
+        .custom-shape-divider-bottom svg {
+            position: relative;
+            display: block;
+            width: calc(100% + 1.3px);
+            height: 120px; /* เพิ่มความสูงของคลื่นให้ดูพริ้วไหว */
+        }
+        .custom-shape-divider-bottom .shape-fill {
+            fill: #061230; /* สีเดียวกับ Stats Section */
+        }
+        .stats-wave .shape-fill {
+            fill: #ffffff; /* สีขาวเพื่อให้กลมกลืนกับส่วนถัดไป */
         }
 
 
@@ -134,6 +221,27 @@
             font-size: 18px;
             text-decoration: none;
             font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Button Shine Effect */
+        .btn::before, .btn-call::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 100%);
+            transform: skewX(-25deg);
+        }
+        .btn:hover::before, .btn-call:hover::before {
+            animation: shine 0.75s;
+        }
+        @keyframes shine {
+            100% { left: 125%; }
         }
 
         /* Section */
@@ -145,6 +253,17 @@
         .section h2 {
             font-size: 34px;
             margin-bottom: 25px;
+            position: relative;
+            display: inline-block;
+        }
+        .section h2::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 4px;
+            background: #00c2ff;
+            margin: 10px auto 0;
+            border-radius: 2px;
         }
 
         /* Service Highlights */
@@ -160,6 +279,29 @@
             border-radius: 16px;
             padding: 30px;
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #e0f7fa 0%, #ffffff 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 4px 10px rgba(0, 194, 255, 0.15);
+        }
+        .feature-icon svg {
+            width: 30px;
+            height: 30px;
+            fill: #00c2ff;
         }
 
         /* Packages */
@@ -174,6 +316,36 @@
             border-radius: 18px;
             padding: 30px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .package-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Highlight Popular Package */
+        .package-card.popular {
+            border: 2px solid #00c2ff;
+            transform: scale(1.05);
+            z-index: 1;
+        }
+        .package-card.popular:hover {
+            transform: scale(1.08) translateY(-10px);
+        }
+        .popular-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #00c2ff;
+            color: #0a1a3a;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
 
         .package-card h3 {
@@ -203,30 +375,106 @@
             object-fit: cover;
             border-radius: 12px;
             box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .gallery img.reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .gallery img.reveal:hover {
+            transform: scale(1.03);
+            transition: transform 0.3s ease;
         }
 
         /* Contact */
-        .contact-box {
+        .contact-container {
+            display: flex;
+            flex-wrap: wrap;
+            max-width: 1100px;
+            margin: 0 auto;
+            gap: 40px;
+            text-align: left;
+        }
+        
+        .contact-info, .contact-form-wrapper {
+            flex: 1;
+            min-width: 300px;
             background: white;
-            margin: 30px auto;
             padding: 40px;
-            max-width: 500px;
-            border-radius: 20px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-            text-align: center;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .contact-form-wrapper h3 {
+            margin-top: 0;
+            color: #0a1a3a;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: #00c2ff;
+            box-shadow: 0 0 0 4px rgba(0, 194, 255, 0.1);
+            outline: none;
+        }
+        .form-group button {
+            width: 100%;
+            cursor: pointer;
         }
 
         /* Footer */
         .footer {
             background: #0a1a3a;
             color: white;
-            text-align: center;
-            padding: 20px;
+            padding: 60px 20px 20px;
             margin-top: 40px;
         }
 
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            max-width: 1100px;
+            margin: 0 auto 40px;
+            gap: 40px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 40px;
+        }
+
+        .footer-col h4 {
+            color: #00c2ff;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .footer-col p, .footer-col a {
+            color: #b0b8c4;
+            font-size: 15px;
+            line-height: 1.6;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 10px;
+            transition: color 0.3s;
+        }
+        .footer-col a:hover {
+            color: white;
+        }
+
         .navbar .logo img {
-            height: 60px;
+            height: 90px;
             width: auto;
             filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.2));
             transition: height 0.3s ease;
@@ -240,7 +488,7 @@
         }
 
         .btn-call {
-            background: #001f4d;
+            background: linear-gradient(90deg, #00c2ff 0%, #007bff 100%);
             color: #fff;
             padding: 12px 20px;
             border-radius: 8px;
@@ -248,10 +496,19 @@
             font-size: 17px;
             font-weight: 600;
             display: inline-block;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-call:hover, .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 194, 255, 0.4);
         }
 
         .btn-call.secondary {
-            background: #004a9f;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
         }
 
         .slide {
@@ -264,45 +521,77 @@
 
         /* กล่องสถิติ */
         .stats-section {
-            background: linear-gradient(to right, #0f1a2c, #111c2e);
-            padding: 50px 20px;
+            background: linear-gradient(to bottom, #061230 0%, #0a1a3a 100%); /* ปรับ Gradient ให้ขอบบนสีตรงกับคลื่นเป๊ะๆ */
+            padding: 20px 20px 130px; /* ลด Padding บนล่างให้กระชับขึ้นอีก */
             color: white;
+            position: relative;
+            overflow: hidden;
         }
 
         .stats-container {
-            max-width: 1100px;
+            max-width: 800px; /* ลดความกว้างรวมลงอีก */
             margin: auto;
-            display: flex;
-            justify-content: space-between;
-            text-align: center;
-            gap: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* ลดขนาดคอลัมน์ขั้นต่ำ */
+            gap: 10px; /* ลดช่องว่างระหว่างกล่อง */
+            position: relative;
+            z-index: 1;
         }
 
         .stat-box {
-            flex: 1;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 15px 10px; /* ลด Padding ภายในให้เล็กสุดๆ */
+            border-radius: 16px;
+            text-align: center;
+            transition: transform 0.3s ease, background 0.3s ease;
+            backdrop-filter: blur(5px);
         }
 
-        .stat-icon {
-            width: 45px;
-            opacity: 0.8;
-            margin-bottom: 10px;
+        .stat-box:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(0, 194, 255, 0.3);
+        }
+
+        .stat-icon-wrapper {
+            width: 40px; /* ลดขนาดพื้นหลังไอคอน */
+            height: 40px;
+            background: rgba(0, 194, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            color: #00c2ff;
+        }
+
+        .stat-icon-wrapper svg {
+            width: 20px; /* ลดขนาดไอคอน */
+            height: 20px;
+            fill: currentColor;
         }
 
         .stat-title {
-            font-size: 18px;
-            opacity: 0.8;
+            font-size: 12px; /* ลดขนาดตัวหนังสือหัวข้อ */
+            color: #b0b8c4;
+            margin: 0;
         }
 
         .stat-number {
-            font-size: 42px;
-            font-weight: 800;
-            color: #7700ff;
-            /* สีส้มเด่นแบบตัวอย่าง */
+            font-size: 28px; /* ลดขนาดตัวเลข */
+            font-weight: 700;
+            color: #fff;
+            margin: 5px 0;
+            line-height: 1;
         }
 
-        .stat-number span {
-            color: #ffffff;
-            font-size: 22px;
+        .stat-number span.unit {
+            font-size: 12px;
+            color: #00c2ff;
+            font-weight: 500;
+            display: block;
+            margin-top: 5px;
         }
 
 
@@ -340,21 +629,13 @@
             white-space: nowrap;
         }
 
-        @keyframes scroll {
-            from {
-                transform: translateX(0);
-            }
-            to {
-                transform: translateX(-50%);
-            }
-        }
-
         #partners-logos {
             display: flex;
             gap: 60px;
             align-items: center;
             white-space: nowrap;
-            animation: scroll 40s linear infinite;
+            /* animation removed for JS control */
+            transform: translateX(0);
         }
 
         #partners-logos img {
@@ -364,46 +645,77 @@
             transition: 0.4s ease;
         }
 
-        #partners-logos:hover {
-            animation-play-state: paused;
-        }
-
         #partners-logos img:hover {
             transform: scale(1.1);
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 992px) {
             .navbar {
-                flex-direction: column;
+                position: sticky; /* เปลี่ยนเป็น sticky เพื่อดันเนื้อหาลงไป ไม่ให้บัง */
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: space-between;
                 padding: 15px 20px;
+                top: 0; /* มือถือให้ติดบนเลย */
+                background: #0a1a3a; /* พื้นหลังทึบ */
+            }
+
+            .hamburger {
+                display: flex;
+            }
+            
+            .hamburger.active span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 6px);
+            }
+            .hamburger.active span:nth-child(2) {
+                opacity: 0;
+            }
+            .hamburger.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(5px, -6px);
+            }
+
+            .navbar.scrolled {
+                padding: 10px 20px; /* ปรับ Padding ตอนเลื่อนให้เหมาะสมกับมือถือ */
             }
 
             .navbar .logo img {
                 height: 50px;
-                margin-bottom: 15px;
+                margin-bottom: 0;
             }
 
             .navbar .menu {
+                display: none;
                 width: 100%;
                 flex-direction: column;
                 align-items: center;
-                gap: 10px;
+                gap: 15px;
+                margin-top: 15px;
+                padding-top: 15px;
+                border-top: 1px solid rgba(255,255,255,0.1);
             }
 
-            .navbar a {
+            .navbar .menu.active {
+                display: flex;
+            }
+
+            .navbar .menu a {
                 font-size: 18px;
                 width: 100%;
                 text-align: center;
             }
 
             .hero-slider {
-                height: 50vh;
+                height: 70vh; /* เพิ่มความสูงในมือถือให้เนื้อหาไม่เบียด */
             }
             
             .hero-content h1 {
                 font-size: 28px;
             }
             
+            .slide {
+                background-attachment: scroll; /* ปิด Parallax ในมือถือเพื่อประสิทธิภาพ */
+            }
+
             .btn-group {
                 flex-direction: column;
                 gap: 15px;
@@ -427,20 +739,116 @@
                 grid-template-columns: 1fr;
             }
             
-            .contact-box {
+            .contact-container {
                 padding: 30px;
             }
+        }
+
+        /* Back to Top Button */
+        #backToTop {
+            position: fixed;
+            bottom: 90px; /* ขยับขึ้นหลบปุ่ม Line */
+            right: 30px;
+            background: #00c2ff;
+            color: #0a1a3a;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+            border: none;
+        }
+        #backToTop.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        #backToTop:hover {
+            transform: translateY(-5px);
+            background: #4dabf7;
+        }
+
+        /* Line Floating Button */
+        .line-float-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #00b900;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            z-index: 1000;
+            transition: transform 0.3s ease;
+            animation: wiggle 3s infinite ease-in-out;
+        }
+        .line-float-btn:hover {
+            animation: none; /* หยุดขยับเมื่อเอาเมาส์ชี้ */
+            transform: scale(1.1);
+        }
+        .line-float-btn svg {
+            width: 28px;
+            height: 28px;
+            fill: white;
+        }
+
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            5% { transform: rotate(-12deg) scale(1.1); }
+            10% { transform: rotate(12deg) scale(1.1); }
+            15% { transform: rotate(-12deg) scale(1.1); }
+            20% { transform: rotate(12deg) scale(1.1); }
+            25% { transform: rotate(0deg) scale(1); }
+        }
+
+        /* Footer Social Links */
+        .footer .social-links {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .footer .social-links a {
+            color: white;
+            margin: 0 10px;
+            text-decoration: none;
+            font-size: 16px;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        .footer .social-links a:hover {
+            background: white;
+            color: #0a1a3a;
         }
     </style>
 </head>
 
-<body>
+<body id="home">
 
     <!-- Navbar -->
     <div class="navbar">
         <div class="logo">
-            <img src="https://github.com/yarrapower99/my-solar-website-assets_1/blob/b54a0d9abe3149f2fdbd4b4e32d8e23bc1f893c0/assets/icon/S__4202500.jpg?raw=1"
-                alt="Yarrapower Logo">
+            <a href="#home">
+                <img src="https://github.com/yarrapower99/my-solar-website-assets_1/blob/5bcca246ddd0a495e6b14606d48eb21973c6bb12/assets/icon/S__4202500-removebg-preview.png?raw=1"
+                    alt="Yarrapower Logo">
+            </a>
+        </div>
+
+        <div class="hamburger" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
 
         <div class="menu">
@@ -479,31 +887,50 @@
             </div>
         </div>
 
+        <!-- Wave Divider -->
+        <div class="custom-shape-divider-bottom">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M0,64L40,69.3C80,75,160,85,240,80C320,75,400,53,480,48C560,43,640,53,720,69.3C800,85,880,107,960,112C1040,117,1120,107,1160,101.3L1200,96V120H0Z" class="shape-fill"></path>
+            </svg>
+        </div>
     </div>
     <section class="stats-section">
         <div class="stats-container">
 
             <div class="stat-box">
-                <!-- <img src="https://raw.githubusercontent.com/yarrapower99/my-solar-website-assets_1/main/assets/icons/solar-farm.png"
-                    class="stat-icon"> -->
-                <p class="stat-title">ติดตั้งโซลาร์เซลล์ไป</p>
-                <h2 class="stat-number">>10 <span>MWp</span></h2>
+                <div class="stat-icon-wrapper">
+                    <!-- Icon: Lightning/Energy -->
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11 15H6l7-14v8h5l-7 14v-8z"/></svg>
+                </div>
+                <h2 class="stat-number">&gt; <span class="counter" data-target="10">0</span> <span class="unit">MWp</span></h2>
+                <p class="stat-title">กำลังการผลิตติดตั้งรวม</p>
             </div>
 
             <div class="stat-box">
-                <!-- <img src="https://raw.githubusercontent.com/yarrapower99/my-solar-website-assets_1/main/assets/icons/project.png"
-                    class="stat-icon"> -->
-                <p class="stat-title">ผลงานติดตั้ง กว่า</p>
-                <h2 class="stat-number">>500 <span>โครงการ</span></h2>
+                <div class="stat-icon-wrapper">
+                    <!-- Icon: Building/Project -->
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/></svg>
+                </div>
+                <h2 class="stat-number">&gt; <span class="counter" data-target="500">0</span> <span class="unit">โครงการ</span></h2>
+                <p class="stat-title">ผลงานติดตั้งทั่วประเทศ</p>
             </div>
 
             <div class="stat-box">
-                <!-- <img src="https://raw.githubusercontent.com/yarrapower99/my-solar-website-assets_1/main/assets/icons/map.png"
-                    class="stat-icon"> -->
-                <p class="stat-title">ครอบคลุมกว่า</p>
-                <h2 class="stat-number">76 <span>จังหวัด</span></h2>
+                <div class="stat-icon-wrapper">
+                    <!-- Icon: Map Marker -->
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                </div>
+                <h2 class="stat-number"><span class="counter" data-target="76">0</span> <span class="unit">จังหวัด</span></h2>
+                <p class="stat-title">พื้นที่ให้บริการครอบคลุม</p>
             </div>
 
+        </div>
+
+        <!-- Wave Divider (Bottom of Stats) -->
+        <div class="custom-shape-divider-bottom stats-wave">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M0,64L40,69.3C80,75,160,85,240,80C320,75,400,53,480,48C560,43,640,53,720,69.3C800,85,880,107,960,112C1040,117,1120,107,1160,101.3L1200,96V120H0Z" class="shape-fill"></path>
+            </svg>
         </div>
     </section>
 
@@ -521,18 +948,30 @@
         <h2>จุดเด่นของบริการเรา</h2>
         <div class="features">
             <div class="feature-card">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                </div>
                 <h3>ทีมช่างมืออาชีพ</h3>
                 <p>ประสบการณ์ติดตั้งมากกว่า 300+ หลัง</p>
             </div>
             <div class="feature-card">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+                </div>
                 <h3>ประหยัดจริง</h3>
                 <p>ลดค่าไฟได้มากกว่า 50% ต่อเดือน</p>
             </div>
             <div class="feature-card">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+                </div>
                 <h3>อุปกรณ์แท้ 100%</h3>
                 <p>รับประกันเต็มจากโรงงาน</p>
             </div>
             <div class="feature-card">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-2.01.89-2.01 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+                </div>
                 <h3>ผ่อน 0–3%</h3>
                 <p>เริ่มต้นเพียงวันละไม่กี่สิบบาท</p>
             </div>
@@ -550,7 +989,8 @@
                 <div class="price">เริ่มต้น 69,000 บาท</div>
             </div>
 
-            <div class="package-card">
+            <div class="package-card popular">
+                <div class="popular-badge">ขายดีที่สุด</div>
                 <h3>5 kW</h3>
                 <p>ยอดนิยมที่สุด คุ้มค่าที่สุด</p>
                 <div class="price">เริ่มต้น 89,000 บาท</div>
@@ -579,16 +1019,73 @@
     <!-- Contact -->
     <div class="section" id="contact">
         <h2>ติดต่อเรา</h2>
-        <div class="contact-box">
-            <p><b>โทร:</b> 090-xxx-xxxx</p>
-            <p><b>Line:</b> @yarrapower</p>
-            <a class="btn" href="https://line.me/ti/p/xxxx">กดแชท LINE</a>
+        <div class="contact-container">
+            <div class="contact-info">
+                <h3>Yarrapower Technology</h3>
+                <p>ผู้เชี่ยวชาญด้านการติดตั้งโซล่าเซลล์ครบวงจร มาตรฐานวิศวกรรม</p>
+                <br>
+                <p>📍 <b>ที่อยู่:</b> 123 ถนนพระราม 9 แขวงห้วยขวาง เขตห้วยขวาง กรุงเทพฯ 10310</p>
+                <p>📞 <b>โทร:</b> 091-234-5678</p>
+                <p>💬 <b>Line:</b> @yarrapower</p>
+                <p>📧 <b>Email:</b> contact@yarrapower.com</p>
+                <br>
+                <a class="btn" href="https://line.me/ti/p/xxxx" style="margin-top:0;">แอดไลน์ปรึกษาฟรี</a>
+            </div>
+            
+            <div class="contact-form-wrapper">
+                <h3>สนใจติดตั้ง / สอบถามข้อมูล</h3>
+                <form>
+                    <div class="form-group">
+                        <input type="text" placeholder="ชื่อ - นามสกุล" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" placeholder="เบอร์โทรศัพท์" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea rows="4" placeholder="รายละเอียดที่ต้องการสอบถาม"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn" style="margin-top:0; width:100%;">ส่งข้อมูล</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
     <!-- Footer -->
     <div class="footer">
-        © 2025 Yarrapower – All Rights Reserved
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>เกี่ยวกับเรา</h4>
+                <p>Yarrapower ผู้นำด้านพลังงานแสงอาทิตย์ ติดตั้งด้วยมาตรฐานวิศวกรรมสากล มุ่งมั่นเพื่อพลังงานสะอาดที่ยั่งยืน</p>
+            </div>
+            <div class="footer-col">
+                <h4>เมนูลัด</h4>
+                <a href="#home">หน้าแรก</a>
+                <a href="#products">แพ็กเกจราคา</a>
+                <a href="#works">ผลงานติดตั้ง</a>
+                <a href="#contact">ติดต่อเรา</a>
+            </div>
+            <div class="footer-col">
+                <h4>บริการของเรา</h4>
+                <a href="#">ติดตั้งโซล่าเซลล์บ้าน</a>
+                <a href="#">ติดตั้งโซล่าเซลล์โรงงาน</a>
+                <a href="#">ระบบ Solar Roof</a>
+                <a href="#">บริการล้างแผง</a>
+            </div>
+            <div class="footer-col">
+                <h4>ติดต่อสอบถาม</h4>
+                <p>โทร: 091-234-5678</p>
+                <p>Line: @yarrapower</p>
+                <p>Email: info@yarrapower.com</p>
+            </div>
+        </div>
+
+        <div class="social-links">
+            <a href="https://facebook.com" target="_blank">Facebook</a>
+            <a href="https://line.me" target="_blank">Line</a>
+        </div>
+        <p style="text-align: center; color: #6c757d; font-size: 14px;">© 2025 Yarrapower – All Rights Reserved</p>
     </div>
 
     <script>
@@ -629,13 +1126,137 @@
             });
 
             logosContainer.appendChild(fragment);
+
+            // Slide 1 icon every 3 seconds
+            setInterval(() => {
+                const firstItem = logosContainer.firstElementChild;
+                if (!firstItem) return;
+                
+                const itemWidth = firstItem.offsetWidth;
+                const gap = 60; // CSS gap
+
+                logosContainer.style.transition = "transform 0.5s ease-in-out";
+                logosContainer.style.transform = `translateX(-${itemWidth + gap}px)`;
+
+                logosContainer.addEventListener('transitionend', () => {
+                    logosContainer.style.transition = "none";
+                    logosContainer.style.transform = "translateX(0)";
+                    logosContainer.appendChild(firstItem);
+                }, { once: true });
+            }, 3000);
+        });
+
+        // Navbar Scroll Effect
+        let lastScrollTop = 0;
+
+        window.addEventListener("scroll", function() {
+            const navbar = document.querySelector(".navbar");
+            const backToTopBtn = document.getElementById("backToTop");
+            let scrollTop = window.scrollY;
+
+            // Smart Navbar Logic
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                navbar.classList.add("hidden"); // เลื่อนลง -> ซ่อน
+            } else {
+                navbar.classList.remove("hidden"); // เลื่อนขึ้น -> แสดง
+            }
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+
+            if (scrollTop > 50) {
+                navbar.classList.add("scrolled");
+            } else {
+                navbar.classList.remove("scrolled");
+            }
+
+            if (scrollTop > 300) {
+                backToTopBtn.classList.add("show");
+            } else {
+                backToTopBtn.classList.remove("show");
+            }
+        });
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Gallery Scroll Reveal
+        const observerOptions = {
+            threshold: 0.2
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('reveal');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.gallery img').forEach(img => {
+            observer.observe(img);
+        });
+
+        // Stats Counter Animation
+        const statsSection = document.querySelector('.stats-section');
+        const statsObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counters = entry.target.querySelectorAll('.counter');
+                    counters.forEach(counter => {
+                        const target = +counter.getAttribute('data-target');
+                        const duration = 2000; // ระยะเวลาอนิเมชั่น 2 วินาที
+                        const start = performance.now();
+
+                        const step = (currentTime) => {
+                            const elapsed = currentTime - start;
+                            const progress = Math.min(elapsed / duration, 1);
+                            // Ease out quart function เพื่อให้ตัวเลขวิ่งช้าลงตอนปลาย
+                            const easeOut = 1 - Math.pow(1 - progress, 4);
+                            
+                            counter.innerText = Math.floor(easeOut * target);
+
+                            if (progress < 1) {
+                                requestAnimationFrame(step);
+                            } else {
+                                counter.innerText = target;
+                            }
+                        };
+                        requestAnimationFrame(step);
+                    });
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        if (statsSection) {
+            statsObserver.observe(statsSection);
+        }
+
+        // Hamburger Menu Toggle
+        function toggleMenu() {
+            const menu = document.querySelector('.navbar .menu');
+            const hamburger = document.querySelector('.hamburger');
+            menu.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        }
+
+        // Close menu when clicking a link
+        document.querySelectorAll('.navbar .menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.querySelector('.navbar .menu').classList.remove('active');
+                document.querySelector('.hamburger').classList.remove('active');
+            });
         });
     </script>
 
+    <!-- Back to Top Button -->
+    <button id="backToTop" onclick="scrollToTop()">↑</button>
 
-
-
-
+    <!-- Line Floating Button -->
+    <a href="https://line.me/ti/p/xxxx" target="_blank" class="line-float-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.35 11.1h-.02c0-4.9-4.77-8.9-10.66-8.9-5.9 0-10.67 4-10.67 8.9 0 4.4 3.8 8.1 9 8.8.35.08.83.25.95.57l.26 1.6c.07.4.37 1.02 1.02.4l2.8-2.06c.1-.07.2-.15.3-.23 3.9-.9 6.7-4.1 6.7-8.08zm-15.6 2.5c-.4 0-.7-.3-.7-.7V9.6c0-.4.3-.7.7-.7s.7.3.7.7v2.6h1.9c.4 0 .7.3.7.7s-.3.7-.7.7H5.75zm4.5 0c-.4 0-.7-.3-.7-.7V9.6c0-.4.3-.7.7-.7s.7.3.7.7v3.3c0 .4-.3.7-.7.7zm4.2-1.2l-2.1-2.7v2.7c0 .4-.3.7-.7.7s-.7-.3-.7-.7V9.6c0-.4.3-.7.7-.7.2 0 .4.1.5.2l2.1 2.7V9.6c0-.4.3-.7.7-.7s.7.3.7.7v3.3c0 .4-.3.7-.7.7zm4.5 1.2h-2.6c-.4 0-.7-.3-.7-.7V9.6c0-.4.3-.7.7-.7s.7.3.7.7v2.6h1.9c.4 0 .7.3.7.7s-.3.7-.7.7z"/></svg>
+    </a>
 </body>
 
 </html>
