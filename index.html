@@ -295,34 +295,30 @@
 
         /* โลโก้พันธมิตร */
         .partners-section {
-            padding: 40px 20px;
-        }
-
-        .partners-container {
-            max-width: 1200px;
-            margin: auto;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 40px;
-        }
-
-        .partners-container img {
-            height: 60px;
-            filter: grayscale(0.2);
-            transition: 0.3s;
-        }
-
-        .partners-container img:hover {
-            filter: grayscale(0);
-            transform: scale(1.05);
-        }
-
-        .partners-section {
             background: #ffffff;
-            /* พื้นหลังขาว */
-            padding: 25px 0;
+            padding: 30px 0;
             overflow: hidden;
+            position: relative;
+        }
+
+        .partners-section::before,
+        .partners-section::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 150px;
+            height: 100%;
+            z-index: 2;
+        }
+
+        .partners-section::before {
+            left: 0;
+            background: linear-gradient(to right, rgba(255, 255, 255, 1) 20%, rgba(255, 255, 255, 0));
+        }
+
+        .partners-section::after {
+            right: 0;
+            background: linear-gradient(to left, rgba(255, 255, 255, 1) 20%, rgba(255, 255, 255, 0));
         }
 
         .partners-wrapper {
@@ -331,30 +327,96 @@
             white-space: nowrap;
         }
 
+        @keyframes scroll {
+            from {
+                transform: translateX(0);
+            }
+            to {
+                transform: translateX(-50%);
+            }
+        }
+
         #partners-logos {
             display: flex;
-            /* ให้เป็นแนวนอน */
-            gap: 40px;
-            /* ระยะห่างโลโก้ */
+            gap: 60px;
             align-items: center;
             white-space: nowrap;
-            /* ห้ามตัดบรรทัด */
-            transition: transform 0s linear;
+            animation: scroll 40s linear infinite;
         }
 
         #partners-logos img {
-            height: 80px;
-            width: 80px;
+            height: 70px;
+            width: auto;
             object-fit: contain;
-            filter: grayscale(0.3);
-            padding: 5px 10px;
-            /* ปรับระยะขอบกันรูปติดกัน */
-            transition: 0.3s;
+            transition: 0.4s ease;
+        }
+
+        #partners-logos:hover {
+            animation-play-state: paused;
         }
 
         #partners-logos img:hover {
-            filter: grayscale(0);
-            transform: scale(1.08);
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding: 15px;
+            }
+
+            .navbar .logo img {
+                padding-left: 0;
+                margin-bottom: 15px;
+                height: 80px;
+            }
+            
+            .navbar .menu {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .navbar a {
+                margin: 0;
+                font-size: 18px;
+            }
+
+            .hero-slider {
+                height: 50vh;
+            }
+            
+            .hero-content h1 {
+                font-size: 28px;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+                gap: 15px;
+                align-items: center;
+            }
+
+            .section {
+                padding: 40px 20px;
+            }
+
+            .section h2 {
+                font-size: 26px;
+            }
+
+            .stats-container {
+                flex-direction: column;
+                gap: 35px;
+            }
+
+            .features, .packages {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-box {
+                padding: 30px;
+            }
         }
     </style>
 </head>
@@ -426,7 +488,7 @@
                 <!-- <img src="https://raw.githubusercontent.com/yarrapower99/my-solar-website-assets_1/main/assets/icons/map.png"
                     class="stat-icon"> -->
                 <p class="stat-title">ครอบคลุมกว่า</p>
-                <h2 class="stat-number">66 <span>จังหวัด</span></h2>
+                <h2 class="stat-number">76 <span>จังหวัด</span></h2>
             </div>
 
         </div>
@@ -435,7 +497,7 @@
 
     <div class="partners-section">
         <div class="partners-wrapper">
-            <div id="partners-logos" class="partners-container"></div>
+            <div id="partners-logos"></div>
         </div>
     </div>
 
@@ -529,52 +591,32 @@
         setInterval(showNextSlide, 4000);
     </script>
     <script>
-        const partnerRepo = "https://raw.githubusercontent.com/yarrapower99/my-solar-website-assets_1/main/assets/logo/";
+        document.addEventListener("DOMContentLoaded", () => {
+            const logosContainer = document.getElementById("partners-logos");
+            const logoPath = "assets/logo/";
+            const logos = [
+                "เมืองไทยประกันภัย.jpeg",
+                "carrier.jpeg",
+                "longi.jpeg",
+                "phelpsdodge.jpeg",
+                "sungrow.jpeg",
+                "trina.png",
+                "yarra.png"
+            ];
 
-        let partnerLogos = [
-            "sungrow.jpeg",
-            "longi.jpeg",
-            "trina.png",
-            "phelpsdodge.jpeg",
-            "carrier.jpeg",
-            "เมืองไทยประกันภัย.jpeg",
-        ];
+            // Create a fragment to reduce reflows
+            const fragment = document.createDocumentFragment();
 
-        const container = document.getElementById("partners-logos");
+            // Duplicate logos for seamless scrolling
+            [...logos, ...logos].forEach(logo => {
+                const img = document.createElement("img");
+                img.src = logoPath + logo;
+                img.alt = logo.split('.')[0]; // Set alt text
+                fragment.appendChild(img);
+            });
 
-        // ใส่รูปทั้งหมด
-        partnerLogos.forEach(logo => {
-            let img = document.createElement("img");
-            img.src = partnerRepo + logo;
-            container.appendChild(img);
+            logosContainer.appendChild(fragment);
         });
-
-        // ถ้าโลโก้มากกว่า 10 — เปิดโหมดสไลด์
-        if (partnerLogos.length > 5) {
-
-            let position = 0;
-
-            function slide() {
-                const firstImg = container.querySelector("img");
-                const imgWidth = firstImg.offsetWidth + 0; // รวม gap
-
-                position -= 1;
-                container.style.transform = `translateX(${position}px)`;
-                container.style.transition = "transform 1s linear";
-
-                // เมื่อเลื่อนจนรูปแรกพ้นขอบซ้าย → ย้ายไปต่อท้าย
-                if (Math.abs(position) >= imgWidth) {
-                    container.appendChild(firstImg);
-                    position += imgWidth;
-                    container.style.transform = `translateX(${position}px)`;
-                    container.style.transition = "none";
-                }
-
-                requestAnimationFrame(slide);
-            }
-
-            requestAnimationFrame(slide);
-        }
     </script>
 
 
