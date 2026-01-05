@@ -1226,49 +1226,52 @@
         });
     </script>
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const logosContainer = document.getElementById("partners-logos");
-            const logoPath = "assets/logo/";
-            const logos = [
-                "เมืองไทยประกันภัย.jpeg",
-                "carrier.jpeg",
-                "longi.jpeg",
-                "phelpsdodge.jpeg",
-                "sungrow.jpeg",
-                "trina.png",
-                "yarra.png"
-            ];
+        document.addEventListener("DOMContentLoaded", function() {
+            const logosContainer = document.getElementById('partners-logos');
+            if (logosContainer) {
+                const repoOwner = "yarrapower99";
+                const repoName = "my-solar-website-assets_1";
+                const path = "assets/logo";
+                const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${path}`;
 
-            // Create a fragment to reduce reflows
-            const fragment = document.createDocumentFragment();
+                fetch(apiUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!Array.isArray(data)) return;
+                        const images = data.filter(item => item.name.match(/\.(jpg|jpeg|png|gif)$/i));
+                        
+                        const fragment = document.createDocumentFragment();
 
-            // Duplicate logos for seamless scrolling
-            [...logos, ...logos].forEach(logo => {
-                const img = document.createElement("img");
-                img.src = logoPath + logo;
-                img.alt = logo.split('.')[0]; // Set alt text
-                fragment.appendChild(img);
-            });
+                        // Duplicate logos for seamless scrolling
+                        [...images, ...images].forEach(file => {
+                            const img = document.createElement("img");
+                            img.src = file.download_url;
+                            img.alt = file.name.split('.')[0];
+                            fragment.appendChild(img);
+                        });
 
-            logosContainer.appendChild(fragment);
+                        logosContainer.appendChild(fragment);
 
-            // Slide 1 icon every 3 seconds
-            setInterval(() => {
-                const firstItem = logosContainer.firstElementChild;
-                if (!firstItem) return;
-                
-                const itemWidth = firstItem.offsetWidth;
-                const gap = 60; // CSS gap
+                        // Start the animation after logos are loaded
+                        setInterval(() => {
+                            const firstItem = logosContainer.firstElementChild;
+                            if (!firstItem) return;
+                            
+                            const itemWidth = firstItem.offsetWidth;
+                            const gap = 60; // CSS gap
 
-                logosContainer.style.transition = "transform 0.5s ease-in-out";
-                logosContainer.style.transform = `translateX(-${itemWidth + gap}px)`;
+                            logosContainer.style.transition = "transform 0.5s ease-in-out";
+                            logosContainer.style.transform = `translateX(-${itemWidth + gap}px)`;
 
-                logosContainer.addEventListener('transitionend', () => {
-                    logosContainer.style.transition = "none";
-                    logosContainer.style.transform = "translateX(0)";
-                    logosContainer.appendChild(firstItem);
-                }, { once: true });
-            }, 3000);
+                            logosContainer.addEventListener('transitionend', () => {
+                                logosContainer.style.transition = "none";
+                                logosContainer.style.transform = "translateX(0)";
+                                logosContainer.appendChild(firstItem);
+                            }, { once: true });
+                        }, 3000);
+                    })
+                    .catch(err => console.error("Error loading partner logos:", err));
+            }
         });
 
         // Navbar Scroll Effect
