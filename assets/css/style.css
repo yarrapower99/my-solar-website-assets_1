@@ -89,6 +89,23 @@ h3 {
     left: 0;
 }
 
+/* Language Button */
+.lang-btn {
+    background: #00c2ff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.3s ease;
+}
+
+.lang-btn:hover {
+    background: #0099cc;
+}
+
 /* Hamburger Menu */
 .hamburger {
     display: none;
@@ -479,6 +496,9 @@ h3 {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
     box-sizing: border-box;
     /* ป้องกัน padding ดันกล่องล้น */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
 }
 
 .contact-form-wrapper {
@@ -491,11 +511,24 @@ h3 {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
     box-sizing: border-box;
     /* ป้องกัน padding ดันกล่องล้น */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
 }
 
 .contact-form-wrapper h3 {
     margin-top: 0;
     color: #0a1a3a;
+}
+
+.contact-form-wrapper form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.form-group:last-child {
+    margin-top: auto;
 }
 
 .form-group {

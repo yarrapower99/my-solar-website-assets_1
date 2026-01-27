@@ -321,3 +321,33 @@ document.addEventListener("DOMContentLoaded", () => {
         observer.observe(statsSection);
     }
 });
+
+// Language Switcher
+let currentLang = localStorage.getItem('lang') || 'en';
+
+function updateLanguage() {
+    document.querySelectorAll('[data-th], [data-en]').forEach(el => {
+        if (el.hasAttribute('data-' + currentLang)) {
+            el.textContent = el.getAttribute('data-' + currentLang);
+        }
+    });
+    document.querySelectorAll('[data-placeholder-en]').forEach(el => {
+        if (currentLang === 'en' && el.hasAttribute('data-placeholder-en')) {
+            el.placeholder = el.getAttribute('data-placeholder-en');
+        } else {
+            // Reset to original placeholder (Thai)
+            const original = el.getAttribute('placeholder');
+            if (original) el.placeholder = original;
+        }
+    });
+    document.getElementById('lang-toggle').textContent = currentLang === 'th' ? '🇹🇭 TH' : '🇺🇸 EN';
+    localStorage.setItem('lang', currentLang);
+}
+
+document.getElementById('lang-toggle').addEventListener('click', () => {
+    currentLang = currentLang === 'th' ? 'en' : 'th';
+    updateLanguage();
+});
+
+// Initial language update
+updateLanguage();
