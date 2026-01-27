@@ -355,7 +355,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Language Switcher
-let currentLang = localStorage.getItem('lang') || 'en';
+let currentLang = localStorage.getItem('lang') || 'th';
 
 function updateLanguage() {
     document.querySelectorAll('[data-th], [data-en]:not(#lang-toggle)').forEach(el => {
