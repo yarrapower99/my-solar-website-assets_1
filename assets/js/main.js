@@ -267,6 +267,38 @@
             });
         }
 
+        // Generate Product Images
+        const productContainer = document.getElementById('product-gallery');
+
+        if (productContainer) {
+            const repoOwner = "yarrapower99";
+            const repoName = "my-solar-website-assets_1";
+            const path = "assets/products";
+            const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${path}`;
+
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (!Array.isArray(data)) return;
+                    const images = data.filter(item => item.name.match(/\.(jpg|jpeg|png|gif)$/i));
+
+                    const fragment = document.createDocumentFragment();
+
+                    images.forEach(file => {
+                        const img = document.createElement('img');
+                        img.src = file.download_url;
+                        img.alt = file.name;
+                        img.loading = "lazy";
+
+                        observer.observe(img);
+                        fragment.appendChild(img);
+                    });
+
+                    productContainer.appendChild(fragment);
+                })
+                .catch(error => console.error('Error loading product images:', error));
+        }
+
         // Hamburger Menu Toggle
         function toggleMenu() {
             const menu = document.querySelector('.navbar .menu');
@@ -326,7 +358,7 @@ document.addEventListener("DOMContentLoaded", () => {
 let currentLang = localStorage.getItem('lang') || 'en';
 
 function updateLanguage() {
-    document.querySelectorAll('[data-th], [data-en]').forEach(el => {
+    document.querySelectorAll('[data-th], [data-en]:not(#lang-toggle)').forEach(el => {
         if (el.hasAttribute('data-' + currentLang)) {
             el.textContent = el.getAttribute('data-' + currentLang);
         }
