@@ -169,29 +169,61 @@
             Promise.all(fetchPromises)
                 .then(results => {
                     // รวมรูปภาพจากทุกโฟลเดอร์เข้าด้วยกัน
-                    const images = results.flat();
+                    const allImages = results.flat();
 
                     // เรียงลำดับตามตัวเลขในชื่อไฟล์ (ถ้ามี)
-                    images.sort((a, b) => {
+                    allImages.sort((a, b) => {
                         const numA = parseInt(a.name.match(/\d+/)) || 0;
                         const numB = parseInt(b.name.match(/\d+/)) || 0;
                         return numA - numB;
                     });
 
-                    const fragment = document.createDocumentFragment();
+                    let displayedCount = 0;
+                    const itemsPerLoad = 6;
+                    const initialLoad = 12;
 
-                    images.forEach(file => {
-                        const img = document.createElement('img');
-                        img.src = file.download_url; // ใช้ URL ตรงจาก API ไม่ต้องเดานามสกุล
-                        img.alt = file.name;
-                        img.loading = "lazy";
-                        img.dataset.category = file.category; // กำหนดหมวดหมู่จากโฟลเดอร์ต้นทาง
+                    function renderImages(count) {
+                        const fragment = document.createDocumentFragment();
+                        const imagesToRender = allImages.slice(displayedCount, displayedCount + count);
 
-                        observer.observe(img);
-                        fragment.appendChild(img);
-                    });
+                        imagesToRender.forEach(file => {
+                            const img = document.createElement('img');
+                            img.src = file.download_url;
+                            img.alt = file.name;
+                            img.loading = "lazy";
+                            img.dataset.category = file.category;
+                            img.className = 'gallery-item';
 
-                    portfolioContainer.appendChild(fragment);
+                            observer.observe(img);
+                            fragment.appendChild(img);
+                        });
+
+                        portfolioContainer.appendChild(fragment);
+                        displayedCount += count;
+
+                        // อัปเดตสถานะปุ่ม Load More
+                        updateLoadMoreButton();
+                    }
+
+                    function updateLoadMoreButton() {
+                        let loadMoreBtn = document.getElementById('load-more-btn');
+                        
+                        if (!loadMoreBtn && displayedCount < allImages.length) {
+                            loadMoreBtn = document.createElement('button');
+                            loadMoreBtn.id = 'load-more-btn';
+                            loadMoreBtn.textContent = 'โหลดรูปเพิ่มเติม';
+                            loadMoreBtn.className = 'load-more-btn';
+                            loadMoreBtn.addEventListener('click', () => {
+                                renderImages(itemsPerLoad);
+                            });
+                            portfolioContainer.parentNode.insertBefore(loadMoreBtn, portfolioContainer.nextSibling);
+                        } else if (loadMoreBtn && displayedCount >= allImages.length) {
+                            loadMoreBtn.style.display = 'none';
+                        }
+                    }
+
+                    // แสดง 12 รูปแรก
+                    renderImages(initialLoad);
                 })
                 .catch(error => console.error('Error loading portfolio images:', error));
 
@@ -224,8 +256,8 @@
             // Open Lightbox
             portfolioContainer.addEventListener('click', function (e) {
                 if (e.target.tagName === 'IMG') {
-                    const allImages = Array.from(document.querySelectorAll('#portfolio-gallery img'));
-                    currentLightboxIndex = allImages.indexOf(e.target);
+                    const allVisibleImages = Array.from(document.querySelectorAll('#portfolio-gallery img:not([style*="display: none"])'));
+                    currentLightboxIndex = allVisibleImages.indexOf(e.target);
                     openLightbox();
                     showLightboxSlide(currentLightboxIndex);
                 }
@@ -242,22 +274,22 @@
             }
 
             window.changeSlide = function (n) {
-                const allImages = document.querySelectorAll('#portfolio-gallery img');
+                const allVisibleImages = Array.from(document.querySelectorAll('#portfolio-gallery img:not([style*="display: none"])'));
                 currentLightboxIndex += n;
-                if (currentLightboxIndex >= allImages.length) currentLightboxIndex = 0;
-                if (currentLightboxIndex < 0) currentLightboxIndex = allImages.length - 1;
+                if (currentLightboxIndex >= allVisibleImages.length) currentLightboxIndex = 0;
+                if (currentLightboxIndex < 0) currentLightboxIndex = allVisibleImages.length - 1;
 
                 // Fade effect
                 lightboxImg.style.opacity = 0;
                 setTimeout(() => {
-                    lightboxImg.src = allImages[currentLightboxIndex].src;
+                    lightboxImg.src = allVisibleImages[currentLightboxIndex].src;
                     lightboxImg.style.opacity = 1;
                 }, 200);
             }
 
             function showLightboxSlide(index) {
-                const allImages = document.querySelectorAll('#portfolio-gallery img');
-                lightboxImg.src = allImages[index].src;
+                const allVisibleImages = Array.from(document.querySelectorAll('#portfolio-gallery img:not([style*="display: none"])'));
+                lightboxImg.src = allVisibleImages[index].src;
                 lightboxImg.style.opacity = 1;
             }
 
