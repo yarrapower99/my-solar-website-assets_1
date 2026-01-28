@@ -28,7 +28,7 @@ h3 {
     justify-content: space-between;
     align-items: center;
     padding: 10px 150px; /* เพิ่มซ้ายขวา */
-    background: transparent;
+    background: linear-gradient(90deg, #10b981 0%, #059669 100%);
     color: white;
     position: fixed;
     width: 100%;
@@ -41,7 +41,6 @@ h3 {
 
 .navbar.scrolled {
     padding: 20px 100px;
-    background: rgba(10, 26, 58, 0.95);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -70,7 +69,7 @@ h3 {
 }
 
 .navbar .menu a:hover {
-    color: #4dabf7;
+    color: #10b981;
 }
 
 .navbar .menu a::after {
@@ -80,7 +79,7 @@ h3 {
     height: 2px;
     bottom: 0;
     left: 50%;
-    background-color: #4dabf7;
+    background-color: #10b981;
     transition: all 0.3s ease;
 }
 
@@ -91,7 +90,7 @@ h3 {
 
 /* Language Button */
 .lang-btn {
-    background: #00c2ff;
+    background: #10b981;
     color: white;
     border: none;
     padding: 5px 10px;
@@ -103,7 +102,7 @@ h3 {
 }
 
 .lang-btn:hover {
-    background: #0099cc;
+    background: #059669;
 }
 
 /* Hamburger Menu */
@@ -241,7 +240,7 @@ h3 {
 .btn {
     display: inline-block;
     margin-top: 25px;
-    background: #00c2ff;
+    background: #10b981;
     padding: 12px 24px;
     color: #0a1a3a;
     border: none;
@@ -302,7 +301,7 @@ h3 {
     display: block;
     width: 50px;
     height: 4px;
-    background: #00c2ff;
+    background: #10b981;
     margin: 10px auto 0;
     border-radius: 2px;
 }
@@ -331,19 +330,19 @@ h3 {
 .feature-icon {
     width: 60px;
     height: 60px;
-    background: linear-gradient(135deg, #e0f7fa 0%, #ffffff 100%);
+    background: linear-gradient(135deg, #d1fae5 0%, #ffffff 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto 20px;
-    box-shadow: 0 4px 10px rgba(0, 194, 255, 0.15);
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.15);
 }
 
 .feature-icon svg {
     width: 30px;
     height: 30px;
-    fill: #00c2ff;
+    fill: #10b981;
 }
 
 /* Packages */
@@ -369,7 +368,7 @@ h3 {
 
 /* Highlight Popular Package */
 .package-card.popular {
-    border: 2px solid #00c2ff;
+    border: 2px solid #10b981;
     transform: scale(1.05);
     z-index: 1;
 }
@@ -417,8 +416,8 @@ h3 {
 
 .filter-btn {
     background: transparent;
-    border: 2px solid #00c2ff;
-    color: #00c2ff;
+    border: 2px solid #10b981;
+    color: #10b981;
     padding: 8px 20px;
     border-radius: 20px;
     cursor: pointer;
@@ -430,7 +429,7 @@ h3 {
 
 .filter-btn:hover,
 .filter-btn.active {
-    background: linear-gradient(90deg, #00c2ff 0%, #007bff 100%);
+    background: linear-gradient(90deg, #10b981 0%, #059669 100%);
     color: #fff;
     border: none;
 }
@@ -482,7 +481,7 @@ h3 {
     display: block;
     margin: 40px auto 0;
     padding: 12px 40px;
-    background: linear-gradient(90deg, #00c2ff 0%, #007bff 100%);
+    background: linear-gradient(90deg, #10b981 0%, #059669 100%);
     color: #fff;
     border: none;
     border-radius: 8px;
@@ -491,13 +490,13 @@ h3 {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 10px rgba(0, 194, 255, 0.3);
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
 }
 
 .load-more-btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0, 194, 255, 0.4);
-    background: linear-gradient(90deg, #0099cc 0%, #005fa3 100%);
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+    background: linear-gradient(90deg, #059669 0%, #047857 100%);
 }
 
 /* Product Gallery */
@@ -544,7 +543,20 @@ h3 {
     /* ป้องกัน padding ดันกล่องล้น */
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+}
+
+.contact-info > p {
+    margin: 0.5rem 0;
+}
+
+.contact-info > p:first-of-type {
+    margin-top: 1rem;
+}
+
+.contact-buttons {
+    text-align: center;
+    margin-top: auto;
+    padding-top: 1.5rem;
 }
 
 .contact-form-wrapper {
@@ -559,18 +571,18 @@ h3 {
     /* ป้องกัน padding ดันกล่องล้น */
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
 }
 
 .contact-form-wrapper h3 {
     margin-top: 0;
     color: #0a1a3a;
+    flex-shrink: 0; /* Prevent h3 from shrinking */
 }
 
 .contact-form-wrapper form {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    flex-grow: 1; /* Make form fill available space */
 }
 
 .form-group:last-child {
@@ -659,7 +671,7 @@ h3 {
 }
 
 .btn-call {
-    background: linear-gradient(90deg, #00c2ff 0%, #007bff 100%);
+    background: linear-gradient(90deg, #10b981 0%, #059669 100%);
     color: #fff;
     padding: 12px 20px;
     border-radius: 8px;
@@ -685,7 +697,7 @@ h3 {
 }
 
 .btn-submit {
-    background: linear-gradient(90deg, #00c2ff 0%, #007bff 100%);
+    background: linear-gradient(90deg, #10b981 0%, #059669 100%);
     color: #fff;
     padding: 12px 24px;
     border-radius: 10px;
@@ -701,8 +713,8 @@ h3 {
 
 .btn-submit:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 194, 255, 0.4);
-    background: linear-gradient(90deg, #0099cc 0%, #005fa3 100%);
+    box-shadow: 0 6px 12px rgba(16, 185, 129, 0.4);
+    background: linear-gradient(90deg, #059669 0%, #047857 100%);
 }
 
 .slide {
@@ -751,20 +763,20 @@ h3 {
 .stat-box:hover {
     transform: translateY(-10px);
     background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(0, 194, 255, 0.3);
+    border-color: rgba(16, 185, 129, 0.3);
 }
 
 .stat-icon-wrapper {
     width: 40px;
     /* ลดขนาดพื้นหลังไอคอน */
     height: 40px;
-    background: rgba(0, 194, 255, 0.1);
+    background: rgba(16, 185, 129, 0.1);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto 8px;
-    color: #00c2ff;
+    color: #10b981;
 }
 
 .stat-icon-wrapper svg {
@@ -792,7 +804,7 @@ h3 {
 
 .stat-number span.unit {
     font-size: 12px;
-    color: #00c2ff;
+    color: #10b981;
     font-weight: 500;
     display: block;
     margin-top: 5px;
@@ -864,8 +876,6 @@ h3 {
         padding: 15px 20px;
         top: 0;
         /* มือถือให้ติดบนเลย */
-        background: #0a1a3a;
-        /* พื้นหลังทึบ */
     }
 
     .hamburger {
@@ -989,8 +999,8 @@ h3 {
 /* Back to Top Button */
 #backToTop {
     position: fixed;
-    bottom: 90px;
-    /* ขยับขึ้นหลบปุ่ม Line */
+    bottom: 150px;
+    /* ขยับขึ้นหลบปุ่ม Line & FB */
     right: 30px;
     background: linear-gradient(45deg, #00c2ff, #007bff);
     color: white;
@@ -1052,6 +1062,32 @@ h3 {
     color: white;
 }
 
+/* Facebook Floating Button */
+.fb-float-btn {
+    position: fixed;
+    bottom: 90px;
+    right: 30px;
+    background: #1877F2;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    transition: transform 0.3s ease;
+    text-decoration: none;
+}
+
+.fb-float-btn:hover {
+    transform: scale(1.1);
+}
+
+.fb-float-btn .lni {
+    font-size: 28px;
+    color: white;
+}
 @keyframes wiggle {
 
     0%,
@@ -1397,4 +1433,23 @@ h3 {
         height: 45px;
         font-size: 20px;
     }
+}
+.social-btn {
+    min-width: 280px;          /* ปรับได้ตามดีไซน์ */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 0;
+    color: #fff !important;
+}
+
+.btn-line {
+    background-color: #06C755 !important;
+}
+
+.btn-fb {
+    background-color: #1877F2;
+    display: inline-block;
+    margin: 0 auto;
 }
