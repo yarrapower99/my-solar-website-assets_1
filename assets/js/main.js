@@ -5,7 +5,7 @@
             const heroContent = document.querySelector('.hero-content');
             const repoOwner = "yarrapower99";
             const repoName = "my-solar-website-assets_1";
-            const path = "assets/Partners"; // Path to images
+            const path = "assets/profile"; // Path to images
             const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${path}`;
 
             fetch(apiUrl)
