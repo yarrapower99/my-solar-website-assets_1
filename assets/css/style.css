@@ -7,7 +7,7 @@ html {
 body {
     font-family: 'Noto Sans Thai', sans-serif;
     /* ใช้ฟอนต์ Inter เพื่อความคมชัดและเป็นมาตรฐาน UI */
-    background: #f4f6f9;
+    background: #f0fdfa;
     /* สีพื้นหลังโทนอ่อน ช่วยให้ UI ดูโปร */
     margin: 0;
     /* ลบ margin default ของ browser */
@@ -28,7 +28,7 @@ h3 {
     justify-content: space-between;
     align-items: center;
     padding: 10px 150px; /* เพิ่มซ้ายขวา */
-    background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+    background: transparent;
     color: white;
     position: fixed;
     width: 100%;
@@ -42,6 +42,7 @@ h3 {
 .navbar.scrolled {
     padding: 20px 100px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(90deg, #10b981 0%, #059669 100%);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     top: 0;
@@ -161,7 +162,7 @@ h3 {
 
     /* Gradient + Overlay มืด 70% */
     background:
-        linear-gradient(rgba(6, 18, 50, 0.78),
+        /* linear-gradient(rgba(6, 18, 50, 0.78), */
             /* ด้านบนเข้ม */
             rgba(6, 18, 50, 0.72)),
         rgba(0, 0, 0, 0.25);
@@ -180,6 +181,7 @@ h3 {
     text-align: center;
     z-index: 10;
     animation: fadeInUp 1.2s ease-out;
+    
 }
 
 .hero-content h1 {
@@ -227,7 +229,7 @@ h3 {
 }
 
 .custom-shape-divider-bottom .shape-fill {
-    fill: #061230;
+    fill: #059669;
     /* สีเดียวกับ Stats Section */
 }
 
@@ -242,7 +244,7 @@ h3 {
     margin-top: 25px;
     background: #10b981;
     padding: 12px 24px;
-    color: #0a1a3a;
+    color: #fff;
     border: none;
     border-radius: 10px;
     font-size: 18px;
@@ -301,7 +303,7 @@ h3 {
     display: block;
     width: 50px;
     height: 4px;
-    background: #10b981;
+    background: linear-gradient(90deg, #10b981 0%, #059669 100%);
     margin: 10px auto 0;
     border-radius: 2px;
 }
@@ -342,7 +344,7 @@ h3 {
 .feature-icon svg {
     width: 30px;
     height: 30px;
-    fill: #10b981;
+    fill: linear-gradient(90deg, #10b981 0%, #059669 100%);
 }
 
 /* Packages */
@@ -382,8 +384,8 @@ h3 {
     top: -12px;
     left: 50%;
     transform: translateX(-50%);
-    background: #00c2ff;
-    color: #0a1a3a;
+    background: #10b981;
+    color: #fff;
     padding: 4px 12px;
     border-radius: 20px;
     font-size: 14px;
@@ -394,14 +396,14 @@ h3 {
 .package-card h3 {
     margin-top: 0;
     font-size: 26px;
-    color: #113a7d;
+    color: #059669;
 }
 
 .price {
     font-size: 28px;
     margin-top: 10px;
     margin-bottom: 20px;
-    color: #00c2ff;
+    color: #10b981;
     font-weight: 700;
 }
 
@@ -605,8 +607,8 @@ h3 {
 
 .form-group input:focus,
 .form-group textarea:focus {
-    border-color: #00c2ff;
-    box-shadow: 0 0 0 4px rgba(0, 194, 255, 0.1);
+    border-color: #10b981;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
     outline: none;
 }
 
@@ -618,7 +620,7 @@ h3 {
 
 /* Footer */
 .footer {
-    background: #0a1a3a;
+    background: linear-gradient(90deg, #10b981 0%, #059669 100%);
     color: white;
     padding: 60px 100px 20px;
     margin-top: 40px;
@@ -636,7 +638,7 @@ h3 {
 }
 
 .footer-col h4 {
-    color: #00c2ff;
+    color: #fff;
     font-size: 18px;
     margin-bottom: 20px;
 }
@@ -659,7 +661,8 @@ h3 {
 .navbar .logo img {
     height: 90px;
     width: auto;
-    filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.2));
+    /* filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.2)); */
+    filter: brightness(0) invert(1);
     transition: height 0.3s ease;
 }
 
@@ -687,7 +690,7 @@ h3 {
 .btn-call:hover,
 .btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0, 194, 255, 0.4);
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
 }
 
 .btn-call.secondary {
@@ -727,7 +730,7 @@ h3 {
 
 /* กล่องสถิติ */
 .stats-section {
-    background: linear-gradient(to bottom, #061230 0%, #0a1a3a 100%);
+    background: linear-gradient(to bottom, #059669 0%, #047857 100%);
     /* ปรับ Gradient ให้ขอบบนสีตรงกับคลื่นเป๊ะๆ */
     padding: 40px 50px 80px;
     /* ลด Padding บนล่างให้กระชับขึ้นอีก */
@@ -1002,7 +1005,7 @@ h3 {
     bottom: 150px;
     /* ขยับขึ้นหลบปุ่ม Line & FB */
     right: 30px;
-    background: linear-gradient(45deg, #00c2ff, #007bff);
+    background: linear-gradient(90deg, #10b981 0%, #059669 100%);
     color: white;
     width: 50px;
     height: 50px;
@@ -1012,7 +1015,7 @@ h3 {
     align-items: center;
     font-size: 22px; /* Adjusted for icon */
     cursor: pointer;
-    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+    box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
     opacity: 0;
     visibility: hidden;
     transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -1077,10 +1080,12 @@ h3 {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     z-index: 1000;
     transition: transform 0.3s ease;
+    animation: wiggle 3s infinite ease-in-out;
     text-decoration: none;
 }
 
 .fb-float-btn:hover {
+    animation: none;
     transform: scale(1.1);
 }
 
@@ -1425,13 +1430,25 @@ h3 {
         gap: 20px;
     }
 
-    #backToTop,
+    #backToTop {
+        bottom: 130px;
+        right: 20px;
+        width: 45px;
+        height: 45px;
+        font-size: 20px;
+    }
     .line-float-btn {
         bottom: 20px;
         right: 20px;
         width: 45px;
         height: 45px;
         font-size: 20px;
+    }
+    .fb-float-btn {
+        bottom: 75px;
+        right: 20px;
+        width: 45px;
+        height: 45px;
     }
 }
 .social-btn {
