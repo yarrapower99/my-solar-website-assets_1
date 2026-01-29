@@ -873,6 +873,7 @@ h3 {
     .navbar {
         position: sticky;
         /* เปลี่ยนเป็น sticky เพื่อดันเนื้อหาลงไป ไม่ให้บัง */
+        background: linear-gradient(90deg, #10b981 0%, #059669 100%);
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: space-between;
