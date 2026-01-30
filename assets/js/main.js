@@ -113,6 +113,7 @@ if (gallery) {
                     img.loading = "lazy";
                     gallery.appendChild(img);
                 });
+            autoSlide("portfolio-sup-gallery", 0.6);
         })
         .catch(err => console.error('Portfolio_sup load error:', err));
 }
@@ -147,6 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
             partnersGallery.appendChild(fragment);
+            autoSlide("partners-gallery", 0.4);
         })
         .catch(err => console.error('Partners load error:', err));
 });
@@ -459,3 +461,80 @@ document.getElementById('lang-toggle').addEventListener('click', () => {
     currentLang = currentLang === 'th' ? 'en' : 'th';
     updateLanguage();
 });
+function autoSlide(containerId, speed = 0.5) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    let paused = false;
+
+    container.addEventListener("mouseenter", () => paused = true);
+    container.addEventListener("mouseleave", () => paused = false);
+
+    function slide() {
+        if (!paused && container.scrollWidth > container.clientWidth) {
+            container.scrollLeft += speed;
+
+            if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 1) {
+                container.scrollLeft = 0;
+            }
+        }
+        requestAnimationFrame(slide);
+    }
+
+    slide();
+}
+
+let currentImages = [];
+let currentIndex = 0;
+
+function openLightbox(images, index) {
+    currentImages = images;
+    currentIndex = index;
+    document.getElementById("lightbox").style.display = "block";
+    document.getElementById("lightbox-img").src = currentImages[currentIndex].src;
+}
+
+function closeLightbox() {
+    document.getElementById("lightbox").style.display = "none";
+}
+
+function changeSlide(step) {
+    currentIndex += step;
+
+    if (currentIndex < 0) currentIndex = currentImages.length - 1;
+    if (currentIndex >= currentImages.length) currentIndex = 0;
+
+    document.getElementById("lightbox-img").src = currentImages[currentIndex].src;
+}
+function bindGalleryLightbox(galleryId) {
+    const gallery = document.getElementById(galleryId);
+    if (!gallery) return;
+
+    gallery.addEventListener("click", (e) => {
+        if (e.target.tagName !== "IMG") return;
+
+        const images = Array.from(gallery.querySelectorAll("img"));
+        const index = images.indexOf(e.target);
+
+        openLightbox(images, index);
+    });
+}
+
+/* ผูก Lightbox */
+bindGalleryLightbox("portfolio-sup-gallery");
+bindGalleryLightbox("partners-gallery");
+
+function loadPartnersGallery(images) {
+    const gallery = document.getElementById("partners-gallery");
+    if (!gallery) return;
+
+    images.forEach(src => {
+        const img = document.createElement("img");
+        img.src = src;
+        gallery.appendChild(img);
+    });
+
+    /* 🔥 เรียก autoSlide หลังจากใส่รูปเสร็จ */
+    autoSlide("partners-gallery", 0.4);
+}
+
