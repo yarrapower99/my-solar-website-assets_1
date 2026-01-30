@@ -113,7 +113,7 @@ if (gallery) {
                     img.loading = "lazy";
                     gallery.appendChild(img);
                 });
-            autoSlide("portfolio-sup-gallery", 0.6);
+ 
         })
         .catch(err => console.error('Portfolio_sup load error:', err));
 }
@@ -148,7 +148,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
             partnersGallery.appendChild(fragment);
-            autoSlide("partners-gallery", 0.4);
         })
         .catch(err => console.error('Partners load error:', err));
 });
@@ -217,8 +216,8 @@ if (portfolioContainer) {
 
     // กำหนดโฟลเดอร์และหมวดหมู่ (ต้องตรงกับชื่อโฟลเดอร์ใน GitHub)
     const categories = [
-        { path: "assets/portfolio/บ้านพักอาศัย", id: "home" },
-        { path: "assets/portfolio/โรงงาน และอาคารธุรกิจ", id: "factory" }
+        { path: "assets/portfolio/home", id: "home" },
+        { path: "assets/portfolio/factory", id: "factory" }
     ];
 
     // สร้าง Promise เพื่อดึงข้อมูลจากทุกโฟลเดอร์พร้อมกัน
@@ -520,9 +519,6 @@ function bindGalleryLightbox(galleryId) {
     });
 }
 
-/* ผูก Lightbox */
-bindGalleryLightbox("portfolio-sup-gallery");
-bindGalleryLightbox("partners-gallery");
 
 function loadPartnersGallery(images) {
     const gallery = document.getElementById("partners-gallery");
@@ -534,7 +530,5 @@ function loadPartnersGallery(images) {
         gallery.appendChild(img);
     });
 
-    /* 🔥 เรียก autoSlide หลังจากใส่รูปเสร็จ */
-    autoSlide("partners-gallery", 0.4);
 }
 
