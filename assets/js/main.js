@@ -69,36 +69,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Portfolio Sup Gallery
-    const portfolioSupGallery = document.getElementById('portfolio-sup-gallery');
-    if (portfolioSupGallery) {
-        fetchGitHubImages("assets/portfolio_sup", portfolioSupGallery, (images, container) => {
-            images.forEach(file => {
-                const img = document.createElement('img');
-                img.src = file.download_url;
-                img.alt = file.name;
-                img.loading = "lazy";
-                container.appendChild(img);
-            });
-        });
-    }
-
-    // Partners Gallery
-    const partnersGallery = document.getElementById('partners-gallery');
-    if (partnersGallery) {
-        fetchGitHubImages("assets/Partners", partnersGallery, (images, container) => {
-            const fragment = document.createDocumentFragment();
-            images.forEach(file => {
-                const img = document.createElement('img');
-                img.src = file.download_url;
-                img.alt = file.name.replace(/\.[^/.]+$/, '');
-                img.loading = "lazy";
-                fragment.appendChild(img);
-            });
-            container.appendChild(fragment);
-        });
-    }
-
     // Stats Section Counter Animation
     const statsSection = document.querySelector(".stats-section");
     if (statsSection) {
@@ -112,10 +82,75 @@ document.addEventListener("DOMContentLoaded", () => {
         }, { threshold: 0.5 });
         observer.observe(statsSection);
     }
-    
+
     // Initial language update
-    updateLanguage();
+    if (typeof updateLanguage === "function") {
+        updateLanguage();
+    }
 });
+
+// Portfolio Gallery_sup
+const gallery = document.getElementById('portfolio-sup-gallery');
+
+if (gallery) {
+    const repoOwner = "yarrapower99";
+    const repoName = "my-solar-website-assets_1";
+    const path = "assets/portfolio_sup";
+
+    const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${path}?per_page=100`;
+
+    fetch(apiUrl)
+        .then(res => res.json())
+        .then(data => {
+            if (!Array.isArray(data)) return;
+
+            data
+                .filter(item => item.name.match(/\.(jpg|jpeg|png|gif|webp)$/i))
+                .forEach(file => {
+                    const img = document.createElement('img');
+                    img.src = file.download_url;
+                    img.alt = file.name;
+                    img.loading = "lazy";
+                    gallery.appendChild(img);
+                });
+        })
+        .catch(err => console.error('Portfolio_sup load error:', err));
+}
+
+// Partners Gallery
+document.addEventListener('DOMContentLoaded', () => {
+    const partnersGallery = document.getElementById('partners-gallery');
+    if (!partnersGallery) return;
+
+    const repoOwner = "yarrapower99";
+    const repoName = "my-solar-website-assets_1";
+    const path = "assets/Partners";
+
+    const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${path}?per_page=100`;
+
+    fetch(apiUrl)
+        .then(res => res.json())
+        .then(data => {
+            if (!Array.isArray(data)) return;
+
+            const fragment = document.createDocumentFragment();
+
+            data
+                .filter(item => item.name.match(/\.(png|jpg|jpeg|webp|svg)$/i))
+                .forEach(file => {
+                    const img = document.createElement('img');
+                    img.src = file.download_url;
+                    img.alt = file.name.replace(/\.[^/.]+$/, '');
+                    img.loading = "lazy";
+
+                    fragment.appendChild(img);
+                });
+
+            partnersGallery.appendChild(fragment);
+        })
+        .catch(err => console.error('Partners load error:', err));
+});
+
 
 // Navbar Scroll Effect
 let lastScrollTop = 0;
