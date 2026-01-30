@@ -1642,17 +1642,19 @@ h3 {
 #partners-gallery img,
 #portfolio-sup-gallery img {
     width: 100%;
-    aspect-ratio: 1 / 1;     /* 🔥 ตรงกับ 768x768 */
-    object-fit: cover;      /* 🔥 เต็ม ไม่เห็นขอบ */
+    aspect-ratio: 1 / 1;
+    /* 🔥 ตรงกับ 768x768 */
+    object-fit: cover;
+    /* 🔥 เต็ม ไม่เห็นขอบ */
     border-radius: 22px;
-    box-shadow: 0 14px 35px rgba(0,0,0,0.18);
+    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.18);
     transition: transform 0.35s ease, box-shadow 0.35s ease;
 }
 
 #partners-gallery img:hover,
 #portfolio-sup-gallery img:hover {
     transform: translateY(-10px) scale(1.04);
-    box-shadow: 0 25px 55px rgba(0,0,0,0.3);
+    box-shadow: 0 25px 55px rgba(0, 0, 0, 0.3);
 }
 
 #partners-section,
@@ -1666,12 +1668,15 @@ h3 {
     font-size: 32px;
     margin-bottom: 0;
 }
+
 @media (max-width: 768px) {
+
     #partners-section h2,
     #portfolio-sup-section h2 {
         font-size: 20px;
     }
 }
+
 
 /* Tablet */
 @media (max-width: 1200px) {
@@ -1684,6 +1689,7 @@ h3 {
 
 /* Mobile */
 @media (max-width: 768px) {
+
     #partners-section,
     #portfolio-sup-section {
         padding: 50px 20px;
@@ -1705,17 +1711,31 @@ h3 {
     }
 }
 
+@media (max-width: 480px) {
+    #product-gallery {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (max-width: 768px) {
+    #product-gallery {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+
 #portfolio-gallery {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 24px;
 }
+
 @media (max-width: 768px) {
     #portfolio-gallery {
         grid-template-columns: repeat(2, 1fr);
         gap: 16px;
     }
 }
+
 @media (max-width: 420px) {
     #portfolio-gallery {
         grid-template-columns: repeat(2, 1fr);
