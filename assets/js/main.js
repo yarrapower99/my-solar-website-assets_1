@@ -1,100 +1,136 @@
-// Hero Slider - Fetch from GitHub API
-document.addEventListener("DOMContentLoaded", () => {
-    const sliderContainer = document.querySelector('.hero-slider');
-    const heroContent = document.querySelector('.hero-content');
+// Helper function to fetch images from GitHub
+function fetchGitHubImages(path, container, processFn) {
     const repoOwner = "yarrapower99";
     const repoName = "my-solar-website-assets_1";
-    const path = "assets/profile"; // Path to images
-    const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${path}`;
+    const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${path}?per_page=100`;
 
     fetch(apiUrl)
-        .then(response => response.json())
+        .then(res => res.json())
         .then(data => {
             if (!Array.isArray(data)) return;
-            const images = data.filter(item => item.name.match(/\.(jpg|jpeg|png|gif)$/i));
+            const images = data.filter(item => item.name.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i));
+            processFn(images, container);
+        })
+        .catch(err => console.error(`Error loading images from ${path}:`, err));
+}
 
+document.addEventListener("DOMContentLoaded", () => {
+    // Hero Slider
+    const sliderContainer = document.querySelector('.hero-slider');
+    if (sliderContainer) {
+        const heroContent = document.querySelector('.hero-content');
+        fetchGitHubImages("assets/profile", sliderContainer, (images, container) => {
             images.forEach((file, index) => {
                 const slide = document.createElement('div');
                 slide.classList.add('slide');
                 if (index === 0) slide.classList.add('active');
                 slide.style.backgroundImage = `url('${file.download_url}')`;
-                // Insert slides before the content so they are in the background
-                sliderContainer.insertBefore(slide, heroContent);
+                container.insertBefore(slide, heroContent);
             });
 
-            // Start Slider Animation
             let slides = document.querySelectorAll(".hero-slider .slide");
-            let currentIndex = 0;
-
             if (slides.length > 1) {
+                let currentIndex = 0;
                 setInterval(() => {
                     slides[currentIndex].classList.remove("active");
                     currentIndex = (currentIndex + 1) % slides.length;
                     slides[currentIndex].classList.add("active");
                 }, 4000);
             }
-        })
-        .catch(err => console.error("Error loading hero slider images:", err));
-});
+        });
+    }
 
-
-document.addEventListener("DOMContentLoaded", function () {
+    // Partners Logos
     const logosContainer = document.getElementById('partners-logos');
     if (logosContainer) {
-        const repoOwner = "yarrapower99";
-        const repoName = "my-solar-website-assets_1";
-        const path = "assets/logo_use";
-        const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${path}`;
+        fetchGitHubImages("assets/logo_use", logosContainer, (images, container) => {
+            const fragment = document.createDocumentFragment();
+            [...images, ...images].forEach(file => {
+                const img = document.createElement("img");
+                img.src = file.download_url;
+                img.alt = file.name.split('.')[0];
+                fragment.appendChild(img);
+            });
+            container.appendChild(fragment);
 
-        fetch(apiUrl)
-            .then(response => response.json())
-            .then(data => {
-                if (!Array.isArray(data)) return;
-                const images = data.filter(item => item.name.match(/\.(jpg|jpeg|png|gif)$/i));
-
-                const fragment = document.createDocumentFragment();
-
-                // Duplicate logos for seamless scrolling
-                [...images, ...images].forEach(file => {
-                    const img = document.createElement("img");
-                    img.src = file.download_url;
-                    img.alt = file.name.split('.')[0];
-                    fragment.appendChild(img);
-                });
-
-                logosContainer.appendChild(fragment);
-
-                // Start the animation after logos are loaded
-                setInterval(() => {
-                    const firstItem = logosContainer.firstElementChild;
-                    if (!firstItem) return;
-
-                    const itemWidth = firstItem.offsetWidth;
-                    const gap = 60; // CSS gap
-
-                    logosContainer.style.transition = "transform 0.5s ease-in-out";
-                    logosContainer.style.transform = `translateX(-${itemWidth + gap}px)`;
-
-                    logosContainer.addEventListener('transitionend', () => {
-                        logosContainer.style.transition = "none";
-                        logosContainer.style.transform = "translateX(0)";
-                        logosContainer.appendChild(firstItem);
-                    }, { once: true });
-                }, 3000);
-            })
-            .catch(err => console.error("Error loading partner logos:", err));
+            setInterval(() => {
+                const firstItem = container.firstElementChild;
+                if (!firstItem) return;
+                const itemWidth = firstItem.offsetWidth;
+                const gap = 60;
+                container.style.transition = "transform 0.5s ease-in-out";
+                container.style.transform = `translateX(-${itemWidth + gap}px)`;
+                container.addEventListener('transitionend', () => {
+                    container.style.transition = "none";
+                    container.style.transform = "translateX(0)";
+                    container.appendChild(firstItem);
+                }, { once: true });
+            }, 3000);
+        });
     }
+
+    // Portfolio Sup Gallery
+    const portfolioSupGallery = document.getElementById('portfolio-sup-gallery');
+    if (portfolioSupGallery) {
+        fetchGitHubImages("assets/portfolio_sup", portfolioSupGallery, (images, container) => {
+            images.forEach(file => {
+                const img = document.createElement('img');
+                img.src = file.download_url;
+                img.alt = file.name;
+                img.loading = "lazy";
+                container.appendChild(img);
+            });
+        });
+    }
+
+    // Partners Gallery
+    const partnersGallery = document.getElementById('partners-gallery');
+    if (partnersGallery) {
+        fetchGitHubImages("assets/Partners", partnersGallery, (images, container) => {
+            const fragment = document.createDocumentFragment();
+            images.forEach(file => {
+                const img = document.createElement('img');
+                img.src = file.download_url;
+                img.alt = file.name.replace(/\.[^/.]+$/, '');
+                img.loading = "lazy";
+                fragment.appendChild(img);
+            });
+            container.appendChild(fragment);
+        });
+    }
+
+    // Stats Section Counter Animation
+    const statsSection = document.querySelector(".stats-section");
+    if (statsSection) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounters();
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        observer.observe(statsSection);
+    }
+    
+    // Initial language update
+    updateLanguage();
 });
 
 // Navbar Scroll Effect
 let lastScrollTop = 0;
+let isMenuOpen = false; // Flag to track menu state
 
 window.addEventListener("scroll", function () {
     const navbar = document.querySelector(".navbar");
-    const backToTopBtn = document.getElementById("backToTop");
     let scrollTop = window.scrollY;
 
-    // Smart Navbar Logic
+    // Smart Navbar Logic - Don't hide if menu is open
+    if (isMenuOpen) {
+        navbar.classList.remove("hidden");
+        return;
+    }
+
     if (scrollTop > lastScrollTop && scrollTop > 100) {
         navbar.classList.add("hidden"); // เลื่อนลง -> ซ่อน
     } else {
@@ -108,6 +144,7 @@ window.addEventListener("scroll", function () {
         navbar.classList.remove("scrolled");
     }
 
+    const backToTopBtn = document.getElementById("backToTop");
     if (scrollTop > 300) {
         backToTopBtn.classList.add("show");
     } else {
@@ -270,6 +307,7 @@ if (portfolioContainer) {
     window.closeLightbox = function () {
         lightbox.style.display = "none";
         document.body.style.overflow = "auto"; // Enable scroll
+        isMenuOpen = false; // Update menu state
     }
 
     window.changeSlide = function (n) {
@@ -300,34 +338,19 @@ if (portfolioContainer) {
 
 // Generate Product Images
 const productContainer = document.getElementById('product-gallery');
-
 if (productContainer) {
-    const repoOwner = "yarrapower99";
-    const repoName = "my-solar-website-assets_1";
-    const path = "assets/products";
-    const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${path}`;
-
-    fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-            if (!Array.isArray(data)) return;
-            const images = data.filter(item => item.name.match(/\.(jpg|jpeg|png|gif)$/i));
-
-            const fragment = document.createDocumentFragment();
-
-            images.forEach(file => {
-                const img = document.createElement('img');
-                img.src = file.download_url;
-                img.alt = file.name;
-                img.loading = "lazy";
-
-                observer.observe(img);
-                fragment.appendChild(img);
-            });
-
-            productContainer.appendChild(fragment);
-        })
-        .catch(error => console.error('Error loading product images:', error));
+    fetchGitHubImages("assets/products", productContainer, (images, container) => {
+        const fragment = document.createDocumentFragment();
+        images.forEach(file => {
+            const img = document.createElement('img');
+            img.src = file.download_url;
+            img.alt = file.name;
+            img.loading = "lazy";
+            observer.observe(img);
+            fragment.appendChild(img);
+        });
+        container.appendChild(fragment);
+    });
 }
 
 // Hamburger Menu Toggle
@@ -336,13 +359,18 @@ function toggleMenu() {
     const hamburger = document.querySelector('.hamburger');
     menu.classList.toggle('active');
     hamburger.classList.toggle('active');
+    isMenuOpen = menu.classList.contains('active'); // Update menu state
 }
 
 // Close menu when clicking a link
 document.querySelectorAll('.navbar .menu a').forEach(link => {
     link.addEventListener('click', () => {
-        document.querySelector('.navbar .menu').classList.remove('active');
-        document.querySelector('.hamburger').classList.remove('active');
+        const menu = document.querySelector('.navbar .menu');
+        if (menu.classList.contains('active')) {
+            document.querySelector('.navbar .menu').classList.remove('active');
+            document.querySelector('.hamburger').classList.remove('active');
+            isMenuOpen = false; // Update menu state
+        }
     });
 });
 
@@ -370,21 +398,6 @@ function animateCounters() {
     });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    const statsSection = document.querySelector(".stats-section");
-    if (statsSection) {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    animateCounters();
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.5 });
-        observer.observe(statsSection);
-    }
-});
-
 // Language Switcher
 let currentLang = localStorage.getItem('lang') || 'th';
 
@@ -411,38 +424,3 @@ document.getElementById('lang-toggle').addEventListener('click', () => {
     currentLang = currentLang === 'th' ? 'en' : 'th';
     updateLanguage();
 });
-
-// Initial language update
-updateLanguage();
-
-const githubGallery = document.getElementById('github-gallery');
-
-if (githubGallery) {
-    const repoOwner = "yarrapower99";
-    const repoName = "my-solar-website-assets_1";
-    const path = "assets/portfolio_sup";
-    const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${path}`;
-
-    fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-            if (!Array.isArray(data)) return;
-            const images = data.filter(item => item.name.match(/\.(jpg|jpeg|png|gif)$/i));
-
-            const fragment = document.createDocumentFragment();
-
-            images.forEach(file => {
-                const img = document.createElement('img');
-                img.src = file.download_url;
-                img.alt = file.name;
-                img.loading = "lazy";
-                img.classList.add('gallery-item');
-
-                observer.observe(img);
-                fragment.appendChild(img);
-            });
-
-            githubGallery.appendChild(fragment);
-        })
-        .catch(error => console.error('Error loading github gallery images:', error));
-}
