@@ -480,12 +480,25 @@ function autoSlide(containerId, speed = 0.5) {
 
 let currentImages = [];
 let currentIndex = 0;
+let currentZoom = 1;
+
+function zoomImage(step) {
+    currentZoom += step;
+    if (currentZoom < 0.5) currentZoom = 0.5; // จำกัดซูมออกต่ำสุด
+    if (currentZoom > 3) currentZoom = 3;     // จำกัดซูมเข้าสูงสุด
+    
+    const img = document.getElementById("lightbox-img");
+    if (img) img.style.transform = `scale(${currentZoom})`;
+}
 
 function openLightbox(images, index) {
     currentImages = images;
     currentIndex = index;
+    currentZoom = 1; // รีเซ็ตค่าซูม
     document.getElementById("lightbox").style.display = "block";
-    document.getElementById("lightbox-img").src = currentImages[currentIndex].src;
+    const img = document.getElementById("lightbox-img");
+    img.src = currentImages[currentIndex].src;
+    img.style.transform = "scale(1)"; // รีเซ็ตขนาดภาพ
     document.body.style.overflow = "hidden"; // Disable scroll
 }
 
@@ -500,7 +513,10 @@ function changeSlide(step) {
     if (currentIndex < 0) currentIndex = currentImages.length - 1;
     if (currentIndex >= currentImages.length) currentIndex = 0;
 
-    document.getElementById("lightbox-img").src = currentImages[currentIndex].src;
+    currentZoom = 1; // รีเซ็ตค่าซูมเมื่อเปลี่ยนรูป
+    const img = document.getElementById("lightbox-img");
+    img.src = currentImages[currentIndex].src;
+    img.style.transform = "scale(1)";
 }
 
 // Close lightbox on outside click

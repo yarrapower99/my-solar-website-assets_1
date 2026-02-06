@@ -587,16 +587,20 @@ h3 {
 /* Product Gallery */
 .product-gallery {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+    justify-content: center;
 }
 
 .product-gallery img {
     width: 100%;
-    height: 280px;
+    height: 320px;
     object-fit: contain;
     border-radius: 16px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+    background: #ffffff;
+    padding: 20px;
+    box-sizing: border-box;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -1345,7 +1349,7 @@ h3 {
     max-height: 80vh;
     object-fit: contain;
     animation: zoomIn 0.3s;
-    transition: opacity 0.3s ease;
+    transition: transform 0.2s ease, opacity 0.3s ease;
 }
 
 @keyframes zoomIn {
@@ -1405,6 +1409,28 @@ h3 {
 .prev:hover,
 .next:hover {
     background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Zoom Controls */
+.zoom-controls {
+    position: absolute;
+    top: 20px;
+    right: 90px; /* อยู่ทางซ้ายของปุ่มปิด */
+    display: flex;
+    gap: 15px;
+    z-index: 2001;
+}
+
+.zoom-btn {
+    color: #f1f1f1;
+    font-size: 28px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.zoom-btn:hover {
+    color: #10b981;
+    transform: scale(1.2);
 }
 
 /* Extra Small Mobile (< 576px) */
@@ -1851,14 +1877,19 @@ h3 {
 }
 
 @media (max-width: 480px) {
-    #product-gallery {
+    .product-gallery {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (max-width: 768px) {
-    #product-gallery {
+    .product-gallery {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .product-gallery img {
+        height: 200px;
+        padding: 10px;
     }
 }
 
