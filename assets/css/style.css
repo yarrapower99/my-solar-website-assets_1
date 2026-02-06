@@ -273,7 +273,7 @@ h3 {
 }
 
 .hero-content img {
-    transition: transform 0.3s ease;
+    /* transition: transform 0.3s ease; */
 }
 
 .hero-content img:hover {
