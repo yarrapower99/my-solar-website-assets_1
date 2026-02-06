@@ -389,6 +389,40 @@ if (productContainer) {
     });
 }
 
+// Generate Longi Images
+const longiContainer = document.getElementById('longi-gallery');
+if (longiContainer) {
+    fetchGitHubImages("assets/longi", longiContainer, (images, container) => {
+        const fragment = document.createDocumentFragment();
+        images.forEach(file => {
+            const img = document.createElement('img');
+            img.src = file.download_url;
+            img.alt = file.name;
+            img.loading = "lazy";
+            observer.observe(img);
+            fragment.appendChild(img);
+        });
+        container.appendChild(fragment);
+    });
+}
+
+// Generate Trina Images
+const trinaContainer = document.getElementById('trina-gallery');
+if (trinaContainer) {
+    fetchGitHubImages("assets/trina", trinaContainer, (images, container) => {
+        const fragment = document.createDocumentFragment();
+        images.forEach(file => {
+            const img = document.createElement('img');
+            img.src = file.download_url;
+            img.alt = file.name;
+            img.loading = "lazy";
+            observer.observe(img);
+            fragment.appendChild(img);
+        });
+        container.appendChild(fragment);
+    });
+}
+
 // Hamburger Menu Toggle
 function toggleMenu() {
     const navItems = document.querySelector('.nav-items');
