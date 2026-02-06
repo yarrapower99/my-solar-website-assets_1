@@ -1,17 +1,26 @@
-// Helper function to fetch images from GitHub
-function fetchGitHubImages(path, container, processFn) {
-    const repoOwner = "yarrapower99";
-    const repoName = "my-solar-website-assets_1";
-    const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${path}?per_page=100`;
+const localImages = {
+    "assets/profile": ["LINE_ALBUM_KMCH 172.2kW_260128_253.jpg"],
+    "assets/logo_use": ["1.sungrow.jpeg", "2.longi.jpeg", "3.trina.png", "4.phelpsdodge.jpeg", "5.Carrier.png", "6.byd.png", "7.solis.jpg"],
+    "assets/portfolio_sup": ["3DC06DF4-D143-4A15-B02B-A6EB13D126A0-768x768.jpeg", "74EBB765-FFAF-4AF7-A194-E650FBB9B551-768x768.jpeg", "IMG_1154-768x768.jpeg", "K.Yo_-3-768x768.png", "K.Yo_.png-768x768.jpeg", "PV-Panel-6-768x768.png"],
+    "assets/Partners": ["K.Yo_-1-768x679.jpeg", "K.Yo_-2-768x690.jpeg", "K.Yo_-2-768x768.png", "PV-Panel-7-768x768.png", "PV-Panel-8-768x768.png", "PV-Panel.png-1-768x671.jpeg", "PV-Panel.png-2-768x687.jpeg"],
+    "assets/products": ["1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png"],
+    "assets/longi": ["9.2.jpeg", "9.3.jpeg"],
+    "assets/trina": ["DT-M-0042_NEG21C.20_EN_2025_A_page-0001.jpg", "DT-M-0045_Datasheet_Vertex_NEG19RC.20_EN_2025_B_page-0001.jpg"],
+    "assets/portfolio/home": ["10.jpeg", "12.jpeg", "15.png", "18.jpeg", "19.jpeg", "2.jpeg", "22.png", "3.jpeg", "31.jpeg", "32.jpeg", "33.jpeg", "34.jpeg", "35.jpeg", "42.jpg", "43.jpg", "44.jpg", "45.jpg", "46.jpg", "47.jpg", "48.jpg", "49.jpg", "5.jpeg", "7.jpeg", "8.jpeg"],
+    "assets/portfolio/factory": ["1.jpg", "11.jpeg", "13.jpeg", "14.jpeg", "16.png", "17.jpeg", "20.jpeg", "21.jpeg", "23.jpeg", "24.png", "25.png", "26.png", "27.jpeg", "28.jpeg", "29.jpeg", "30.jpeg", "36.jpeg", "37.jpeg", "38.jpeg", "39.jpeg", "4.jpeg", "40.jpg", "41.jpg", "6.jpeg", "9.jpeg"]
+};
 
-    fetch(apiUrl)
-        .then(res => res.json())
-        .then(data => {
-            if (!Array.isArray(data)) return;
-            const images = data.filter(item => item.name.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i));
-            processFn(images, container);
-        })
-        .catch(err => console.error(`Error loading images from ${path}:`, err));
+// Helper function to load local images
+function loadLocalImages(path, container, processFn) {
+    if (localImages[path]) {
+        const images = localImages[path].map(name => ({
+            name: name,
+            download_url: `${path}/${name}`
+        }));
+        processFn(images, container);
+    } else {
+        console.error(`Local images not found for path: ${path}`);
+    }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -19,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const sliderContainer = document.querySelector('.hero-slider');
     if (sliderContainer) {
         const heroContent = document.querySelector('.hero-content');
-        fetchGitHubImages("assets/profile", sliderContainer, (images, container) => {
+        loadLocalImages("assets/profile", sliderContainer, (images, container) => {
             images.forEach((file, index) => {
                 const slide = document.createElement('div');
                 slide.classList.add('slide');
@@ -43,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Partners Logos
     const logosContainer = document.getElementById('partners-logos');
     if (logosContainer) {
-        fetchGitHubImages("assets/logo_use", logosContainer, (images, container) => {
+        loadLocalImages("assets/logo_use", logosContainer, (images, container) => {
             const fragment = document.createDocumentFragment();
             [...images, ...images].forEach(file => {
                 const img = document.createElement("img");
@@ -93,29 +102,16 @@ document.addEventListener("DOMContentLoaded", () => {
 const gallery = document.getElementById('portfolio-sup-gallery');
 
 if (gallery) {
-    const repoOwner = "yarrapower99";
-    const repoName = "my-solar-website-assets_1";
-    const path = "assets/portfolio_sup";
-
-    const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${path}?per_page=100`;
-
-    fetch(apiUrl)
-        .then(res => res.json())
-        .then(data => {
-            if (!Array.isArray(data)) return;
-
-            data
-                .filter(item => item.name.match(/\.(jpg|jpeg|png|gif|webp)$/i))
-                .forEach(file => {
-                    const img = document.createElement('img');
-                    img.src = file.download_url;
-                    img.alt = file.name;
-                    img.loading = "lazy";
-                    gallery.appendChild(img);
-                });
-            bindGalleryLightbox('portfolio-sup-gallery');
-        })
-        .catch(err => console.error('Portfolio_sup load error:', err));
+    loadLocalImages("assets/portfolio_sup", gallery, (images, container) => {
+        images.forEach(file => {
+            const img = document.createElement('img');
+            img.src = file.download_url;
+            img.alt = file.name;
+            img.loading = "lazy";
+            gallery.appendChild(img);
+        });
+        bindGalleryLightbox('portfolio-sup-gallery');
+    });
 }
 
 // Partners Gallery
@@ -123,34 +119,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const partnersGallery = document.getElementById('partners-gallery');
     if (!partnersGallery) return;
 
-    const repoOwner = "yarrapower99";
-    const repoName = "my-solar-website-assets_1";
-    const path = "assets/Partners";
+    loadLocalImages("assets/Partners", partnersGallery, (images, container) => {
+        const fragment = document.createDocumentFragment();
 
-    const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${path}?per_page=100`;
+        images.forEach(file => {
+            const img = document.createElement('img');
+            img.src = file.download_url;
+            img.alt = file.name.replace(/\.[^/.]+$/, '');
+            img.loading = "lazy";
 
-    fetch(apiUrl)
-        .then(res => res.json())
-        .then(data => {
-            if (!Array.isArray(data)) return;
+            fragment.appendChild(img);
+        });
 
-            const fragment = document.createDocumentFragment();
-
-            data
-                .filter(item => item.name.match(/\.(png|jpg|jpeg|webp|svg)$/i))
-                .forEach(file => {
-                    const img = document.createElement('img');
-                    img.src = file.download_url;
-                    img.alt = file.name.replace(/\.[^/.]+$/, '');
-                    img.loading = "lazy";
-
-                    fragment.appendChild(img);
-                });
-
-            partnersGallery.appendChild(fragment);
-            bindGalleryLightbox('partners-gallery');
-        })
-        .catch(err => console.error('Partners load error:', err));
+        partnersGallery.appendChild(fragment);
+        bindGalleryLightbox('partners-gallery');
+    });
 });
 
 
@@ -210,95 +193,78 @@ const observer = new IntersectionObserver((entries) => {
 const portfolioContainer = document.getElementById('portfolio-gallery');
 
 if (portfolioContainer) {
-    // ใช้ GitHub API เพื่อดึงรายชื่อไฟล์ทั้งหมดในโฟลเดอร์ portfolio
-    // วิธีนี้จะทำให้เมื่อเพิ่มรูปใหม่ใน GitHub รูปจะแสดงบนเว็บอัตโนมัติโดยไม่ต้องแก้โค้ด
-    const repoOwner = "yarrapower99";
-    const repoName = "my-solar-website-assets_1";
-
-    // กำหนดโฟลเดอร์และหมวดหมู่ (ต้องตรงกับชื่อโฟลเดอร์ใน GitHub)
+    // Use local images instead of GitHub API
     const categories = [
         { path: "assets/portfolio/home", id: "home" },
         { path: "assets/portfolio/factory", id: "factory" }
     ];
 
-    // สร้าง Promise เพื่อดึงข้อมูลจากทุกโฟลเดอร์พร้อมกัน
-    const fetchPromises = categories.map(cat => {
-        // ใช้ encodeURI เพื่อรองรับภาษาไทยและเว้นวรรคใน URL
-        const apiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${cat.path}`;
-        return fetch(encodeURI(apiUrl))
-            .then(response => {
-                if (!response.ok) return []; // ถ้าหาโฟลเดอร์ไม่เจอ ให้ข้ามไป
-                return response.json();
-            })
-            .then(data => {
-                if (!Array.isArray(data)) return [];
-                // กรองเฉพาะไฟล์รูปภาพ และเพิ่ม property category
-                return data
-                    .filter(item => item.name.match(/\.(jpg|jpeg|png|gif)$/i))
-                    .map(item => ({ ...item, category: cat.id }));
-            });
+    let allImages = [];
+
+    categories.forEach(cat => {
+        if (localImages[cat.path]) {
+            const imgs = localImages[cat.path].map(name => ({
+                name: name,
+                download_url: `${cat.path}/${name}`,
+                category: cat.id
+            }));
+            allImages = allImages.concat(imgs);
+        }
     });
 
-    Promise.all(fetchPromises)
-        .then(results => {
-            // รวมรูปภาพจากทุกโฟลเดอร์เข้าด้วยกัน
-            const allImages = results.flat();
+    // Sort by number
+    allImages.sort((a, b) => {
+        const numA = parseInt(a.name.match(/\d+/)) || 0;
+        const numB = parseInt(b.name.match(/\d+/)) || 0;
+        return numA - numB;
+    });
 
-            // เรียงลำดับตามตัวเลขในชื่อไฟล์ (ถ้ามี)
-            allImages.sort((a, b) => {
-                const numA = parseInt(a.name.match(/\d+/)) || 0;
-                const numB = parseInt(b.name.match(/\d+/)) || 0;
-                return numA - numB;
+    let displayedCount = 0;
+    const itemsPerLoad = 6;
+    const initialLoad = 12;
+
+    function renderImages(count) {
+        const fragment = document.createDocumentFragment();
+        const imagesToRender = allImages.slice(displayedCount, displayedCount + count);
+
+        imagesToRender.forEach(file => {
+            const img = document.createElement('img');
+            img.src = file.download_url;
+            img.alt = file.name;
+            img.loading = "lazy";
+            img.dataset.category = file.category;
+            img.className = 'gallery-item';
+
+            observer.observe(img);
+            fragment.appendChild(img);
+        });
+
+        portfolioContainer.appendChild(fragment);
+        displayedCount += count;
+
+        // Update load more button
+        updateLoadMoreButton();
+    }
+
+    function updateLoadMoreButton() {
+        let loadMoreBtn = document.getElementById('load-more-btn');
+
+        if (!loadMoreBtn && displayedCount < allImages.length) {
+            loadMoreBtn = document.createElement('button');
+            loadMoreBtn.id = 'load-more-btn';
+            loadMoreBtn.textContent = 'โหลดรูปเพิ่มเติม';
+            loadMoreBtn.className = 'load-more-btn';
+            loadMoreBtn.addEventListener('click', () => {
+                renderImages(itemsPerLoad);
             });
+            portfolioContainer.parentNode.insertBefore(loadMoreBtn, portfolioContainer.nextSibling);
+        } else if (loadMoreBtn && displayedCount >= allImages.length) {
+            loadMoreBtn.style.display = 'none';
+        }
+    }
 
-            let displayedCount = 0;
-            const itemsPerLoad = 6;
-            const initialLoad = 12;
-
-            function renderImages(count) {
-                const fragment = document.createDocumentFragment();
-                const imagesToRender = allImages.slice(displayedCount, displayedCount + count);
-
-                imagesToRender.forEach(file => {
-                    const img = document.createElement('img');
-                    img.src = file.download_url;
-                    img.alt = file.name;
-                    img.loading = "lazy";
-                    img.dataset.category = file.category;
-                    img.className = 'gallery-item';
-
-                    observer.observe(img);
-                    fragment.appendChild(img);
-                });
-
-                portfolioContainer.appendChild(fragment);
-                displayedCount += count;
-
-                // อัปเดตสถานะปุ่ม Load More
-                updateLoadMoreButton();
-            }
-
-            function updateLoadMoreButton() {
-                let loadMoreBtn = document.getElementById('load-more-btn');
-
-                if (!loadMoreBtn && displayedCount < allImages.length) {
-                    loadMoreBtn = document.createElement('button');
-                    loadMoreBtn.id = 'load-more-btn';
-                    loadMoreBtn.textContent = 'โหลดรูปเพิ่มเติม';
-                    loadMoreBtn.className = 'load-more-btn';
-                    loadMoreBtn.addEventListener('click', () => {
-                        renderImages(itemsPerLoad);
-                    });
-                    portfolioContainer.parentNode.insertBefore(loadMoreBtn, portfolioContainer.nextSibling);
-                } else if (loadMoreBtn && displayedCount >= allImages.length) {
-                    loadMoreBtn.style.display = 'none';
-                }
-            }
-
-            // แสดง 12 รูปแรก
-            renderImages(initialLoad);
-        })
-        .catch(error => console.error('Error loading portfolio images:', error));
+    // Show initial 12 images
+    renderImages(initialLoad);
 
     // Filter Logic
     const filterBtns = document.querySelectorAll('.filter-btn');
@@ -328,7 +294,7 @@ if (portfolioContainer) {
 // Generate Product Images
 const productContainer = document.getElementById('product-gallery');
 if (productContainer) {
-    fetchGitHubImages("assets/products", productContainer, (images, container) => {
+    loadLocalImages("assets/products", productContainer, (images, container) => {
         const fragment = document.createDocumentFragment();
         images.forEach(file => {
             const img = document.createElement('img');
@@ -346,7 +312,7 @@ if (productContainer) {
 // Generate Longi Images
 const longiContainer = document.getElementById('longi-gallery');
 if (longiContainer) {
-    fetchGitHubImages("assets/longi", longiContainer, (images, container) => {
+    loadLocalImages("assets/longi", longiContainer, (images, container) => {
         const fragment = document.createDocumentFragment();
         images.forEach(file => {
             const img = document.createElement('img');
@@ -364,7 +330,7 @@ if (longiContainer) {
 // Generate Trina Images
 const trinaContainer = document.getElementById('trina-gallery');
 if (trinaContainer) {
-    fetchGitHubImages("assets/trina", trinaContainer, (images, container) => {
+    loadLocalImages("assets/trina", trinaContainer, (images, container) => {
         const fragment = document.createDocumentFragment();
         images.forEach(file => {
             const img = document.createElement('img');
@@ -442,12 +408,12 @@ function updateLanguage() {
             if (original) el.placeholder = original;
         }
     });
-    
+
     const langBtn = document.getElementById('lang-toggle');
-    langBtn.innerHTML = currentLang === 'th' 
-        ? '<img src="https://flagcdn.com/w40/th.png" alt="TH"> TH' 
+    langBtn.innerHTML = currentLang === 'th'
+        ? '<img src="https://flagcdn.com/w40/th.png" alt="TH"> TH'
         : '<img src="https://flagcdn.com/w40/gb.png" alt="EN"> EN';
-        
+
     localStorage.setItem('lang', currentLang);
 }
 
@@ -486,7 +452,7 @@ function zoomImage(step) {
     currentZoom += step;
     if (currentZoom < 0.5) currentZoom = 0.5; // จำกัดซูมออกต่ำสุด
     if (currentZoom > 3) currentZoom = 3;     // จำกัดซูมเข้าสูงสุด
-    
+
     const img = document.getElementById("lightbox-img");
     if (img) img.style.transform = `scale(${currentZoom})`;
 }
