@@ -113,7 +113,7 @@ if (gallery) {
                     img.loading = "lazy";
                     gallery.appendChild(img);
                 });
- 
+            bindGalleryLightbox('portfolio-sup-gallery');
         })
         .catch(err => console.error('Portfolio_sup load error:', err));
 }
@@ -148,6 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
             partnersGallery.appendChild(fragment);
+            bindGalleryLightbox('partners-gallery');
         })
         .catch(err => console.error('Partners load error:', err));
 });
@@ -320,56 +321,8 @@ if (portfolioContainer) {
         });
     });
 
-    // Lightbox Logic
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightbox-img');
-    let currentLightboxIndex = 0;
-
-    // Open Lightbox
-    portfolioContainer.addEventListener('click', function (e) {
-        if (e.target.tagName === 'IMG') {
-            const allVisibleImages = Array.from(document.querySelectorAll('#portfolio-gallery img:not([style*="display: none"])'));
-            currentLightboxIndex = allVisibleImages.indexOf(e.target);
-            openLightbox();
-            showLightboxSlide(currentLightboxIndex);
-        }
-    });
-
-    function openLightbox() {
-        lightbox.style.display = "block";
-        document.body.style.overflow = "hidden"; // Disable scroll
-    }
-
-    window.closeLightbox = function () {
-        lightbox.style.display = "none";
-        document.body.style.overflow = "auto"; // Enable scroll
-        isMenuOpen = false; // Update menu state
-    }
-
-    window.changeSlide = function (n) {
-        const allVisibleImages = Array.from(document.querySelectorAll('#portfolio-gallery img:not([style*="display: none"])'));
-        currentLightboxIndex += n;
-        if (currentLightboxIndex >= allVisibleImages.length) currentLightboxIndex = 0;
-        if (currentLightboxIndex < 0) currentLightboxIndex = allVisibleImages.length - 1;
-
-        // Fade effect
-        lightboxImg.style.opacity = 0;
-        setTimeout(() => {
-            lightboxImg.src = allVisibleImages[currentLightboxIndex].src;
-            lightboxImg.style.opacity = 1;
-        }, 200);
-    }
-
-    function showLightboxSlide(index) {
-        const allVisibleImages = Array.from(document.querySelectorAll('#portfolio-gallery img:not([style*="display: none"])'));
-        lightboxImg.src = allVisibleImages[index].src;
-        lightboxImg.style.opacity = 1;
-    }
-
-    // Close on outside click
-    lightbox.addEventListener('click', (e) => {
-        if (e.target === lightbox) closeLightbox();
-    });
+    // Use global lightbox binding
+    bindGalleryLightbox('portfolio-gallery');
 }
 
 // Generate Product Images
@@ -386,6 +339,7 @@ if (productContainer) {
             fragment.appendChild(img);
         });
         container.appendChild(fragment);
+        bindGalleryLightbox('product-gallery');
     });
 }
 
@@ -403,6 +357,7 @@ if (longiContainer) {
             fragment.appendChild(img);
         });
         container.appendChild(fragment);
+        bindGalleryLightbox('longi-gallery');
     });
 }
 
@@ -420,6 +375,7 @@ if (trinaContainer) {
             fragment.appendChild(img);
         });
         container.appendChild(fragment);
+        bindGalleryLightbox('trina-gallery');
     });
 }
 
@@ -530,10 +486,12 @@ function openLightbox(images, index) {
     currentIndex = index;
     document.getElementById("lightbox").style.display = "block";
     document.getElementById("lightbox-img").src = currentImages[currentIndex].src;
+    document.body.style.overflow = "hidden"; // Disable scroll
 }
 
 function closeLightbox() {
     document.getElementById("lightbox").style.display = "none";
+    document.body.style.overflow = "auto"; // Enable scroll
 }
 
 function changeSlide(step) {
@@ -544,6 +502,12 @@ function changeSlide(step) {
 
     document.getElementById("lightbox-img").src = currentImages[currentIndex].src;
 }
+
+// Close lightbox on outside click
+document.getElementById("lightbox").addEventListener('click', (e) => {
+    if (e.target.id === "lightbox") closeLightbox();
+});
+
 function bindGalleryLightbox(galleryId) {
     const gallery = document.getElementById(galleryId);
     if (!gallery) return;
@@ -551,10 +515,13 @@ function bindGalleryLightbox(galleryId) {
     gallery.addEventListener("click", (e) => {
         if (e.target.tagName !== "IMG") return;
 
-        const images = Array.from(gallery.querySelectorAll("img"));
+        // Select only visible images (handles filtering in portfolio)
+        const images = Array.from(gallery.querySelectorAll("img")).filter(img => img.offsetParent !== null);
         const index = images.indexOf(e.target);
 
-        openLightbox(images, index);
+        if (index !== -1) {
+            openLightbox(images, index);
+        }
     });
 }
 

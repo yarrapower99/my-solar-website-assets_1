@@ -1814,9 +1814,15 @@ h3 {
 /* Tablet */
 @media (max-width: 1200px) {
 
+    #partners-section,
+    #portfolio-sup-section {
+        padding: 60px 50px; /* ลดขอบซ้ายขวาจาก 200px เหลือ 50px ให้เนื้อหากว้างขึ้น */
+    }
+
     #partners-gallery,
     #portfolio-sup-gallery {
         grid-template-columns: repeat(3, 1fr);
+        gap: 20px; /* ลดช่องว่างระหว่างรูปเล็กน้อยเพื่อให้รูปดูใหญ่ขึ้น */
     }
 }
 
