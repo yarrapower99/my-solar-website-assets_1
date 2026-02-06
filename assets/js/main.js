@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const firstItem = container.firstElementChild;
                 if (!firstItem) return;
                 const itemWidth = firstItem.offsetWidth;
-                const gap = 60;
+                const gap = parseInt(window.getComputedStyle(container).gap) || 0;
                 container.style.transition = "transform 0.5s ease-in-out";
                 container.style.transform = `translateX(-${itemWidth + gap}px)`;
                 container.addEventListener('transitionend', () => {
@@ -391,19 +391,19 @@ if (productContainer) {
 
 // Hamburger Menu Toggle
 function toggleMenu() {
-    const menu = document.querySelector('.navbar .menu');
+    const navItems = document.querySelector('.nav-items');
     const hamburger = document.querySelector('.hamburger');
-    menu.classList.toggle('active');
+    navItems.classList.toggle('active');
     hamburger.classList.toggle('active');
-    isMenuOpen = menu.classList.contains('active'); // Update menu state
+    isMenuOpen = navItems.classList.contains('active'); // Update menu state
 }
 
 // Close menu when clicking a link
-document.querySelectorAll('.navbar .menu a').forEach(link => {
+document.querySelectorAll('.nav-items a').forEach(link => {
     link.addEventListener('click', () => {
-        const menu = document.querySelector('.navbar .menu');
-        if (menu.classList.contains('active')) {
-            document.querySelector('.navbar .menu').classList.remove('active');
+        const navItems = document.querySelector('.nav-items');
+        if (navItems.classList.contains('active')) {
+            navItems.classList.remove('active');
             document.querySelector('.hamburger').classList.remove('active');
             isMenuOpen = false; // Update menu state
         }
@@ -452,7 +452,12 @@ function updateLanguage() {
             if (original) el.placeholder = original;
         }
     });
-    document.getElementById('lang-toggle').textContent = currentLang === 'th' ? '🇹🇭 TH' : '🇺🇸 EN';
+    
+    const langBtn = document.getElementById('lang-toggle');
+    langBtn.innerHTML = currentLang === 'th' 
+        ? '<img src="https://flagcdn.com/w40/th.png" alt="TH"> TH' 
+        : '<img src="https://flagcdn.com/w40/gb.png" alt="EN"> EN';
+        
     localStorage.setItem('lang', currentLang);
 }
 
@@ -531,4 +536,3 @@ function loadPartnersGallery(images) {
     });
 
 }
-
