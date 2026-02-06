@@ -277,6 +277,19 @@ h3 {
     filter:
         drop-shadow(0 0 1px rgba(255, 255, 255, 0.6)) drop-shadow(0 0 4px rgba(255, 255, 255, 0.4)) drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
 }
+.img {
+  filter:
+    drop-shadow(0 0 2px rgba(255,255,255,0.8))
+    drop-shadow(0 0 6px rgba(255,255,255,0.6))
+    drop-shadow(0 6px 15px rgba(0,0,0,0.7));
+}
+
+@media (max-width: 768px) {
+  .img {
+    filter:
+      drop-shadow(0 0 1px rgba(255,255,255,0.6));
+  }
+}
 
 .hero-content img:hover {
     transform: scale(1.05);
