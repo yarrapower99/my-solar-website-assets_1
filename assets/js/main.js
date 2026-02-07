@@ -519,3 +519,21 @@ function loadPartnersGallery(images) {
     });
 
 }
+
+// Clear Cache and Unregister Service Worker
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(function (registrations) {
+        for (let registration of registrations) {
+            registration.unregister();
+        }
+    });
+}
+
+if ('caches' in window) {
+    caches.keys().then((names) => {
+        names.forEach((name) => {
+            caches.delete(name);
+        });
+    });
+    console.log("All caches cleared.");
+}
