@@ -455,6 +455,11 @@ function zoomImage(step) {
 
     const img = document.getElementById("lightbox-img");
     if (img) img.style.transform = `scale(${currentZoom})`;
+
+    const zoomLevelText = document.getElementById("zoom-level");
+    if (zoomLevelText) {
+        zoomLevelText.innerText = `${Math.round(currentZoom * 100)}%`;
+    }
 }
 
 function openLightbox(images, index) {
@@ -465,6 +470,11 @@ function openLightbox(images, index) {
     const img = document.getElementById("lightbox-img");
     img.src = currentImages[currentIndex].src;
     img.style.transform = "scale(1)"; // รีเซ็ตขนาดภาพ
+
+    // Reset Zoom Text
+    const zoomLevelText = document.getElementById("zoom-level");
+    if (zoomLevelText) zoomLevelText.innerText = "100%";
+
     document.body.style.overflow = "hidden"; // Disable scroll
 }
 
@@ -483,6 +493,10 @@ function changeSlide(step) {
     const img = document.getElementById("lightbox-img");
     img.src = currentImages[currentIndex].src;
     img.style.transform = "scale(1)";
+
+    // Reset Zoom Text
+    const zoomLevelText = document.getElementById("zoom-level");
+    if (zoomLevelText) zoomLevelText.innerText = "100%";
 }
 
 // Close lightbox on outside click
