@@ -1230,29 +1230,43 @@ h3 {
     }
 }
 
-/* Back to Top Button */
-#backToTop {
+/* Floating Buttons - Commonalities */
+#backToTop,
+.line-float-btn,
+.fb-float-btn {
     position: fixed;
-    bottom: 170px;
-    /* ขยับขึ้นหลบปุ่ม Line & FB */
-    right: 30px;
-    background: linear-gradient(90deg, #10b981 0%, #059669 100%);
-    color: white;
-    width: 50px;
-    height: 50px;
+    right: 20px;
+    z-index: 9999;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 22px;
-    /* Adjusted for icon */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
+    border: none;
     cursor: pointer;
-    box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+    padding: 0;
+}
+
+#backToTop:hover,
+.line-float-btn:hover,
+.fb-float-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Back to Top Button */
+#backToTop {
+    bottom: 170px;
+    /* Above FB (95) + 60 + 15 */
+    background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+    color: white;
+    font-size: 24px;
     opacity: 0;
     visibility: hidden;
-    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-    z-index: 999;
-    border: none;
     transform: translateY(30px);
 }
 
@@ -1262,97 +1276,75 @@ h3 {
     transform: translateY(0);
 }
 
-#backToTop:hover {
-    transform: translateY(-5px) scale(1.05);
-    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.5);
+#backToTop.show:hover {
+    transform: scale(1.1) translateY(0);
 }
 
-/* Line Floating Button */
+/* Line Button */
 .line-float-btn {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    background: #06C755;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
-    transition: transform 0.3s ease;
-    animation: wiggle 3s infinite ease-in-out;
+    bottom: 20px;
+    background-color: #06C755;
     text-decoration: none;
 }
 
-.line-float-btn:hover {
-    animation: none;
-    /* หยุดขยับเมื่อเอาเมาส์ชี้ */
-    transform: scale(1.1);
-}
-
-.line-float-btn .lni {
-    font-size: 28px;
+.line-float-btn i {
+    font-size: 32px;
     color: white;
 }
 
-/* Facebook Floating Button */
+/* Facebook Button */
 .fb-float-btn {
-    position: fixed;
-    bottom: 100px;
-    right: 30px;
-    background: #1877F2;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
-    transition: transform 0.3s ease;
-    animation: wiggle 3s infinite ease-in-out;
+    bottom: 95px;
+    /* Above Line (20) + 60 + 15 */
+    background: transparent;
+    /* Remove background to show full logo circle */
     text-decoration: none;
 }
 
-.fb-float-btn:hover {
-    animation: none;
-    transform: scale(1.1);
+.fb-float-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
 }
 
-.fb-float-btn .lni {
-    font-size: 28px;
-    color: white;
+/* Responsive Scaling for Floating Buttons */
+@media (max-width: 768px) {
+
+    #backToTop,
+    .line-float-btn,
+    .fb-float-btn {
+        width: 50px;
+        height: 50px;
+        right: 15px;
+    }
+
+    .line-float-btn {
+        bottom: 15px;
+    }
+
+    .fb-float-btn {
+        bottom: 80px;
+        /* 15 + 50 + 15 */
+    }
+
+    #backToTop {
+        bottom: 145px;
+        /* 80 + 50 + 15 */
+        font-size: 20px;
+    }
+
+    .line-float-btn i {
+        font-size: 32px;
+    }
+
+    .fb-float-btn i {
+        display: none;
+        /* Hide if legacy i tag exists */
+    }
 }
 
-@keyframes wiggle {
-
-    0%,
-    100% {
-        transform: rotate(0deg) scale(1);
-    }
-
-    5% {
-        transform: rotate(-12deg) scale(1.1);
-    }
-
-    10% {
-        transform: rotate(12deg) scale(1.1);
-    }
-
-    15% {
-        transform: rotate(-12deg) scale(1.1);
-    }
-
-    20% {
-        transform: rotate(12deg) scale(1.1);
-    }
-
-    25% {
-        transform: rotate(0deg) scale(1);
-    }
-}
+/* Redundant floating button styles removed - consolidated above */
 
 .social-links {
     display: flex;
@@ -2055,72 +2047,11 @@ h3 {
     background: transparent;
 }
 
-/* Floating Buttons */
-.line-float-btn,
-.fb-float-btn {
-    position: fixed;
-    right: 20px;
-    z-index: 9999;
-    /* Ensure on top */
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    background: transparent;
-    /* For SVG icons */
-}
-
-/* Line Button styling */
-.line-float-btn {
-    bottom: 20px;
-    background-color: #06C755;
-    overflow: hidden;
-}
-
-.line-float-btn i {
-    font-size: 32px;
-    color: white;
-}
-
-/* Facebook Button styling */
-.fb-float-btn {
-    bottom: 100px;
-    /* Above Line button */
-    border: 2px solid white;
-    background: white;
-    overflow: hidden;
-}
-
-.line-float-btn:hover,
-.fb-float-btn:hover {
-    transform: scale(1.1);
-}
+/* Floating Buttons Styles consolidated above */
 
 /* Mobile Adjustments */
 @media (max-width: 768px) {
-
-    .line-float-btn,
-    .fb-float-btn {
-        width: 50px;
-        height: 50px;
-        right: 15px;
-    }
-
-    .line-float-btn {
-        bottom: 20px;
-    }
-
-    .fb-float-btn {
-        bottom: 80px;
-    }
-
-    .line-float-btn i {
-        font-size: 26px;
-    }
+    /* Floating buttons handled in consolidated media query above */
 }
 
 /* Footer Typography Refinement */
