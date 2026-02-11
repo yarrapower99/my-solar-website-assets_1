@@ -321,6 +321,27 @@
         <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" alt="Facebook">
     </a>
 
+    <!-- Product Modal -->
+    <div id="product-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeProductModal()">&times;</span>
+            <div class="product-modal-body">
+                <div class="product-modal-image">
+                    <img id="modal-product-img" src="" alt="Product Image">
+                </div>
+                <div class="product-modal-info">
+                    <h2 id="modal-product-name">Product Name</h2>
+                    <p id="modal-product-desc" data-th="รายละเอียดสินค้าและข้อมูลทางเทคนิค"
+                        data-en="Product details and technical specifications.">Product details and technical
+                        specifications.</p>
+                    <div id="pdf-download-container">
+                        <!-- PDF button will be injected here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Lightbox Modal -->
     <div id="lightbox" class="lightbox">
         <span class="close" onclick="closeLightbox()">&times;</span>

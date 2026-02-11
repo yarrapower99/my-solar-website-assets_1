@@ -3,12 +3,28 @@ const localImages = {
     "assets/logo_use": ["1.sungrow.jpeg", "2.longi.jpeg", "3.trina.png", "4.phelpsdodge.jpeg", "5.Carrier.png", "6.byd.png", "7.solis.jpg"],
     "assets/portfolio_sup": ["3DC06DF4-D143-4A15-B02B-A6EB13D126A0-768x768.jpeg", "74EBB765-FFAF-4AF7-A194-E650FBB9B551-768x768.jpeg", "IMG_1154-768x768.jpeg", "K.Yo_-3-768x768.png", "K.Yo_.png-768x768.jpeg", "PV-Panel-6-768x768.png"],
     "assets/Partners": ["K.Yo_-1-768x679.jpeg", "K.Yo_-2-768x690.jpeg", "K.Yo_-2-768x768.png", "PV-Panel-7-768x768.png", "PV-Panel-8-768x768.png", "PV-Panel.png-1-768x671.jpeg", "PV-Panel.png-2-768x687.jpeg"],
-    "assets/products": ["1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png"],
-    "assets/longi": ["9.2.jpeg", "9.3.jpeg"],
-    "assets/trina": ["DT-M-0042_NEG21C.20_EN_2025_A_page-0001.jpg", "DT-M-0045_Datasheet_Vertex_NEG19RC.20_EN_2025_B_page-0001.jpg"],
+    "assets/products": [
+        "SG5.0RS.png",
+        "SG10RT-P2.png",
+        "SBS050.png",
+        "SP600S.png",
+        "ST255CS-2H.png",
+        "ST6680UX-2H.png",
+        "S450S-L S1000S-L S2000S-L.png",
+        "SR20D-M.png"
+    ],
+    "assets/longi": ["Hi-MO X10.jpeg", "Hi-MO 7.jpeg"],
+    "assets/trina": ["TSM-NEG19RC.20 610-635W.jpg", "TSM-NEG21C.0 700-725W.jpg"],
     "assets/portfolio/home": ["10.jpeg", "12.jpeg", "15.png", "18.jpeg", "19.jpeg", "2.jpeg", "22.png", "3.jpeg", "31.jpeg", "32.jpeg", "33.jpeg", "34.jpeg", "35.jpeg", "42.jpg", "43.jpg", "44.jpg", "45.jpg", "46.jpg", "47.jpg", "48.jpg", "49.jpg", "5.jpeg", "7.jpeg", "8.jpeg"],
     "assets/portfolio/factory": ["1.jpg", "11.jpeg", "13.jpeg", "14.jpeg", "16.png", "17.jpeg", "20.jpeg", "21.jpeg", "23.jpeg", "24.png", "25.png", "26.png", "27.jpeg", "28.jpeg", "29.jpeg", "30.jpeg", "36.jpeg", "37.jpeg", "38.jpeg", "39.jpeg", "4.jpeg", "40.jpg", "41.jpg", "6.jpeg", "9.jpeg"]
 };
+
+// Available PDF datasheets (filenames without extension must match product name/filename)
+const localPDFs = [
+    "TSM-NEG19RC.20 610-635W.pdf",
+    "TSM-NEG21C.0 700-725W.pdf", "Hi-MO X10.pdf",
+    "Hi-MO 7.pdf"
+];
 
 // Helper function to load local images
 function loadLocalImages(path, container, processFn) {
@@ -291,18 +307,55 @@ if (portfolioContainer) {
     bindGalleryLightbox('portfolio-gallery');
 }
 
+// Helper function to find a matching PDF robustly
+function findMatchingPDF(imgSrc, productName) {
+    if (!localPDFs || localPDFs.length === 0) return null;
+
+    // Decode URL and get filename without extension
+    const decodedUrl = decodeURIComponent(imgSrc);
+    const filenameNoExt = decodedUrl.split('/').pop().replace(/\.[^/.]+$/, "").toLowerCase().trim().replace(/[_-]/g, ' ');
+    const productNameLower = productName.toLowerCase().trim().replace(/[_-]/g, ' ');
+
+    return localPDFs.find(pdf => {
+        const pdfLower = pdf.toLowerCase().replace(/\.[^/.]+$/, "").trim().replace(/[_-]/g, ' ');
+        return pdfLower === filenameNoExt ||
+            pdfLower === productNameLower ||
+            pdfLower.includes(productNameLower) ||
+            productNameLower.includes(pdfLower) ||
+            // Handle common model number matches (e.g. NEG19RC.20)
+            (productNameLower.match(/neg\d+[a-z.]+/i) && pdfLower.includes(productNameLower.match(/neg\d+[a-z.]+/i)[0]));
+    });
+}
+
+// Helper function to create product card
+function createProductCard(file) {
+    const productItem = document.createElement('div');
+    productItem.className = 'product-item';
+
+    const img = document.createElement('img');
+    img.src = file.download_url;
+    img.alt = file.name;
+    img.loading = "lazy";
+    observer.observe(img);
+
+    const name = document.createElement('div');
+    name.className = 'product-name';
+    const cleanName = file.name.split('.')[0].replace(/[_-]/g, ' ');
+    name.textContent = cleanName;
+
+    productItem.appendChild(img);
+    productItem.appendChild(name);
+
+    return productItem;
+}
+
 // Generate Product Images
 const productContainer = document.getElementById('product-gallery');
 if (productContainer) {
     loadLocalImages("assets/products", productContainer, (images, container) => {
         const fragment = document.createDocumentFragment();
         images.forEach(file => {
-            const img = document.createElement('img');
-            img.src = file.download_url;
-            img.alt = file.name;
-            img.loading = "lazy";
-            observer.observe(img);
-            fragment.appendChild(img);
+            fragment.appendChild(createProductCard(file));
         });
         container.appendChild(fragment);
         bindGalleryLightbox('product-gallery');
@@ -315,12 +368,7 @@ if (longiContainer) {
     loadLocalImages("assets/longi", longiContainer, (images, container) => {
         const fragment = document.createDocumentFragment();
         images.forEach(file => {
-            const img = document.createElement('img');
-            img.src = file.download_url;
-            img.alt = file.name;
-            img.loading = "lazy";
-            observer.observe(img);
-            fragment.appendChild(img);
+            fragment.appendChild(createProductCard(file));
         });
         container.appendChild(fragment);
         bindGalleryLightbox('longi-gallery');
@@ -333,12 +381,7 @@ if (trinaContainer) {
     loadLocalImages("assets/trina", trinaContainer, (images, container) => {
         const fragment = document.createDocumentFragment();
         images.forEach(file => {
-            const img = document.createElement('img');
-            img.src = file.download_url;
-            img.alt = file.name;
-            img.loading = "lazy";
-            observer.observe(img);
-            fragment.appendChild(img);
+            fragment.appendChild(createProductCard(file));
         });
         container.appendChild(fragment);
         bindGalleryLightbox('trina-gallery');
@@ -478,6 +521,37 @@ function openLightbox(images, index) {
     document.body.style.overflow = "hidden"; // Disable scroll
 }
 
+function openProductModal(imgSrc, productName) {
+    const modal = document.getElementById("product-modal");
+    const modalImg = document.getElementById("modal-product-img");
+    const modalName = document.getElementById("modal-product-name");
+    const pdfContainer = document.getElementById("pdf-download-container");
+
+    modalImg.src = imgSrc;
+    modalName.textContent = productName;
+    pdfContainer.innerHTML = '';
+
+    // Check for matching PDF using robust helper
+    const matchingPDF = findMatchingPDF(imgSrc, productName);
+
+    if (matchingPDF) {
+        const downloadBtn = document.createElement('a');
+        downloadBtn.href = `assets/pdf/${matchingPDF}`;
+        downloadBtn.className = 'btn-download';
+        downloadBtn.target = '_blank';
+        downloadBtn.innerHTML = '<i class="lni lni-download"></i> Download Datasheet (PDF)';
+        pdfContainer.appendChild(downloadBtn);
+    }
+
+    modal.style.display = "block";
+    document.body.style.overflow = "hidden";
+}
+
+function closeProductModal() {
+    document.getElementById("product-modal").style.display = "none";
+    document.body.style.overflow = "auto";
+}
+
 function closeLightbox() {
     document.getElementById("lightbox").style.display = "none";
     document.body.style.overflow = "auto"; // Enable scroll
@@ -511,12 +585,19 @@ function bindGalleryLightbox(galleryId) {
     gallery.addEventListener("click", (e) => {
         if (e.target.tagName !== "IMG") return;
 
-        // Select only visible images (handles filtering in portfolio)
-        const images = Array.from(gallery.querySelectorAll("img")).filter(img => img.offsetParent !== null);
+        // Select only visible images
+        const images = Array.from(gallery.querySelectorAll(".product-item img, img")).filter(img => img.offsetParent !== null);
         const index = images.indexOf(e.target);
 
         if (index !== -1) {
-            openLightbox(images, index);
+            // For product-gallery, open modal instead of lightbox
+            if (galleryId.includes('gallery') && !galleryId.includes('portfolio')) {
+                const productItem = e.target.closest('.product-item');
+                const name = productItem ? productItem.querySelector('.product-name').textContent : e.target.alt;
+                openProductModal(e.target.src, name);
+            } else {
+                openLightbox(images, index);
+            }
         }
     });
 }
