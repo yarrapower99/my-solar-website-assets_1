@@ -268,7 +268,10 @@ if (portfolioContainer) {
         if (!loadMoreBtn && displayedCount < allImages.length) {
             loadMoreBtn = document.createElement('button');
             loadMoreBtn.id = 'load-more-btn';
-            loadMoreBtn.textContent = 'โหลดรูปเพิ่มเติม';
+            loadMoreBtn.setAttribute('data-th', 'โหลดรูปเพิ่มเติม');
+            loadMoreBtn.setAttribute('data-en', 'Load More');
+            const lang = localStorage.getItem('lang') || 'th';
+            loadMoreBtn.textContent = lang === 'th' ? 'โหลดรูปเพิ่มเติม' : 'Load More';
             loadMoreBtn.className = 'load-more-btn';
             loadMoreBtn.addEventListener('click', () => {
                 renderImages(itemsPerLoad);
@@ -591,7 +594,7 @@ function bindGalleryLightbox(galleryId) {
 
         if (index !== -1) {
             // For product-gallery, open modal instead of lightbox
-            if (galleryId.includes('gallery') && !galleryId.includes('portfolio')) {
+            if (galleryId.includes('gallery') && !galleryId.includes('portfolio') && !galleryId.includes('partners')) {
                 const productItem = e.target.closest('.product-item');
                 const name = productItem ? productItem.querySelector('.product-name').textContent : e.target.alt;
                 openProductModal(e.target.src, name);
