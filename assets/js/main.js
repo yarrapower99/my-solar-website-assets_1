@@ -9,7 +9,7 @@ const localImages = {
         "SBS050.png",
         "SP600S.png",
         "ST255CS-2H.png",
-        "ST6680UX-2H.png",
+        "ST510CS-4H.png",
         "S450S-L S1000S-L S2000S-L.png",
         "SR20D-M.png"
     ],
@@ -21,9 +21,18 @@ const localImages = {
 
 // Available PDF datasheets (filenames without extension must match product name/filename)
 const localPDFs = [
+    "Hi-MO 7.pdf",
+    "Hi-MO X10.pdf",
+    "S450S-L S1000S-L S2000S-L.pdf",
+    "SBS050.pdf",
+    "SG10RT-P2.pdf",
+    "SG5.0RS.pdf",
+    "SP600S.pdf",
+    "SR20D-M.pdf",
+    "ST255CS-2H.pdf",
+    "ST510CS-4H.pdf",
     "TSM-NEG19RC.20 610-635W.pdf",
-    "TSM-NEG21C.0 700-725W.pdf", "Hi-MO X10.pdf",
-    "Hi-MO 7.pdf"
+    "TSM-NEG21C.0 700-725W.pdf"
 ];
 
 // Helper function to load local images
@@ -348,6 +357,16 @@ function createProductCard(file) {
 
     productItem.appendChild(img);
     productItem.appendChild(name);
+
+    // Add PDF indicator if a matching PDF exists
+    const matchingPDF = findMatchingPDF(file.download_url, cleanName);
+    if (matchingPDF) {
+        const pdfIndicator = document.createElement('div');
+        pdfIndicator.className = 'pdf-indicator';
+        pdfIndicator.innerHTML = '<i class="lni lni-download"></i>';
+        productItem.appendChild(pdfIndicator);
+        productItem.title = "Click to view datasheet";
+    }
 
     return productItem;
 }
