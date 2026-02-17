@@ -392,7 +392,7 @@ h3 {
 
 /* Section */
 .section {
-    padding: 70px 200px;
+    padding: 80px 10%;
     text-align: center;
 }
 
@@ -427,7 +427,7 @@ h3 {
 .feature-card {
     background: white;
     border-radius: 16px;
-    padding: 20px 100px;
+    padding: 40px 30px;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -465,7 +465,7 @@ h3 {
 .package-card {
     background: white;
     border-radius: 18px;
-    padding: 20px 100px;
+    padding: 40px 30px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     position: relative;
@@ -1132,38 +1132,50 @@ h3 {
     transform: scale(1.1);
 }
 
-/* ปรับขนาด Navbar สำหรับหน้าจอขนาดกลาง (Tablet แนวนอน / Laptop เล็ก) เพื่อป้องกันตัวหนังสือตกบรรทัด */
+/* Tablet & Small Laptop (iPad Pro / Small Laptop) */
 @media (min-width: 993px) and (max-width: 1350px) {
 
     .navbar,
     .navbar.scrolled {
-        padding: 10px 30px;
-        /* ลด Padding ด้านข้างจาก 150px เหลือ 30px */
+        padding: 10px 40px;
     }
 
     .navbar .menu a {
         font-size: 16px;
-        /* ลดขนาดตัวหนังสือเมนูจาก 22px เหลือ 16px */
+        padding: 8px 15px;
     }
 
     .nav-items {
         gap: 15px;
-        /* ลดระยะห่างระหว่างกลุ่มเมนู */
+    }
+
+    .section {
+        padding: 60px 80px;
+        /* Reduced from 200px */
+    }
+
+    #partners-section,
+    #portfolio-sup-section {
+        padding: 60px 80px;
+        /* Reduced from 200px */
+    }
+
+    .features,
+    .packages {
+        padding: 20px 0;
     }
 }
 
 @media (max-width: 992px) {
     .navbar {
         position: sticky;
-        /* เปลี่ยนเป็น sticky เพื่อดันเนื้อหาลงไป ไม่ให้บัง */
         background: #ffffff;
         flex-wrap: wrap;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         flex-direction: row;
         justify-content: space-between;
-        padding: 15px 20px;
+        padding: 15px 30px;
         top: 0;
-        /* มือถือให้ติดบนเลย */
     }
 
     .hamburger {
@@ -1183,25 +1195,22 @@ h3 {
     }
 
     .navbar.scrolled {
-        padding: 15px 20px;
-        /* ปรับ Padding ตอนเลื่อนให้เหมาะสมกับมือถือ */
+        padding: 15px 30px;
     }
 
     .navbar .logo img {
-        height: 50px;
-        margin-bottom: 0;
+        height: 55px;
     }
 
     .nav-items {
         display: none;
         order: 1;
-        /* Position below logo/hamburger line */
         flex-basis: 100%;
         flex-direction: column;
         align-items: center;
-        gap: 8px;
-        margin-top: 10px;
-        padding-top: 10px;
+        gap: 10px;
+        margin-top: 15px;
+        padding-top: 15px;
         border-top: 1px solid rgba(0, 0, 0, 0.05);
     }
 
@@ -1213,114 +1222,54 @@ h3 {
         flex-direction: column;
         align-items: center;
         width: 100%;
-        gap: 10px;
-        padding-bottom: 10px;
-        margin-bottom: 10px;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        gap: 12px;
+        padding-bottom: 12px;
     }
 
     .navbar .menu a {
-        font-size: 15px;
+        font-size: 16px;
         width: 100%;
         text-align: center;
         color: #1f2937;
-        text-transform: uppercase;
-        letter-spacing: 1px;
         font-weight: 600;
-        padding: 5px 0;
+        padding: 8px 0;
     }
 
     .navbar .menu a i {
         display: none;
     }
 
-    .navbar .nav-items .nav-contact {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 10px;
-    }
-
-    .navbar .nav-items .lang-btn {
-        padding: 4px 12px;
-        font-size: 13px;
-    }
-
-    .navbar .nav-items .nav-contact a {
-        color: #1f2937;
-        font-weight: 600;
-        font-size: 14px;
-    }
-
-    .hero-slider {
-        height: 70vh;
-        /* เพิ่มความสูงในมือถือให้เนื้อหาไม่เบียด */
-    }
-
-    .hero-content h1 {
-        font-size: 28px;
-    }
-
-    .slide {
-        background-attachment: scroll;
-        /* ปิด Parallax ในมือถือเพื่อประสิทธิภาพ */
-    }
-
-    .btn-group {
-        flex-direction: column;
-        gap: 15px;
-        align-items: center;
-    }
-
     .section {
-        padding: 40px 25px;
-    }
-
-    .section h2 {
-        font-size: 20px;
-    }
-
-    .stats-container {
-        flex-direction: column;
-        gap: 20px;
-    }
-
-    .stats-section {
-        padding: 30px 20px 60px;
-    }
-
-    .stat-box {
-        padding: 18px 12px;
+        padding: 60px 40px;
+        /* Tablet horizontal padding */
     }
 
     .features,
     .packages {
-        grid-template-columns: 1fr;
+        padding: 20px 0;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     }
 
     .gallery {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
+        /* 3 cols on regular tablet */
+        gap: 15px;
     }
 
-    .load-more-btn {
-        padding: 10px 30px;
-        font-size: 14px;
-        margin: 30px auto 0;
+    #partners-section,
+    #portfolio-sup-section {
+        padding: 60px 40px;
     }
 
-    .contact-container {
-        padding: 20px;
-        /* ลด padding ของ container */
+    #partners-gallery,
+    #portfolio-sup-gallery {
+        grid-template-columns: repeat(3, 1fr);
         gap: 20px;
     }
 
-    .contact-info,
-    .contact-form-wrapper {
-        padding: 25px;
-        /* ลด padding ภายในกล่อง */
-        min-width: 100%;
-        /* ให้เต็มความกว้างในมือถือ */
+    .contact-container {
+        padding: 0;
+        gap: 30px;
     }
 }
 
@@ -2029,7 +1978,7 @@ h3 {
 
 #partners-section,
 #portfolio-sup-section {
-    padding: 90px 200px;
+    padding: 80px 10%;
     background: #f0fdfa;
 }
 
