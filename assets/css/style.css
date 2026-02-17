@@ -136,8 +136,14 @@ h3 {
 }
 
 
-.navbar .menu a:hover {
+.navbar .menu a:hover,
+.navbar .menu a.active {
     color: #047857;
+}
+
+.navbar .menu a.active::after {
+    width: 100%;
+    left: 0;
 }
 
 .navbar .menu a::after {

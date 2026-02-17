@@ -246,7 +246,6 @@ if (portfolioContainer) {
 
     let displayedCount = 0;
     const itemsPerLoad = 6;
-    const initialLoad = 12;
 
     function renderImages(count) {
         const fragment = document.createDocumentFragment();
@@ -266,33 +265,33 @@ if (portfolioContainer) {
 
         portfolioContainer.appendChild(fragment);
         displayedCount += count;
-
-        // Update load more button
-        updateLoadMoreButton();
     }
 
-    function updateLoadMoreButton() {
-        let loadMoreBtn = document.getElementById('load-more-btn');
+    function applyPortfolioFilter(filterValue) {
+        const isPortfolioPage = window.location.pathname.includes('portfolio.html');
+        const images = portfolioContainer.querySelectorAll('img');
+        let visibleCount = 0;
 
-        if (!loadMoreBtn && displayedCount < allImages.length) {
-            loadMoreBtn = document.createElement('button');
-            loadMoreBtn.id = 'load-more-btn';
-            loadMoreBtn.setAttribute('data-th', 'โหลดรูปเพิ่มเติม');
-            loadMoreBtn.setAttribute('data-en', 'Load More');
-            const lang = localStorage.getItem('lang') || 'th';
-            loadMoreBtn.textContent = lang === 'th' ? 'โหลดรูปเพิ่มเติม' : 'Load More';
-            loadMoreBtn.className = 'load-more-btn';
-            loadMoreBtn.addEventListener('click', () => {
-                renderImages(itemsPerLoad);
-            });
-            portfolioContainer.parentNode.insertBefore(loadMoreBtn, portfolioContainer.nextSibling);
-        } else if (loadMoreBtn && displayedCount >= allImages.length) {
-            loadMoreBtn.style.display = 'none';
-        }
+        images.forEach(img => {
+            const matchesFilter = filterValue === 'all' || img.dataset.category === filterValue;
+            if (matchesFilter) {
+                if (isPortfolioPage || visibleCount < 9) {
+                    img.style.display = ''; // Show
+                    visibleCount++;
+                } else {
+                    img.style.display = 'none'; // Over limit
+                }
+            } else {
+                img.style.display = 'none'; // Wrong category
+            }
+        });
     }
 
-    // Show initial 12 images
-    renderImages(initialLoad);
+    // Render all images initially to the DOM
+    renderImages(allImages.length);
+
+    // Apply initial filter (All) with 9-image limit if on Home
+    applyPortfolioFilter('all');
 
     // Filter Logic
     const filterBtns = document.querySelectorAll('.filter-btn');
@@ -303,15 +302,7 @@ if (portfolioContainer) {
             btn.classList.add('active');
 
             const filterValue = btn.getAttribute('data-filter');
-            const images = portfolioContainer.querySelectorAll('img');
-
-            images.forEach(img => {
-                if (filterValue === 'all' || img.dataset.category === filterValue) {
-                    img.style.display = ''; // แสดงผล
-                } else {
-                    img.style.display = 'none'; // ซ่อน
-                }
-            });
+            applyPortfolioFilter(filterValue);
         });
     });
 
