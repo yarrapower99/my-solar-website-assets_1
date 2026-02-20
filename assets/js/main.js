@@ -391,7 +391,10 @@ function createProductCard(file) {
 
     const name = document.createElement('div');
     name.className = 'product-name';
-    const cleanName = file.name.split('.')[0].replace(/[_-]/g, ' ');
+    // Robustly remove extension and preserve internal dots/hyphens
+    const lastDotIndex = file.name.lastIndexOf('.');
+    const cleanName = (lastDotIndex !== -1 ? file.name.substring(0, lastDotIndex) : file.name)
+        .replace(/_/g, ' '); // Only replace underscores with spaces
     name.textContent = cleanName;
 
     productItem.appendChild(img);
