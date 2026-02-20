@@ -121,7 +121,55 @@ document.addEventListener("DOMContentLoaded", () => {
     if (typeof updateLanguage === "function") {
         updateLanguage();
     }
+
+    // Load Shared Footer
+    loadFooter();
 });
+
+// Shared Footer Template and Loader
+function loadFooter() {
+    const footerPlaceholder = document.getElementById('footer-placeholder');
+    if (!footerPlaceholder) return;
+
+    footerPlaceholder.innerHTML = `
+        <div class="footer">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4 data-th="เกี่ยวกับเรา" data-en="About Us">About Us</h4>
+                    <p data-th="Yarra Power จัดจำหน่ายและให้บริการติดตั้งระบบพลังงานสะอาด เพื่อความยั่งยืนในการใช้พลังงานต่อทุกครัวเรือนและอุตสาหกรรม"
+                        data-en="Yarra Power supplies and provides installation services for clean energy systems, promoting sustainable energy use for households and industrial sectors.">
+                        Yarra Power supplies and provides installation services for clean energy systems, promoting
+                        sustainable energy use for households and industrial sectors.</p>
+                </div>
+
+                <div class="footer-col">
+                    <h4 data-th="บริการของเรา" data-en="Our Services">Our Services</h4>
+                    <p href="#" data-th="ติดตั้งโซล่าเซลล์บ้าน" data-en="Home Solar Installation">Home Solar Installation</p>
+                    <p href="#" data-th="ติดตั้งโซล่าเซลล์โรงงาน" data-en="Commercial Solar Installation">Commercial Solar Installation</p>
+                    <p href="#" data-th="ระบบ Solar Roof" data-en="Solar Roof Systems">Solar Roof Systems</p>
+                    <p href="#" data-th="บริการล้างแผง" data-en="Solar Panel Cleaning">Solar Panel Cleaning</p>
+                    <p href="#" data-th="จัดจำหน่ายอุปกรณ์ระบบโซล่าเซลล์" data-en="Solar Equipment Distribution">
+                        Solar Equipment Distribution
+                    </p>
+                </div>
+                <div class="footer-col">
+                    <h4 data-th="ติดต่อสอบถาม" data-en="Contact Us">Contact Us</h4>
+                    <p data-th="โทร: 081-454-9191, 081-965-9495" data-en="Phone: 081-454-9191, 081-965-9495">Phone:
+                        081-454-9191, 081-965-9495</p>
+                    <p>Line: @yarrapower</p>
+                    <p>Email: info@yarrapower.com</p>
+                </div>
+            </div>
+        </div>
+        <p style="text-align: center; color: #6c757d; font-size: 14px;" data-th="© 2025 Yarrapower – All Rights Reserved"
+            data-en="© 2025 Yarrapower – All Rights Reserved">© 2025 Yarrapower – All Rights Reserved </p>
+    `;
+
+    // Ensure translation is applied to the newly injected footer
+    if (typeof updateLanguage === "function") {
+        updateLanguage();
+    }
+}
 
 // Portfolio Gallery_sup
 const gallery = document.getElementById('portfolio-sup-gallery');
@@ -657,7 +705,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Use the Google Apps Script Web App URL from your deployment
             // REPLACE THIS URL with your actual deployment URL
-            const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
+            const SCRIPT_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQp97zoFy-TR5qgsV0GKssY4WnDNP-MsQYBOOywyCd7z2jpAXOInf3iU0WdPJGchucS8HOtWdo5MqVA/pubhtml';
 
             const submitBtn = contactForm.querySelector('button[type="submit"]');
             const originalBtnText = submitBtn.textContent;
