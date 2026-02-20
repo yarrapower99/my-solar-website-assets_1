@@ -117,21 +117,88 @@ document.addEventListener("DOMContentLoaded", () => {
         observer.observe(statsSection);
     }
 
+    // Load Shared Components (Footer, Buttons, Modals, Navbar)
+    loadSharedComponents();
+
     // Initial language update
     if (typeof updateLanguage === "function") {
         updateLanguage();
     }
-
-    // Load Shared Footer
-    loadFooter();
 });
 
-// Shared Footer Template and Loader
-function loadFooter() {
-    const footerPlaceholder = document.getElementById('footer-placeholder');
-    if (!footerPlaceholder) return;
+// Shared Components Loader (Footer, Buttons, Modals, Navbar)
+function loadSharedComponents() {
+    const navbarPlaceholder = document.getElementById('navbar-placeholder');
+    if (navbarPlaceholder) {
+        navbarPlaceholder.innerHTML = `
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">
+            <a href="index.html#home">
+                <img src="assets/icon/S__4620410_preview_rev_1.png" alt="Yarrapower Logo">
+            </a>
+        </div>
 
-    footerPlaceholder.innerHTML = `
+        <div class="hamburger" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+        </div>
+
+        <div class="nav-items">
+            <div class="menu">
+                <a href="index.html#home" data-th="หน้าแรก" data-en="Home"><i class="lni lni-home"></i> <span
+                        data-th="หน้าแรก" data-en="Home">Home</span></a>
+                <a href="products.html" data-th="สินค้า" data-en="Products"><i class="lni lni-grid-alt"></i> <span
+                        data-th="สินค้า" data-en="Products">Products</span></a>
+                <a href="portfolio.html" data-th="ผลงาน" data-en="Portfolio"><i class="lni lni-briefcase"></i> <span
+                        data-th="ผลงาน" data-en="Portfolio">Portfolio</span></a>
+                <a href="contact.html" data-th="ติดต่อเรา" data-en="Contact Us"><i class="lni lni-phone"></i> <span
+                        data-th="ติดต่อเรา" data-en="Contact Us">Contact Us</span></a>
+                <button id="lang-toggle" class="lang-btn"><img src="https://flagcdn.com/w40/th.png" alt="TH">
+                    TH</button>
+            </div>
+
+            <div class="nav-contact">
+                <a href="tel:0814549191" class="nav-phone">
+                    <i class="lni lni-phone"></i> 081-454-9191
+                </a>
+                <a href="tel:0819659495" class="nav-phone secondary">
+                    <i class="lni lni-phone"></i> 081-965-9495
+                </a>
+            </div>
+        </div>
+    </div>
+        `;
+
+        // Set Active class based on current page
+        const currentPath = window.location.pathname;
+        const navLinks = navbarPlaceholder.querySelectorAll('.menu a');
+        navLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            if (currentPath.endsWith(href) || (currentPath.endsWith('/') && href === 'index.html#home')) {
+                link.classList.add('active');
+            } else if (href.includes('#') && currentPath.includes(href.split('#')[0])) {
+                // Special case for anchors on landing page
+                if (currentPath.endsWith(href.split('#')[0]) || (currentPath.endsWith('/') && href.startsWith('index.html'))) {
+                    link.classList.add('active');
+                }
+            }
+        });
+
+        // Re-attach language toggle listener since it was just injected
+        const langBtn = document.getElementById('lang-toggle');
+        if (langBtn) {
+            langBtn.addEventListener('click', () => {
+                currentLang = currentLang === 'th' ? 'en' : 'th';
+                updateLanguage();
+            });
+        }
+    }
+
+    const sharedPlaceholder = document.getElementById('shared-components');
+    if (!sharedPlaceholder) return;
+
+    sharedPlaceholder.innerHTML = `
+        <!-- Footer -->
         <div class="footer">
             <div class="footer-grid">
                 <div class="footer-col">
@@ -144,11 +211,11 @@ function loadFooter() {
 
                 <div class="footer-col">
                     <h4 data-th="บริการของเรา" data-en="Our Services">Our Services</h4>
-                    <p href="#" data-th="ติดตั้งโซล่าเซลล์บ้าน" data-en="Home Solar Installation">Home Solar Installation</p>
-                    <p href="#" data-th="ติดตั้งโซล่าเซลล์โรงงาน" data-en="Commercial Solar Installation">Commercial Solar Installation</p>
-                    <p href="#" data-th="ระบบ Solar Roof" data-en="Solar Roof Systems">Solar Roof Systems</p>
-                    <p href="#" data-th="บริการล้างแผง" data-en="Solar Panel Cleaning">Solar Panel Cleaning</p>
-                    <p href="#" data-th="จัดจำหน่ายอุปกรณ์ระบบโซล่าเซลล์" data-en="Solar Equipment Distribution">
+                    <p data-th="ติดตั้งโซล่าเซลล์บ้าน" data-en="Home Solar Installation">Home Solar Installation</p>
+                    <p data-th="ติดตั้งโซล่าเซลล์โรงงาน" data-en="Commercial Solar Installation">Commercial Solar Installation</p>
+                    <p data-th="ระบบ Solar Roof" data-en="Solar Roof Systems">Solar Roof Systems</p>
+                    <p data-th="บริการล้างแผง" data-en="Solar Panel Cleaning">Solar Panel Cleaning</p>
+                    <p data-th="จัดจำหน่ายอุปกรณ์ระบบโซล่าเซลล์" data-en="Solar Equipment Distribution">
                         Solar Equipment Distribution
                     </p>
                 </div>
@@ -160,14 +227,77 @@ function loadFooter() {
                     <p>Email: info@yarrapower.com</p>
                 </div>
             </div>
+            <p style="text-align: center; color: #6c757d; font-size: 14px; margin-top: 30px;" 
+               data-th="© 2025 Yarrapower – All Rights Reserved"
+               data-en="© 2025 Yarrapower – All Rights Reserved">© 2025 Yarrapower – All Rights Reserved </p>
         </div>
-        <p style="text-align: center; color: #6c757d; font-size: 14px;" data-th="© 2025 Yarrapower – All Rights Reserved"
-            data-en="© 2025 Yarrapower – All Rights Reserved">© 2025 Yarrapower – All Rights Reserved </p>
+
+        <!-- Back to Top Button -->
+        <button id="backToTop" onclick="scrollToTop()"><i class="lni lni-arrow-upward"></i></button>
+
+        <!-- Floating Social Buttons -->
+        <a href="https://line.me/ti/p/@yarrapower" target="_blank" class="line-float-btn">
+            <i class="lni lni-line"></i>
+        </a>
+        <a href="https://www.facebook.com/profile.php?id=61574924817355" target="_blank" class="fb-float-btn"
+            title="Facebook Yarrapower">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" alt="Facebook Logo">
+        </a>
+
+        <!-- Product Modal -->
+        <div id="product-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal" onclick="closeProductModal()">&times;</span>
+                <div class="product-modal-body">
+                    <div class="product-modal-image">
+                        <img id="modal-product-img" src="" alt="Product Image">
+                    </div>
+                    <div class="product-modal-info">
+                        <h2 id="modal-product-name">Product Name</h2>
+                        <p id="modal-product-desc" data-th="รายละเอียดสินค้าและข้อมูลทางเทคนิค"
+                            data-en="Product details and technical specifications.">Product details and technical specifications.</p>
+                        <div id="pdf-download-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lightbox Modal -->
+        <div id="lightbox" class="lightbox">
+            <span class="close" onclick="closeLightbox()">&times;</span>
+            <div class="zoom-controls">
+                <span class="zoom-btn" onclick="zoomImage(-0.1)"><i class="lni lni-minus"></i></span>
+                <span id="zoom-level">100%</span>
+                <span class="zoom-btn" onclick="zoomImage(0.1)"><i class="lni lni-plus"></i></span>
+            </div>
+            <img class="lightbox-content" id="lightbox-img">
+            <a class="prev" onclick="changeSlide(-1)">&#10094;</a>
+            <a class="next" onclick="changeSlide(1)">&#10095;</a>
+        </div>
     `;
 
-    // Ensure translation is applied to the newly injected footer
+    // Ensure translation is applied to newly injected elements
     if (typeof updateLanguage === "function") {
         updateLanguage();
+    }
+
+    // Re-attach listeners since elements were just injected
+    const lightbox = document.getElementById("lightbox");
+    if (lightbox) {
+        lightbox.addEventListener('click', (e) => {
+            if (e.target.id === "lightbox") closeLightbox();
+        });
+    }
+
+    // Escape key listener - registered once
+    if (!window.hasEscListener) {
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "Escape") {
+                closeLightbox();
+                closeProductModal();
+            }
+        });
+        window.hasEscListener = true;
     }
 }
 
@@ -224,9 +354,12 @@ window.addEventListener("scroll", function () {
         return;
     }
 
+    // Scroll threshold to avoid flickering
+    if (Math.abs(scrollTop - lastScrollTop) <= 5) return;
+
     if (scrollTop > lastScrollTop && scrollTop > 100) {
         navbar.classList.add("hidden"); // เลื่อนลง -> ซ่อน
-    } else {
+    } else if (scrollTop < lastScrollTop) {
         navbar.classList.remove("hidden"); // เลื่อนขึ้น -> แสดง
     }
     lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
@@ -517,17 +650,19 @@ function updateLanguage() {
     });
 
     const langBtn = document.getElementById('lang-toggle');
-    langBtn.innerHTML = currentLang === 'th'
-        ? '<img src="https://flagcdn.com/w40/th.png" alt="TH"> TH'
-        : '<img src="https://flagcdn.com/w40/gb.png" alt="EN"> EN';
+    if (langBtn) {
+        langBtn.innerHTML = currentLang === 'th'
+            ? '<img src="https://flagcdn.com/w40/th.png" alt="TH"> TH'
+            : '<img src="https://flagcdn.com/w40/gb.png" alt="EN"> EN';
+    }
 
     localStorage.setItem('lang', currentLang);
 }
 
-document.getElementById('lang-toggle').addEventListener('click', () => {
-    currentLang = currentLang === 'th' ? 'en' : 'th';
-    updateLanguage();
-});
+// document.getElementById('lang-toggle').addEventListener('click', () => {
+//     currentLang = currentLang === 'th' ? 'en' : 'th';
+//     updateLanguage();
+// });
 function autoSlide(containerId, speed = 0.5) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -573,7 +708,7 @@ function openLightbox(images, index) {
     currentImages = images;
     currentIndex = index;
     currentZoom = 1; // รีเซ็ตค่าซูม
-    document.getElementById("lightbox").style.display = "block";
+    document.getElementById("lightbox").style.display = "flex";
     const img = document.getElementById("lightbox-img");
     img.src = currentImages[currentIndex].src;
     img.style.transform = "scale(1)"; // รีเซ็ตขนาดภาพ
@@ -607,17 +742,19 @@ function openProductModal(imgSrc, productName) {
         pdfContainer.appendChild(downloadBtn);
     }
 
-    modal.style.display = "block";
+    modal.style.display = "flex";
     document.body.style.overflow = "hidden";
 }
 
 function closeProductModal() {
-    document.getElementById("product-modal").style.display = "none";
+    const modal = document.getElementById("product-modal");
+    if (modal) modal.style.display = "none";
     document.body.style.overflow = "auto";
 }
 
 function closeLightbox() {
-    document.getElementById("lightbox").style.display = "none";
+    const lb = document.getElementById("lightbox");
+    if (lb) lb.style.display = "none";
     document.body.style.overflow = "auto"; // Enable scroll
 }
 
@@ -637,10 +774,7 @@ function changeSlide(step) {
     if (zoomLevelText) zoomLevelText.innerText = "100%";
 }
 
-// Close lightbox on outside click
-document.getElementById("lightbox").addEventListener('click', (e) => {
-    if (e.target.id === "lightbox") closeLightbox();
-});
+
 
 function bindGalleryLightbox(galleryId) {
     const gallery = document.getElementById(galleryId);

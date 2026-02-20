@@ -47,38 +47,8 @@
 <body>
 
     <!-- Navbar -->
-    <div class="navbar">
-        <div class="logo">
-            <a href="index.html#home">
-                <img src="assets/icon/S__4620410_preview_rev_1.png" alt="Yarrapower Logo">
-            </a>
-        </div>
-
-        <div class="hamburger" onclick="toggleMenu()">
-            <span></span><span></span><span></span>
-        </div>
-
-        <div class="nav-items">
-            <div class="menu">
-                <a href="index.html#home" data-th="หน้าแรก" data-en="Home"><i class="lni lni-home"></i> <span
-                        data-th="หน้าแรก" data-en="Home">Home</span></a>
-                <a href="products.html" data-th="สินค้า" data-en="Products"><i class="lni lni-grid-alt"></i> <span
-                        data-th="สินค้า" data-en="Products">Products</span></a>
-                <a href="portfolio.html" class="active" data-th="ผลงาน" data-en="Portfolio"><i
-                        class="lni lni-briefcase"></i> <span data-th="ผลงาน" data-en="Portfolio">Portfolio</span></a>
-                <a href="index.html#contact" data-th="ติดต่อเรา" data-en="Contact"><i class="lni lni-phone"></i> <span
-                        data-th="ติดต่อเรา" data-en="Contact">Contact</span></a>
-                <button id="lang-toggle" class="lang-btn"><img src="https://flagcdn.com/w40/th.png" alt="TH">
-                    TH</button>
-            </div>
-
-            <div class="nav-contact">
-                <a href="tel:0814549191" class="nav-phone">
-                    <i class="lni lni-phone"></i> 081-454-9191
-                </a>
-            </div>
-        </div>
-    </div>
+    <!-- Navbar Placeholder -->
+    <div id="navbar-placeholder"></div>
 
     <div class="page-header">
         <h1 data-th="ผลงานที่ผ่านมา" data-en="Completed Projects">Completed Projects</h1>
@@ -102,24 +72,8 @@
         </div>
     </div>
 
-    <!-- Shared Footer Placeholder -->
-    <div id="footer-placeholder"></div>
-
-    <!-- Lightbox Modal -->
-    <div id="lightbox" class="lightbox">
-        <span class="close" onclick="closeLightbox()">&times;</span>
-        <div class="zoom-controls">
-            <span class="zoom-btn" onclick="zoomImage(-0.1)"><i class="lni lni-minus"></i></span>
-            <span id="zoom-level">100%</span>
-            <span class="zoom-btn" onclick="zoomImage(0.1)"><i class="lni lni-plus"></i></span>
-        </div>
-        <img class="lightbox-content" id="lightbox-img">
-        <a class="prev" onclick="changeSlide(-1)">&#10094;</a>
-        <a class="next" onclick="changeSlide(1)">&#10095;</a>
-    </div>
-
-    <!-- Back to Top Button -->
-    <button id="backToTop" onclick="scrollToTop()"><i class="lni lni-arrow-upward"></i></button>
+    <!-- Shared Components Placeholder (Footer, Buttons, Modals) -->
+    <div id="shared-components"></div>
 
     <script src="assets/js/main.js"></script>
 </body>

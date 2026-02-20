@@ -43,43 +43,8 @@
 
 <body id="home">
 
-    <!-- Navbar -->
-    <div class="navbar">
-
-        <div class="logo">
-            <a href="#home">
-                <img src="assets/icon/S__4620410_preview_rev_1.png" alt="Yarrapower Logo">
-            </a>
-        </div>
-
-        <div class="hamburger" onclick="toggleMenu()">
-            <span></span><span></span><span></span>
-        </div>
-
-        <div class="nav-items">
-            <div class="menu">
-                <a href="#home" class="active" data-th="หน้าแรก" data-en="Home"><i class="lni lni-home"></i> <span
-                        data-th="หน้าแรก" data-en="Home">Home</span></a>
-                <a href="products.html" data-th="สินค้า" data-en="Products"><i class="lni lni-grid-alt"></i> <span
-                        data-th="สินค้า" data-en="Products">Products</span></a>
-                <a href="portfolio.html" data-th="ผลงาน" data-en="Portfolio"><i class="lni lni-briefcase"></i> <span
-                        data-th="ผลงาน" data-en="Portfolio">Portfolio</span></a>
-                <a href="#contact" data-th="ติดต่อเรา" data-en="Contact"><i class="lni lni-phone"></i> <span
-                        data-th="ติดต่อเรา" data-en="Contact">Contact</span></a>
-                <button id="lang-toggle" class="lang-btn"><img src="https://flagcdn.com/w40/th.png" alt="TH">
-                    TH</button>
-            </div>
-
-            <div class="nav-contact">
-                <a href="tel:0814549191" class="nav-phone">
-                    <i class="lni lni-phone"></i> 081-454-9191
-                </a>
-                <a href="tel:0819659495" class="nav-phone secondary">
-                    <i class="lni lni-phone"></i> 081-965-9495
-                </a>
-            </div>
-        </div>
-    </div>
+    <!-- Navbar Placeholder -->
+    <div id="navbar-placeholder"></div>
 
 
 
@@ -167,11 +132,10 @@
             <div class="contact-info">
                 <h3>Yarra Power</h3>
                 <p class="company-desc"
-                    data-th="บริษัท ยาร์ร่า พาวเวอร์ จำกัด จำหน่ายอุปกรณ์โซลาร์เซลล์ คุณภาพดีตรงตามมาตรฐานสากล ในราคาย่อมเยา รวมถึงรับออกแบบ ติดตั้งโซลาร์เซลล์ ให้กับบริษัทชั้นนำและการใช้ส่วนตัวในครัวเรือน"
-                    data-en="Yarra Power Co., Ltd. distributes high-quality solar energy equipment meeting international standards at affordable prices. We offer comprehensive design and installation services for both leading corporations and residential homes.">
-                    Yarra Power Co., Ltd. distributes high-quality solar energy equipment meeting international
-                    standards at affordable prices. We offer comprehensive design and installation services for both
-                    leading corporations and residential homes.
+                    data-th="Yarra Power จัดจำหน่ายและให้บริการติดตั้งระบบพลังงานสะอาด เพื่อความยั่งยืนในการใช้พลังงานต่อทุกครัวเรือนและอุตสาหกรรม"
+                    data-en="Yarra Power supplies and installs clean energy systems to promote sustainable energy use for households and industrial sectors.">
+                    Yarra Power supplies and installs clean energy systems to promote sustainable energy use for
+                    households and industrial sectors.
                 </p>
 
                 <div class="contact-details">
@@ -273,55 +237,8 @@
         </div>
     </div>
 
-    <!-- Shared Footer Placeholder -->
-    <div id="footer-placeholder"></div>
-
-    <!-- Back to Top Button -->
-    <button id="backToTop" onclick="scrollToTop()"><i class="lni lni-arrow-upward"></i></button>
-
-    <!-- Line Floating Button -->
-    <a href="https://line.me/ti/p/@yarrapower" target="_blank" class="line-float-btn">
-        <i class="lni lni-line"></i>
-    </a>
-    <!-- Facebook Floating Button -->
-    <a href="https://www.facebook.com/profile.php?id=61574924817355" target="_blank" class="fb-float-btn"
-        title="Facebook Yarrapower">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" alt="Facebook">
-    </a>
-
-    <!-- Product Modal -->
-    <div id="product-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeProductModal()">&times;</span>
-            <div class="product-modal-body">
-                <div class="product-modal-image">
-                    <img id="modal-product-img" src="" alt="Product Image">
-                </div>
-                <div class="product-modal-info">
-                    <h2 id="modal-product-name">Product Name</h2>
-                    <p id="modal-product-desc" data-th="รายละเอียดสินค้าและข้อมูลทางเทคนิค"
-                        data-en="Product details and technical specifications.">Product details and technical
-                        specifications.</p>
-                    <div id="pdf-download-container">
-                        <!-- PDF button will be injected here -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Lightbox Modal -->
-    <div id="lightbox" class="lightbox">
-        <span class="close" onclick="closeLightbox()">&times;</span>
-        <div class="zoom-controls">
-            <span class="zoom-btn" onclick="zoomImage(-0.1)"><i class="lni lni-minus"></i></span>
-            <span id="zoom-level">100%</span>
-            <span class="zoom-btn" onclick="zoomImage(0.1)"><i class="lni lni-plus"></i></span>
-        </div>
-        <img class="lightbox-content" id="lightbox-img">
-        <a class="prev" onclick="changeSlide(-1)">&#10094;</a>
-        <a class="next" onclick="changeSlide(1)">&#10095;</a>
-    </div>
+    <!-- Shared Components Placeholder (Footer, Buttons, Modals) -->
+    <div id="shared-components"></div>
 
     <script src="assets/js/main.js"></script>
 </body>
