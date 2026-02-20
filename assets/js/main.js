@@ -1,8 +1,8 @@
 const localImages = {
     "assets/profile": ["LINE_ALBUM_KMCH 172.2kW_260128_253.jpg"],
-    "assets/logo_use": ["1.sungrow.jpeg", "2.longi.jpeg", "3.trina.png", "4.phelpsdodge.jpeg", "5.Carrier.png", "6.byd.png", "7.solis.jpg"],
+    "assets/logo_use": ["1.sungrow.jpeg", "2.longi.jpeg", "3.trina.png", "4.phelpsdodge.jpeg", "5.Carrier.png", "6.byd.png", "7.solis.jpg", "8.antai.png", "9.ABB.png"],
     "assets/portfolio_sup": ["3DC06DF4-D143-4A15-B02B-A6EB13D126A0-768x768.jpeg", "74EBB765-FFAF-4AF7-A194-E650FBB9B551-768x768.jpeg", "IMG_1154-768x768.jpeg", "K.Yo_-3-768x768.png", "K.Yo_.png-768x768.jpeg", "PV-Panel-6-768x768.png"],
-    "assets/Partners": ["K.Yo_-1-768x679.jpeg", "K.Yo_-2-768x690.jpeg", "K.Yo_-2-768x768.png", "PV-Panel-7-768x768.png", "PV-Panel-8-768x768.png", "PV-Panel.png-1-768x671.jpeg", "PV-Panel.png-2-768x687.jpeg"],
+    "assets/Partners": ["K.Yo_-1-768x679.jpeg", "K.Yo_-2-768x768.png", "PV-Panel-7-768x768.png", "PV-Panel-8-768x768.png", "PV-Panel.png-1-768x671.jpeg", "PV-Panel.png-2-768x687.jpeg"],
     "assets/products": [
         "SG5.0RS.png",
         "SG10RT-P2.png",
@@ -645,3 +645,68 @@ if ('caches' in window) {
     });
     console.log("All caches cleared.");
 }
+
+// Contact Form Submission Handler
+document.addEventListener('DOMContentLoaded', () => {
+    const contactForm = document.getElementById('contact-form');
+    const formStatus = document.getElementById('form-status');
+
+    if (contactForm) {
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Use the Google Apps Script Web App URL from your deployment
+            // REPLACE THIS URL with your actual deployment URL
+            const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
+
+            const submitBtn = contactForm.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.textContent;
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.textContent = currentLang === 'th' ? 'กำลังส่งข้อมูล...' : 'Sending...';
+            formStatus.style.display = 'block';
+            formStatus.style.color = '#4b5563';
+            formStatus.textContent = currentLang === 'th' ? 'กำลังประมวลผล...' : 'Processing...';
+
+            try {
+                const formData = new FormData(contactForm);
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.result === 'success') {
+                    // Success
+                    formStatus.style.color = '#059669';
+                    formStatus.textContent = currentLang === 'th'
+                        ? 'ส่งข้อมูลสำเร็จ ขอบคุณที่ติดต่อเรา!'
+                        : 'Message sent successfully! Thank you for contacting us.';
+                    contactForm.reset();
+                } else {
+                    throw new Error(result.error || 'Submission failed');
+                }
+            } catch (error) {
+                console.error('Error submitting form:', error);
+
+                // If SCRIPT_URL is placeholder, give a specific message
+                if (SCRIPT_URL.includes('URL_HERE')) {
+                    formStatus.style.color = '#ef4444';
+                    formStatus.textContent = currentLang === 'th'
+                        ? 'กรุณาใส่ Web App URL ในไฟล์ main.js ก่อนใช้งาน'
+                        : 'Please set the Web App URL in main.js before use.';
+                } else {
+                    formStatus.style.color = '#ef4444';
+                    formStatus.textContent = currentLang === 'th'
+                        ? 'เกิดข้อผิดพลาดในการส่งข้อมูล กรุณาลองใหม่อีกครั้ง'
+                        : 'Error sending message. Please try again later.';
+                }
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+            }
+        });
+    }
+});
