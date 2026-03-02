@@ -2,7 +2,7 @@ const localImages = {
     "assets/profile": ["LINE_ALBUM_KMCH 172.2kW_260128_253.jpg"],
     "assets/logo_use": ["1.sungrow.jpeg", "2.1.jinko.jpg", "2.2.longi.jpeg", "4.phelpsdodge.jpeg", "5.Carrier.png", "6.byd.png", "7.solis.jpg", "8.antai.png", "9.ABB.png"],
     "assets/portfolio_sup": ["3DC06DF4-D143-4A15-B02B-A6EB13D126A0-768x768.jpeg", "74EBB765-FFAF-4AF7-A194-E650FBB9B551-768x768.jpeg", "IMG_1154-768x768.jpeg", "K.Yo_-3-768x768.png", "K.Yo_.png-768x768.jpeg", "PV-Panel-6-768x768.png"],
-    "assets/Partners": ["K.Yo_-1-768x679.jpeg", "K.Yo_-2-768x768.png", "PV-Panel-7-768x768.png", "PV-Panel-8-768x768.png", "PV-Panel.png-1-768x671.jpeg", "PV-Panel.png-2-768x687.jpeg"],
+    "assets/Partners": ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg"],
     "assets/products": [
         "SG5.0RS.png",
         "SG10RT-P2.png",
