@@ -1,6 +1,6 @@
 const localImages = {
     "assets/profile": ["LINE_ALBUM_KMCH 172.2kW_260128_253.jpg"],
-    "assets/logo_use": ["1.sungrow.jpeg", "2.longi.jpeg", "3.trina.png", "4.phelpsdodge.jpeg", "5.Carrier.png", "6.byd.png", "7.solis.jpg", "8.antai.png", "9.ABB.png"],
+    "assets/logo_use": ["1.sungrow.jpeg", "2.1.jinko.jpg", "2.2.longi.jpeg", "4.phelpsdodge.jpeg", "5.Carrier.png", "6.byd.png", "7.solis.jpg", "8.antai.png", "9.ABB.png"],
     "assets/portfolio_sup": ["3DC06DF4-D143-4A15-B02B-A6EB13D126A0-768x768.jpeg", "74EBB765-FFAF-4AF7-A194-E650FBB9B551-768x768.jpeg", "IMG_1154-768x768.jpeg", "K.Yo_-3-768x768.png", "K.Yo_.png-768x768.jpeg", "PV-Panel-6-768x768.png"],
     "assets/Partners": ["K.Yo_-1-768x679.jpeg", "K.Yo_-2-768x768.png", "PV-Panel-7-768x768.png", "PV-Panel-8-768x768.png", "PV-Panel.png-1-768x671.jpeg", "PV-Panel.png-2-768x687.jpeg"],
     "assets/products": [
@@ -15,6 +15,7 @@ const localImages = {
     ],
     "assets/longi": ["Hi-MO X10.jpg", "Hi-MO 7.jpeg"],
     "assets/trina": ["TSM-NEG19RC.20 610-635W.jpg", "TSM-NEG21C.0 700-725W.jpg"],
+    "assets/jinko": ["JKM650-670N-66QL6-BDV-F1-EN.jpg", "JKM710-735N-66HL5-BDV-Z4-EN.jpg"],
     "assets/portfolio/home": ["10.jpeg", "12.jpeg", "15.png", "18.jpeg", "19.jpeg", "2.jpeg", "22.png", "3.jpeg", "31.jpeg", "32.jpeg", "33.jpeg", "34.jpeg", "35.jpeg", "42.jpg", "43.jpg", "44.jpg", "45.jpg", "46.jpg", "47.jpg", "48.jpg", "49.jpg", "5.jpeg", "7.jpeg", "8.jpeg"],
     "assets/portfolio/factory": ["1.jpg", "11.jpeg", "13.jpeg", "14.jpeg", "16.png", "17.jpeg", "20.jpeg", "21.jpeg", "23.jpeg", "24.png", "25.png", "26.png", "27.jpeg", "28.jpeg", "29.jpeg", "30.jpeg", "36.jpeg", "37.jpeg", "38.jpeg", "39.jpeg", "4.jpeg", "40.jpg", "41.jpg", "6.jpeg", "9.jpeg"]
 };
@@ -23,6 +24,8 @@ const localImages = {
 const localPDFs = [
     "Hi-MO 7.pdf",
     "Hi-MO X10.pdf",
+    "JKM650-670N-66QL6-BDV-F1-EN.pdf",
+    "JKM710-735N-66HL5-BDV-Z4-EN.pdf",
     "S450S-L S1000S-L S2000S-L.pdf",
     "SBS050.pdf",
     "SG10RT-P2.pdf",
@@ -274,6 +277,20 @@ function loadSharedComponents() {
             <a class="prev" onclick="changeSlide(-1)">&#10094;</a>
             <a class="next" onclick="changeSlide(1)">&#10095;</a>
         </div>
+
+        <!-- News Modal -->
+        <div id="news-modal" class="modal" onclick="if(event.target===this)closeNewsModal()">
+            <div class="news-modal-content">
+                <span class="close-modal" onclick="closeNewsModal()">&times;</span>
+                <div class="news-modal-img-wrap">
+                    <img id="news-modal-img" src="" alt="News Image">
+                </div>
+                <div class="news-modal-info">
+                    <span class="news-date" id="news-modal-date"></span>
+                    <p id="news-modal-text"></p>
+                </div>
+            </div>
+        </div>
     `;
 
     // Ensure translation is applied to newly injected elements
@@ -295,6 +312,7 @@ function loadSharedComponents() {
             if (e.key === "Escape") {
                 closeLightbox();
                 closeProductModal();
+                closeNewsModal();
             }
         });
         window.hasEscListener = true;
@@ -585,6 +603,19 @@ if (trinaContainer) {
     });
 }
 
+// Generate Jinko Images
+const jinkoContainer = document.getElementById('jinko-gallery');
+if (jinkoContainer) {
+    loadLocalImages("assets/jinko", jinkoContainer, (images, container) => {
+        const fragment = document.createDocumentFragment();
+        images.forEach(file => {
+            fragment.appendChild(createProductCard(file));
+        });
+        container.appendChild(fragment);
+        bindGalleryLightbox('jinko-gallery');
+    });
+}
+
 // Hamburger Menu Toggle
 function toggleMenu() {
     const navItems = document.querySelector('.nav-items');
@@ -748,6 +779,22 @@ function openProductModal(imgSrc, productName) {
 
 function closeProductModal() {
     const modal = document.getElementById("product-modal");
+    if (modal) modal.style.display = "none";
+    document.body.style.overflow = "auto";
+}
+
+function openNewsModal(imgSrc, date, text) {
+    const modal = document.getElementById("news-modal");
+    if (!modal) return;
+    document.getElementById("news-modal-img").src = imgSrc;
+    document.getElementById("news-modal-date").textContent = date;
+    document.getElementById("news-modal-text").textContent = text;
+    modal.style.display = "flex";
+    document.body.style.overflow = "hidden";
+}
+
+function closeNewsModal() {
+    const modal = document.getElementById("news-modal");
     if (modal) modal.style.display = "none";
     document.body.style.overflow = "auto";
 }
