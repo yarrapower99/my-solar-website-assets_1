@@ -3,7 +3,7 @@
   "short_name": "Yarrapower",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "background_color": "#F0FDFA",
   "theme_color": "#059669",
   "orientation": "portrait",
   "icons": [
