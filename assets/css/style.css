@@ -213,6 +213,23 @@ h3 {
     }
 }
 
+.logo a {
+    display: flex;
+    align-items: center;
+}
+
+.navbar .logo img {
+    height: 55px;
+    /* Increased size for visibility */
+    width: auto;
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 2px 10px rgba(255, 255, 255, 0.8)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.navbar .logo img:hover {
+    transform: scale(1.05);
+}
+
 /* Language Button */
 .lang-btn {
     background: #10b981;
@@ -269,11 +286,9 @@ h3 {
 
 .hero-slider {
     position: relative;
-    height: 90vh;
-    /* ปรับความสูงให้ดูเต็มตาและสวยงามขึ้น */
+    height: 100vh;
     width: 100%;
     overflow: hidden;
-    /* ปรับจาก visible → สวยกว่า */
 }
 
 /* ---- Slide ---- */
