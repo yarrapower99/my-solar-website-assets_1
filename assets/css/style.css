@@ -2052,10 +2052,14 @@ h3 {
     box-shadow: 0 25px 55px rgba(0, 0, 0, 0.3);
 }
 
-#partners-section,
-#portfolio-sup-section {
+#partners-section {
     padding: 120px 10% 80px;
     background: #f0fdfa;
+}
+
+#portfolio-sup-section {
+    padding: 120px 10% 80px;
+    background: #ffffff;
 }
 
 #partners-section h2,
@@ -2469,7 +2473,11 @@ h3 {
 
 /* ===== Latest News Section ===== */
 #news {
-    background: var(--bg-main);
+    background: #ffffff;
+}
+
+#contact {
+    background: #ffffff;
 }
 
 #news h2 {
