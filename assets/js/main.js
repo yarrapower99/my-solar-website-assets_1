@@ -164,8 +164,8 @@ function loadSharedComponents() {
                 <a href="tel:0814549191" class="nav-phone">
                     <i class="lni lni-phone"></i> 081-454-9191
                 </a>
-                <a href="tel:0819659495" class="nav-phone secondary">
-                    <i class="lni lni-phone"></i> 081-965-9495
+                <a href="tel:0634549191" class="nav-phone secondary">
+                    <i class="lni lni-phone"></i> 063-454-9191
                 </a>
             </div>
         </div>
@@ -224,8 +224,8 @@ function loadSharedComponents() {
                 </div>
                 <div class="footer-col">
                     <h4 data-th="ติดต่อสอบถาม" data-en="Contact Us">Contact Us</h4>
-                    <p data-th="โทร: 081-454-9191, 081-965-9495" data-en="Phone: 081-454-9191, 081-965-9495">Phone:
-                        081-454-9191, 081-965-9495</p>
+                    <p data-th="โทร: 081-454-9191, 063-454-9191" data-en="Phone: 081-454-9191, 063-454-9191">Phone:
+                        081-454-9191, 063-454-9191</p>
                     <p>Line: @yarrapower</p>
                     <p>Email: info@yarrapower.com</p>
                 </div>
