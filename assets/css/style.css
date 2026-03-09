@@ -456,7 +456,7 @@ h3 {
 
 /* Section */
 .section {
-    padding: 80px 10%;
+    padding: 60px 20px;
     text-align: center;
 }
 
@@ -2059,7 +2059,7 @@ h3 {
 
 #portfolio-sup-section {
     padding: 120px 10% 80px;
-    background: #ffffff;
+    background: #f0fdf4;
 }
 
 #partners-section h2,
@@ -2473,11 +2473,44 @@ h3 {
 
 /* ===== Latest News Section ===== */
 #news {
+    background: #f0fdf4;
+}
+
+#works {
+    background: #f0fdf4;
+}
+
+#product-info {
+    background: #f0fdf4 !important;
+}
+
+#product-info .section-card {
+    background: #f0fdf4;
+}
+
+#portfolio-sup-section {
+    background: #f0fdf4;
+}
+
+.section-card {
     background: #ffffff;
+    border-radius: 32px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+    padding: 60px 60px;
+    max-width: 1600px;
+    margin: 0 auto;
+    border: 1px solid rgba(16, 185, 129, 0.05);
+}
+
+@media (max-width: 768px) {
+    .section-card {
+        padding: 40px 20px;
+        border-radius: 20px;
+    }
 }
 
 #contact {
-    background: #ffffff;
+    background: #f0fdf4;
 }
 
 #news h2 {

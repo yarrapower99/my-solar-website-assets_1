@@ -1,6 +1,6 @@
 const localImages = {
     "assets/profile": ["LINE_ALBUM_KMCH 172.2kW_260128_253.jpg"],
-    "assets/logo_use": ["1.sungrow.jpeg", "2.1.jinko.jpg", "2.2.longi.jpeg", "4.phelpsdodge.jpeg", "5.Carrier.png", "6.byd.png", "7.solis.jpg", "8.antai.png", "9.ABB.png"],
+    "assets/logo_use": ["1.1delta.jpg", "1.sungrow.jpeg", "2.1.jinko.jpg", "2.2.longi.jpeg", "4.phelpsdodge.jpeg", "5.Carrier.png", "6.byd.png", "7.solis.jpg", "8.antai.png", "9.ABB.png"],
     "assets/portfolio_sup": ["3DC06DF4-D143-4A15-B02B-A6EB13D126A0-768x768.jpeg", "74EBB765-FFAF-4AF7-A194-E650FBB9B551-768x768.jpeg", "IMG_1154-768x768.jpeg", "K.Yo_-3-768x768.png", "K.Yo_.png-768x768.jpeg", "PV-Panel-6-768x768.png"],
     "assets/Partners": ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg"],
     "assets/products": [
@@ -16,7 +16,7 @@ const localImages = {
     "assets/longi": ["Hi-MO X10.jpg", "Hi-MO 7.jpeg"],
     "assets/trina": ["TSM-NEG19RC.20 610-635W.jpg", "TSM-NEG21C.0 700-725W.jpg"],
     "assets/jinko": ["JKM650-670N-66QL6-BDV-F1-EN.jpg", "JKM710-735N-66HL5-BDV-Z4-EN.jpg"],
-    "assets/portfolio/home": ["2.1.jpg","2.jpg", "7.jpeg", "12.jpeg", "15.png", "18.jpeg", "19.jpeg", "22.png", "31.jpeg", "32.jpeg", "33.jpeg", "34.jpeg", "35.jpeg", "42.jpg", "43.jpg", "44.jpg", "45.jpg", "46.jpg", "47.jpg", "48.jpg", "49.jpg"],
+    "assets/portfolio/home": ["2.1.jpg", "2.jpg", "7.jpeg", "12.jpeg", "15.png", "18.jpeg", "19.jpeg", "22.png", "31.jpeg", "32.jpeg", "33.jpeg", "34.jpeg", "35.jpeg", "42.jpg", "43.jpg", "44.jpg", "45.jpg", "46.jpg", "47.jpg"],
     "assets/portfolio/factory": ["1.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "8.jpg", "9.jpg", "10.jpg", "11.jpeg", "13.jpeg", "14.jpeg", "16.png", "17.jpeg", "20.jpeg", "21.jpeg", "23.jpeg", "24.png", "25.png", "26.png", "27.jpeg", "28.jpeg", "29.jpeg", "30.jpeg", "36.jpeg", "37.jpeg", "38.jpeg", "39.jpeg", "40.jpg", "41.jpg"],
 };
 
@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const slide = document.createElement('div');
                 slide.classList.add('slide');
                 if (index === 0) slide.classList.add('active');
-                slide.style.backgroundImage = `url('${file.download_url}')`;
+                slide.style.backgroundImage = `url('${file.download_url.split('/').map(segment => encodeURIComponent(segment)).join('/')}')`;
                 container.insertBefore(slide, heroContent);
             });
 
@@ -253,7 +253,7 @@ function loadSharedComponents() {
                 <span class="close-modal" onclick="closeProductModal()">&times;</span>
                 <div class="product-modal-body">
                     <div class="product-modal-image">
-                        <img id="modal-product-img" src="" alt="Product Image">
+                        <img id="modal-product-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Product Image">
                     </div>
                     <div class="product-modal-info">
                         <h2 id="modal-product-name">Product Name</h2>
@@ -283,7 +283,7 @@ function loadSharedComponents() {
             <div class="news-modal-content">
                 <span class="close-modal" onclick="closeNewsModal()">&times;</span>
                 <div class="news-modal-img-wrap">
-                    <img id="news-modal-img" src="" alt="News Image">
+                    <img id="news-modal-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="News Image">
                 </div>
                 <div class="news-modal-info">
                     <span class="news-date" id="news-modal-date"></span>
