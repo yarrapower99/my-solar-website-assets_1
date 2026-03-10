@@ -677,7 +677,7 @@ h3 {
 /* Product Gallery */
 .product-gallery {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 30px;
     justify-content: center;
 }
@@ -2119,7 +2119,7 @@ h3 {
 }
 
 /* iPad: 3 columns */
-@media (min-width: 601px) and (max-width: 1024px) {
+@media (max-width: 1024px) {
     .product-gallery {
         grid-template-columns: repeat(3, 1fr);
     }
@@ -2525,9 +2525,9 @@ h3 {
 
 .news-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 32px;
-    max-width: 1100px;
+    max-width: 1400px;
     margin: 0 auto;
 }
 
@@ -2599,8 +2599,13 @@ h3 {
     }
 
     .news-grid {
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         gap: 24px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .news-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
