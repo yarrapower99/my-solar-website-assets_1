@@ -1217,8 +1217,7 @@ h3 {
         /* Reduced from 200px */
     }
 
-    #partners-section,
-    #portfolio-sup-section {
+    #partners-section {
         padding: 60px 80px;
         /* Reduced from 200px */
     }
@@ -1321,8 +1320,7 @@ h3 {
         gap: 15px;
     }
 
-    #partners-section,
-    #portfolio-sup-section {
+    #partners-section {
         padding: 60px 40px;
     }
 
@@ -2058,7 +2056,6 @@ h3 {
 }
 
 #portfolio-sup-section {
-    padding: 120px 10% 80px;
     background: #f0fdf4;
 }
 
@@ -2080,8 +2077,7 @@ h3 {
 /* Tablet */
 @media (max-width: 1200px) {
 
-    #partners-section,
-    #portfolio-sup-section {
+    #partners-section {
         padding: 100px 50px 60px;
         /* ลดขอบซ้ายขวาจาก 200px เหลือ 50px ให้เนื้อหากว้างขึ้น */
     }
@@ -2097,8 +2093,7 @@ h3 {
 /* Mobile */
 @media (max-width: 768px) {
 
-    #partners-section,
-    #portfolio-sup-section {
+    #partners-section {
         padding: 80px 20px 50px;
     }
 
@@ -2594,10 +2589,6 @@ h3 {
 }
 
 @media (max-width: 1024px) {
-    #news {
-        padding: 60px 40px;
-    }
-
     .news-grid {
         gap: 24px;
     }
