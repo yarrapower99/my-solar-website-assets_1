@@ -2118,13 +2118,15 @@ h3 {
     }
 }
 
-@media (max-width: 480px) {
+/* iPad: 3 columns */
+@media (min-width: 601px) and (max-width: 1024px) {
     .product-gallery {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
-@media (max-width: 768px) {
+/* Mobile: 2 columns */
+@media (max-width: 600px) {
     .product-gallery {
         grid-template-columns: repeat(2, 1fr);
     }
