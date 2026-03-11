@@ -1,7 +1,7 @@
 const localImages = {
     "assets/profile": ["LINE_ALBUM_KMCH 172.2kW_260128_253.jpg"],
     "assets/logo_use": ["1.1delta.jpg", "1.sungrow.jpeg", "2.1.jinko.jpg", "2.2.longi.jpeg", "4.prysmian.png", "5.Carrier.png", "6.byd.png", "7.solis.jpg", "9.eaton.png", "8.antai.png"],
-    "assets/portfolio_sup": ["3DC06DF4-D143-4A15-B02B-A6EB13D126A0-768x768.jpeg", "74EBB765-FFAF-4AF7-A194-E650FBB9B551-768x768.jpeg", "IMG_1154-768x768.jpeg", "K.Yo_-3-768x768.png", "K.Yo_.png-768x768.jpeg", "PV-Panel-6-768x768.png"],
+    "assets/portfolio_sup": ["แม่ครัวฉลากทอง.jpg", "3DC06DF4-D143-4A15-B02B-A6EB13D126A0-768x768.jpeg", "74EBB765-FFAF-4AF7-A194-E650FBB9B551-768x768.jpeg", "IMG_1154-768x768.jpeg", "K.Yo_-3-768x768.png", "K.Yo_.png-768x768.jpeg", "PV-Panel-6-768x768.png"],
     "assets/Partners": ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg"],
     "assets/products": [
         "SG5.0RS.png",
