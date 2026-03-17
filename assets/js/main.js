@@ -21,6 +21,14 @@ const localImages = {
     "assets/portfolio/factory": ["1.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "8.jpg", "9.jpg", "10.jpg", "11.jpeg", "13.jpeg", "14.jpeg", "16.png", "17.jpeg", "20.jpeg", "21.jpeg", "23.jpeg", "24.png", "25.png", "26.png", "27.jpeg", "28.jpeg", "29.jpeg", "30.jpeg", "36.jpeg", "37.jpeg", "38.jpeg", "39.jpeg", "40.jpg", "41.jpg"],
 };
 
+// Extra images for products in the modal
+const extraProductImages = {
+    "BK863i Collaborative Touch Panel": [
+        "assets/delta/BK863i Collaborative Touch Panel_1.jpg",
+        "assets/delta/BK863i Collaborative Touch Panel_2.jpg"
+    ]
+};
+
 // Available PDF datasheets (filenames without extension must match product name/filename)
 const localPDFs = [
     "AC Charger  AC MAX - Basic.pdf",
@@ -261,6 +269,7 @@ function loadSharedComponents() {
                     </div>
                     <div class="product-modal-info">
                         <h2 id="modal-product-name">Product Name</h2>
+                        <div id="modal-additional-images" style="display:none; gap:10px; margin:10px 0; flex-wrap:wrap;"></div>
                         <p id="modal-product-desc" data-th="รายละเอียดสินค้าและข้อมูลทางเทคนิค"
                             data-en="Product details and technical specifications.">Product details and technical specifications.</p>
                         <div id="pdf-download-container"></div>
@@ -777,6 +786,48 @@ function openProductModal(imgSrc, productName) {
     modalImg.src = imgSrc;
     modalName.textContent = productName;
     pdfContainer.innerHTML = '';
+
+    // Handle additional product images (thumbnails)
+    const additionalImagesContainer = document.getElementById("modal-additional-images");
+    if (additionalImagesContainer) {
+        additionalImagesContainer.innerHTML = '';
+        additionalImagesContainer.style.display = 'none';
+
+        const cleanProductName = productName.trim().toLowerCase();
+        let extras = null;
+        for (const key in extraProductImages) {
+            if (cleanProductName.includes(key.toLowerCase().trim())) {
+                extras = extraProductImages[key];
+                break;
+            }
+        }
+
+        if (extras && extras.length > 0) {
+            additionalImagesContainer.style.display = 'flex';
+            const allSrcs = [imgSrc, ...extras];
+            allSrcs.forEach((src, i) => {
+                const thumb = document.createElement("img");
+                thumb.src = src;
+                thumb.style.width = "70px";
+                thumb.style.height = "70px";
+                thumb.style.objectFit = "cover";
+                thumb.style.cursor = "pointer";
+                thumb.style.borderRadius = "6px";
+                thumb.style.border = i === 0 ? "2px solid #059669" : "2px solid #ccc";
+                thumb.style.transition = "border 0.2s ease, transform 0.2s ease";
+                thumb.onmouseover = () => thumb.style.transform = "scale(1.08)";
+                thumb.onmouseout = () => thumb.style.transform = "scale(1)";
+                thumb.onclick = () => {
+                    modalImg.src = src;
+                    Array.from(additionalImagesContainer.children).forEach(c => c.style.border = "2px solid #ccc");
+                    thumb.style.border = "2px solid #059669";
+                };
+                additionalImagesContainer.appendChild(thumb);
+            });
+        }
+    }
+
+
 
     // Check for matching PDF using robust helper
     const matchingPDF = findMatchingPDF(imgSrc, productName);
