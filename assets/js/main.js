@@ -29,6 +29,16 @@ const extraProductImages = {
     ]
 };
 
+// Define products that should show multiple images inside a single card
+// key = product name (no extension), value = array of ALL image paths to show in the card
+const productImageGroups = {
+    "BK863i Collaborative Touch Panel": [
+        "assets/delta/BK863i Collaborative Touch Panel.jpg",
+        "assets/delta/BK863i Collaborative Touch Panel_1.jpg",
+        "assets/delta/BK863i Collaborative Touch Panel_2.jpg"
+    ]
+};
+
 // Available PDF datasheets (filenames without extension must match product name/filename)
 const localPDFs = [
     "AC Charger  AC MAX - Basic.pdf",
@@ -555,10 +565,9 @@ function createProductCard(file) {
 
     const name = document.createElement('div');
     name.className = 'product-name';
-    // Robustly remove extension and preserve internal dots/hyphens
     const lastDotIndex = file.name.lastIndexOf('.');
     const cleanName = (lastDotIndex !== -1 ? file.name.substring(0, lastDotIndex) : file.name)
-        .replace(/_/g, ' '); // Only replace underscores with spaces
+        .replace(/_/g, ' ');
     name.textContent = cleanName;
 
     productItem.appendChild(img);
@@ -576,6 +585,91 @@ function createProductCard(file) {
 
     return productItem;
 }
+
+// Create a grouped card — same look as .product-item but with 2 images stacked top / bottom
+function createGroupedProductCard(productName, imagePaths) {
+    // Only show first 2 images on the card face
+    const displayPaths = imagePaths.slice(0, 2);
+
+    // Reuse the exact same class so CSS hover, shadow, ::after bar all apply automatically
+    const card = document.createElement('div');
+    card.className = 'product-item';
+    card.style.cursor = 'pointer';
+
+    // ── Two images stacked top / bottom ──────────────────────────────────────
+    const imgStack = document.createElement('div');
+    imgStack.style.cssText = [
+        'display: grid',
+        'grid-template-rows: 1fr 1fr',   // equal height top & bottom
+        'gap: 4px',
+        'width: 100%',
+        'height: 240px',                  // same height as .product-item img
+        'border-radius: 12px',
+        'overflow: hidden',
+        'background: #fbfbfb'
+    ].join(';');
+
+    displayPaths.forEach((src, i) => {
+        const wrap = document.createElement('div');
+        wrap.style.cssText = 'overflow:hidden; width:100%;';
+
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = `${productName}${i > 0 ? ' ' + (i + 1) : ''}`;
+        img.loading = 'lazy';
+        // Override .product-item img sizing — fit inside each half
+        img.style.cssText = [
+            'width: 100%',
+            'height: 100%',
+            'object-fit: contain',
+            'display: block',
+            'padding: 8px',
+            'box-sizing: border-box',
+            'background: #fbfbfb',
+            'transition: transform 0.5s ease'
+        ].join(';');
+        observer.observe(img);
+
+        wrap.appendChild(img);
+        imgStack.appendChild(wrap);
+    });
+
+    // ── Product name — same class as normal cards ─────────────────────────────
+    const nameEl = document.createElement('div');
+    nameEl.className = 'product-name';
+    nameEl.textContent = productName;
+
+    // ── PDF indicator — same class as normal cards ────────────────────────────
+    const matchingPDF = findMatchingPDF(imagePaths[0], productName);
+    if (matchingPDF) {
+        const pdfIndicator = document.createElement('div');
+        pdfIndicator.className = 'pdf-indicator';
+        pdfIndicator.innerHTML = '<i class="lni lni-download"></i>';
+        card.title = 'Click to view datasheet';
+        card.appendChild(imgStack);
+        card.appendChild(nameEl);
+        card.appendChild(pdfIndicator);
+    } else {
+        card.appendChild(imgStack);
+        card.appendChild(nameEl);
+    }
+
+    // Hover: scale both images together (piggyback on CSS .product-item:hover img)
+    card.addEventListener('mouseover', () => {
+        imgStack.querySelectorAll('img').forEach(img => img.style.transform = 'scale(1.05)');
+    });
+    card.addEventListener('mouseout', () => {
+        imgStack.querySelectorAll('img').forEach(img => img.style.transform = 'scale(1)');
+    });
+
+    // Clicking opens modal (modal shows all thumbnails via extraProductImages)
+    card.onclick = () => openProductModal(imagePaths[0], productName);
+
+    return card;
+}
+
+
+
 
 // Generate Product Images
 const productContainer = document.getElementById('product-gallery');
@@ -634,9 +728,23 @@ const deltaContainer = document.getElementById('delta-gallery');
 if (deltaContainer) {
     loadLocalImages("assets/delta", deltaContainer, (images, container) => {
         const fragment = document.createDocumentFragment();
+        const rendered = new Set(); // track products already rendered as grouped cards
+
         images.forEach(file => {
-            fragment.appendChild(createProductCard(file));
+            const lastDot = file.name.lastIndexOf('.');
+            const rawName = lastDot !== -1 ? file.name.substring(0, lastDot) : file.name;
+
+            if (productImageGroups[rawName]) {
+                // This file is the "main" image of a grouped product — render one grouped card
+                if (!rendered.has(rawName)) {
+                    rendered.add(rawName);
+                    fragment.appendChild(createGroupedProductCard(rawName, productImageGroups[rawName]));
+                }
+            } else {
+                fragment.appendChild(createProductCard(file));
+            }
         });
+
         container.appendChild(fragment);
         bindGalleryLightbox('delta-gallery');
     });
