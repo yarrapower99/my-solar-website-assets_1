@@ -1,8 +1,8 @@
 const localImages = {
     "assets/profile": ["LINE_ALBUM_KMCH 172.2kW_260128_253.jpg"],
     "assets/logo_use": ["1.1delta.jpg", "1.sungrow.jpeg", "2.1.jinko.jpg", "2.2.longi.jpeg", "4.prysmian.png", "5.Carrier.png", "6.byd.png", "7.solis.jpg", "9.eaton.png", "8.antai.png"],
-    "assets/portfolio_sup": ["แม่ครัวฉลากทอง.jpg", "3DC06DF4-D143-4A15-B02B-A6EB13D126A0-768x768.jpeg", "74EBB765-FFAF-4AF7-A194-E650FBB9B551-768x768.jpeg", "IMG_1154-768x768.jpeg", "K.Yo_-3-768x768.png", "K.Yo_.png-768x768.jpeg", "PV-Panel-6-768x768.png"],
-    "assets/Partners": ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg"],
+    "assets/portfolio_sup": ["11.บ้านคุณเบล.jpg", "10.บ้านคุณตง.jpg", "9.บ้านคุณเกียรติ2.jpg", "8.บ้านคุณเกียรติ1.jpg", "7.แม่ครัวฉลากทอง.jpg", "6.KMCH.jpeg", "่5.JSplastic.jpeg", "4.บ้านคุณโจ.jpeg", "3.WashXpress.png", "2.DPU.jpeg", "1.โรงพยาบาล มิตรไมตรี.png"],
+    "assets/Partners": ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "K.Yo_-1-768x679.jpeg", "K.Yo_-2-768x690.jpeg", "K.Yo_-2-768x768.png", "PV-Panel-7-768x768.png", "PV-Panel-8-768x768.png", "PV-Panel.png-1-768x671.jpeg", "PV-Panel.png-2-768x687.jpeg"],
     "assets/products": [
         "SG5.0RS.png",
         "SG10RT-P2.png",
@@ -17,7 +17,7 @@ const localImages = {
     "assets/trina": ["TSM-NEG19RC.20 610-635W.jpg", "TSM-NEG21C.0 700-725W.jpg"],
     "assets/jinko": ["JKM650-670N-66QL6-BDV-F1-EN.jpg", "JKM710-735N-66HL5-BDV-Z4-EN.jpg"],
     "assets/delta": ["AC Charger  AC MAX - Basic.png", "AC Charger  AC MAX - Smart.png", "BK863i Collaborative Touch Panel.jpg"],
-    "assets/portfolio/home": ["2.1.jpg", "2.jpg", "7.jpeg", "12.jpeg", "15.png", "18.jpeg", "19.jpeg", "22.png", "31.jpeg", "32.jpeg", "33.jpeg", "34.jpeg", "35.jpeg", "42.jpg", "43.jpg", "44.jpg", "45.jpg", "46.jpg", "47.jpg"],
+    "assets/portfolio/home": ["2.1.jpg", "2.jpg", "7.jpeg", "12.jpeg", "15.png", "18.jpeg", "19.jpeg", "22.png", "31.jpeg", "32.jpeg", "33.jpeg", "34.jpeg", "35.jpeg", "42.jpg", "43.jpg", "44.jpg", "45.jpg", "46.jpg", "47.jpg", "48.jpg", "49.jpg", "5.jpeg", "8.jpeg", "9.jpg", "S__4776134.jpg"],
     "assets/portfolio/factory": ["1.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "8.jpg", "9.jpg", "10.jpg", "11.jpeg", "13.jpeg", "14.jpeg", "16.png", "17.jpeg", "20.jpeg", "21.jpeg", "23.jpeg", "24.png", "25.png", "26.png", "27.jpeg", "28.jpeg", "29.jpeg", "30.jpeg", "36.jpeg", "37.jpeg", "38.jpeg", "39.jpeg", "40.jpg", "41.jpg"],
 };
 
@@ -347,15 +347,39 @@ const gallery = document.getElementById('portfolio-sup-gallery');
 
 if (gallery) {
     loadLocalImages("assets/portfolio_sup", gallery, (images, container) => {
-        images.forEach(file => {
+        const maxVisible = 8;
+
+        images.forEach((file, index) => {
             const img = document.createElement('img');
             img.src = file.download_url;
             img.alt = file.name;
             img.loading = "lazy";
+            if (index >= maxVisible) {
+                img.style.display = 'none';
+                img.classList.add('portfolio-sup-hidden');
+            }
             gallery.appendChild(img);
         });
+
+        // Show the "View More" button if there are more than maxVisible images
+        if (images.length > maxVisible) {
+            const loadMoreBtn = document.getElementById('portfolio-sup-loadmore');
+            if (loadMoreBtn) loadMoreBtn.style.display = 'block';
+        }
+
         bindGalleryLightbox('portfolio-sup-gallery');
     });
+}
+
+// Show all hidden portfolio-sup images
+function showAllPortfolioSup() {
+    const hiddenImages = document.querySelectorAll('#portfolio-sup-gallery .portfolio-sup-hidden');
+    hiddenImages.forEach(img => {
+        img.style.display = '';
+        img.classList.remove('portfolio-sup-hidden');
+    });
+    const loadMoreBtn = document.getElementById('portfolio-sup-loadmore');
+    if (loadMoreBtn) loadMoreBtn.style.display = 'none';
 }
 
 // Partners Gallery

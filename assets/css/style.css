@@ -2024,8 +2024,15 @@ h3 {
     margin-top: 5px;
 }
 
-#partners-gallery,
+/* ===== Portfolio Sup Gallery — responsive grid ===== */
 #portfolio-sup-gallery {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-top: 20px;
+}
+
+#partners-gallery {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 32px;
@@ -2036,9 +2043,7 @@ h3 {
 #portfolio-sup-gallery img {
     width: 100%;
     aspect-ratio: 1 / 1;
-    /* 🔥 ตรงกับ 768x768 */
     object-fit: cover;
-    /* 🔥 เต็ม ไม่เห็นขอบ */
     border-radius: 22px;
     box-shadow: 0 14px 35px rgba(0, 0, 0, 0.18);
     transition: transform 0.35s ease, box-shadow 0.35s ease;
@@ -2079,14 +2084,16 @@ h3 {
 
     #partners-section {
         padding: 100px 50px 60px;
-        /* ลดขอบซ้ายขวาจาก 200px เหลือ 50px ให้เนื้อหากว้างขึ้น */
     }
 
-    #partners-gallery,
+    #partners-gallery {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+
     #portfolio-sup-gallery {
         grid-template-columns: repeat(3, 1fr);
         gap: 20px;
-        /* ลดช่องว่างระหว่างรูปเล็กน้อยเพื่อให้รูปดูใหญ่ขึ้น */
     }
 }
 
@@ -2100,7 +2107,11 @@ h3 {
     #partners-gallery,
     #portfolio-sup-gallery {
         grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
+        gap: 16px;
+    }
+
+    #portfolio-sup-gallery img {
+        border-radius: 14px;
     }
 }
 
@@ -2110,6 +2121,11 @@ h3 {
     #partners-gallery,
     #portfolio-sup-gallery {
         grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    #portfolio-sup-gallery img {
+        border-radius: 12px;
     }
 }
 
@@ -2602,7 +2618,7 @@ h3 {
 
 @media (max-width: 768px) {
     .news-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
         gap: 20px;
     }
 
