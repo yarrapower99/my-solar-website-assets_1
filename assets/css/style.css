@@ -2602,6 +2602,12 @@ h3 {
     line-height: 1.75;
     color: #374151;
     margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 @media (max-width: 1024px) {
