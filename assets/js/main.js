@@ -305,9 +305,12 @@ function loadSharedComponents() {
         <div id="news-modal" class="modal" onclick="if(event.target===this)closeNewsModal()">
             <div class="news-modal-content">
                 <span class="close-modal" onclick="closeNewsModal()">&times;</span>
-                <div class="news-modal-img-wrap">
+                <div class="news-modal-img-wrap" style="position: relative;">
+                    <a class="prev" onclick="changeNewsSlide(-1)" style="display:none;">&#10094;</a>
                     <img id="news-modal-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="News Image">
+                    <a class="next" onclick="changeNewsSlide(1)" style="display:none;">&#10095;</a>
                 </div>
+                <div id="news-modal-additional-images" style="display:none; gap:10px; margin:10px 0; flex-wrap:wrap; justify-content:center;"></div>
                 <div class="news-modal-info">
                     <span class="news-date" id="news-modal-date"></span>
                     <p id="news-modal-text"></p>
@@ -983,10 +986,79 @@ function closeProductModal() {
     document.body.style.overflow = "auto";
 }
 
+let currentNewsImages = [];
+let currentNewsIndex = 0;
+
+function updateNewsModalImage() {
+    const mainImg = document.getElementById("news-modal-img");
+    if (mainImg && currentNewsImages.length > 0) {
+        mainImg.src = currentNewsImages[currentNewsIndex];
+    }
+    const additionalContainer = document.getElementById("news-modal-additional-images");
+    if (additionalContainer && additionalContainer.children.length > 0) {
+        Array.from(additionalContainer.children).forEach((thumb, i) => {
+            thumb.style.border = i === currentNewsIndex ? "2px solid #059669" : "2px solid #ccc";
+        });
+    }
+}
+
+function changeNewsSlide(step) {
+    if (currentNewsImages.length <= 1) return;
+    currentNewsIndex += step;
+    if (currentNewsIndex < 0) currentNewsIndex = currentNewsImages.length - 1;
+    if (currentNewsIndex >= currentNewsImages.length) currentNewsIndex = 0;
+    updateNewsModalImage();
+}
+
 function openNewsModal(imgSrc, date, text) {
     const modal = document.getElementById("news-modal");
     if (!modal) return;
-    document.getElementById("news-modal-img").src = imgSrc;
+    
+    currentNewsImages = imgSrc.split(',');
+    currentNewsIndex = 0;
+    
+    updateNewsModalImage();
+    
+    const prevBtn = document.querySelector("#news-modal .prev");
+    const nextBtn = document.querySelector("#news-modal .next");
+    if (prevBtn && nextBtn) {
+        if (currentNewsImages.length > 1) {
+            prevBtn.style.display = "flex";
+            nextBtn.style.display = "flex";
+        } else {
+            prevBtn.style.display = "none";
+            nextBtn.style.display = "none";
+        }
+    }
+    
+    const additionalContainer = document.getElementById("news-modal-additional-images");
+    if (additionalContainer) {
+        additionalContainer.innerHTML = '';
+        if (currentNewsImages.length > 1) {
+            additionalContainer.style.display = 'flex';
+            currentNewsImages.forEach((src, i) => {
+                const thumb = document.createElement("img");
+                thumb.src = src;
+                thumb.style.width = "70px";
+                thumb.style.height = "70px";
+                thumb.style.objectFit = "cover";
+                thumb.style.cursor = "pointer";
+                thumb.style.borderRadius = "6px";
+                thumb.style.border = i === currentNewsIndex ? "2px solid #059669" : "2px solid #ccc";
+                thumb.style.transition = "border 0.2s ease, transform 0.2s ease";
+                thumb.onmouseover = () => thumb.style.transform = "scale(1.08)";
+                thumb.onmouseout = () => thumb.style.transform = "scale(1)";
+                thumb.onclick = () => {
+                    currentNewsIndex = i;
+                    updateNewsModalImage();
+                };
+                additionalContainer.appendChild(thumb);
+            });
+        } else {
+            additionalContainer.style.display = 'none';
+        }
+    }
+
     document.getElementById("news-modal-date").textContent = date;
     document.getElementById("news-modal-text").textContent = text;
     modal.style.display = "flex";

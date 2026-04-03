@@ -98,6 +98,24 @@
             <h2 data-th="ข่าวสารล่าสุด" data-en="Latest News">ข่าวสารล่าสุด</h2>
             <div class="news-grid">
                 <div class="news-card" style="cursor:pointer;"
+                    onclick="openNewsModal('assets/News/Eaton1.jpg,assets/News/Eaton2.jpg','02/04/2026','EATON Electric (Thailand) ลงนามความร่วมมือเพื่อสนับสนุนข้อมูล การอบรม รวมถึงอุปกรณ์คุณภาพ และระบบต่างๆที่เกี่ยวข้องกับธุรกิจของ Yarra Power ทั้งในส่วนของการติดตั้งระบบพลังงานสะอาด และระบบ Data Center ซึ่ง EATON Electric เป็นผู้เชี่ยวชาญและมีบทบาทอย่างมากในปัจจุบันสำหรับอุตสาหกรรมเหล่านี้')">
+                    <div class="news-img-wrap">
+                        <img src="assets/News/Eaton1.jpg" alt="Eaton Partnership">
+                    </div>
+                    <div class="news-body">
+                        <span class="news-date">02/04/2026</span>
+                        <p class="news-text"
+                            data-th="EATON Electric (Thailand) ลงนามความร่วมมือเพื่อสนับสนุนข้อมูล การอบรม รวมถึงอุปกรณ์คุณภาพ และระบบต่างๆที่เกี่ยวข้องกับธุรกิจของ Yarra Power ทั้งในส่วนของการติดตั้งระบบพลังงานสะอาด และระบบ Data Center ซึ่ง EATON Electric เป็นผู้เชี่ยวชาญและมีบทบาทอย่างมากในปัจจุบันสำหรับอุตสาหกรรมเหล่านี้"
+                            data-en="EATON Electric (Thailand) has entered into a partnership agreement to support Yarra Power with technical information, training, high-quality equipment, and various systems related to its business, particularly in clean energy system installations and data centers. EATON Electric is a leading expert with a significant role in these industries today.">
+                            EATON Electric (Thailand) ลงนามความร่วมมือเพื่อสนับสนุนข้อมูล การอบรม รวมถึงอุปกรณ์คุณภาพ
+                            และระบบต่างๆที่เกี่ยวข้องกับธุรกิจของ Yarra Power ทั้งในส่วนของการติดตั้งระบบพลังงานสะอาด
+                            และระบบ Data Center ซึ่ง EATON Electric
+                            เป็นผู้เชี่ยวชาญและมีบทบาทอย่างมากในปัจจุบันสำหรับอุตสาหกรรมเหล่านี้
+                        </p>
+                    </div>
+                </div>
+
+                <div class="news-card" style="cursor:pointer;"
                     onclick="openNewsModal('assets/News/Delta Electronics.jpg','09/03/2026','Delta Electronics ลงนามเป็นพันธมิตรกับ Yarra Power สำหรับความร่วมมือด้าน Equipment and Solution ในส่วนของระบบพลังงานสะอาด ระบบกักเก็บพลังงาน BESS และ Data Center')">
                     <div class="news-img-wrap">
                         <img src="assets/News/Delta Electronics.jpg" alt="Delta Electronics Partnership">
@@ -187,7 +205,8 @@
                 <!-- Images will be loaded here -->
             </div>
             <div id="portfolio-sup-loadmore" style="margin-top: 40px; display: none;">
-                <button class="load-more-btn" onclick="showAllPortfolioSup()" data-th="ดูผลงานเพิ่มเติม" data-en="View More Projects">ดูผลงานเพิ่มเติม</button>
+                <button class="load-more-btn" onclick="showAllPortfolioSup()" data-th="ดูผลงานเพิ่มเติม"
+                    data-en="View More Projects">ดูผลงานเพิ่มเติม</button>
             </div>
         </div>
     </div>
