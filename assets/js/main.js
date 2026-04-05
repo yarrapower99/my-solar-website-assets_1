@@ -1,7 +1,7 @@
 const localImages = {
     "assets/profile": ["LINE_ALBUM_KMCH 172.2kW_260128_253.jpg"],
     "assets/logo_use": ["1.1delta.jpg", "1.sungrow.jpeg", "2.1.jinko.jpg", "2.2.longi.jpeg", "4.prysmian.png", "5.Carrier.png", "6.byd.png", "7.solis.jpg", "9.eaton.png", "8.antai.png"],
-    "assets/portfolio_sup": ["11.บ้านคุณเบล.jpg", "10.บ้านคุณตง.jpg", "9.บ้านคุณเกียรติ2.jpg", "8.บ้านคุณเกียรติ1.jpg", "7.แม่ครัวฉลากทอง.jpg", "6.KMCH.jpeg", "่5.JSplastic.jpeg", "4.บ้านคุณโจ.jpeg", "3.WashXpress.png", "2.DPU.jpeg", "1.โรงพยาบาล มิตรไมตรี.png"],
+    "assets/portfolio_sup": ["12.js plastic.jpg","11.บ้านคุณเบล.jpg", "10.บ้านคุณตง.jpg", "9.บ้านคุณเกียรติ2.jpg", "8.บ้านคุณเกียรติ1.jpg", "7.แม่ครัวฉลากทอง.jpg", "6.KMCH.jpeg", "่5.JSplastic.jpeg", "4.บ้านคุณโจ.jpeg", "3.WashXpress.png", "2.DPU.jpeg", "1.โรงพยาบาล มิตรไมตรี.png"],
     "assets/Partners": ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "K.Yo_-1-768x679.jpeg", "K.Yo_-2-768x690.jpeg", "K.Yo_-2-768x768.png", "PV-Panel-7-768x768.png", "PV-Panel-8-768x768.png", "PV-Panel.png-1-768x671.jpeg", "PV-Panel.png-2-768x687.jpeg"],
     "assets/products": [
         "SG5.0RS.png",
