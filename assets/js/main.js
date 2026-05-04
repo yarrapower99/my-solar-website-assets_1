@@ -149,7 +149,32 @@ document.addEventListener("DOMContentLoaded", () => {
     if (typeof updateLanguage === "function") {
         updateLanguage();
     }
+
+    // News Load More Logic
+    const newsCards = document.querySelectorAll('.news-grid .news-card');
+    const maxVisibleNews = 6;
+    if (newsCards.length > maxVisibleNews) {
+        newsCards.forEach((card, index) => {
+            if (index >= maxVisibleNews) {
+                card.style.display = 'none';
+                card.classList.add('news-hidden');
+            }
+        });
+        const loadMoreBtn = document.getElementById('news-loadmore');
+        if (loadMoreBtn) loadMoreBtn.style.display = 'block';
+    }
 });
+
+// Show all hidden news
+function showAllNews() {
+    const hiddenNews = document.querySelectorAll('.news-grid .news-hidden');
+    hiddenNews.forEach(card => {
+        card.style.display = '';
+        card.classList.remove('news-hidden');
+    });
+    const loadMoreBtn = document.getElementById('news-loadmore');
+    if (loadMoreBtn) loadMoreBtn.style.display = 'none';
+}
 
 // Shared Components Loader (Footer, Buttons, Modals, Navbar)
 function loadSharedComponents() {
@@ -1010,7 +1035,7 @@ function changeNewsSlide(step) {
     updateNewsModalImage();
 }
 
-function openNewsModal(imgSrc, date, text) {
+function openNewsModal(imgSrc, date, cardElementOrText) {
     const modal = document.getElementById("news-modal");
     if (!modal) return;
 
@@ -1060,7 +1085,25 @@ function openNewsModal(imgSrc, date, text) {
     }
 
     document.getElementById("news-modal-date").textContent = date;
-    document.getElementById("news-modal-text").textContent = text;
+    
+    let textTh = '';
+    let textEn = '';
+    if (typeof cardElementOrText === 'string') {
+        textTh = cardElementOrText;
+        textEn = cardElementOrText;
+    } else if (cardElementOrText) {
+        const newsTextEl = cardElementOrText.querySelector('.news-text');
+        if (newsTextEl) {
+            textTh = newsTextEl.getAttribute('data-th') || newsTextEl.textContent;
+            textEn = newsTextEl.getAttribute('data-en') || textTh;
+        }
+    }
+
+    const modalText = document.getElementById("news-modal-text");
+    modalText.setAttribute('data-th', textTh);
+    modalText.setAttribute('data-en', textEn);
+    modalText.textContent = (typeof currentLang !== 'undefined' && currentLang === 'en') ? textEn : textTh;
+
     modal.style.display = "flex";
     document.body.style.overflow = "hidden";
 }
