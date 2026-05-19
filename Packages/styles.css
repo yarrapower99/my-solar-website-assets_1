@@ -984,6 +984,7 @@ td:first-child {
 }
 
 .package-btn {
+    display: block;
     width: 100%;
     padding: 14px 20px;
     border-radius: 12px;
@@ -992,8 +993,10 @@ td:first-child {
     font-weight: 700;
     cursor: pointer;
     transition: all 0.2s ease;
-    background: #0f172a; /* Dark blue/slate button */
+    background: #0f172a;
     color: #fff;
+    text-align: center;
+    text-decoration: none;
 }
 
 .package-btn:hover {
