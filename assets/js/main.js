@@ -199,6 +199,8 @@ function loadSharedComponents() {
                         data-th="หน้าแรก" data-en="Home">Home</span></a>
                 <a href="products.html" data-th="สินค้า" data-en="Products"><i class="lni lni-grid-alt"></i> <span
                         data-th="สินค้า" data-en="Products">Products</span></a>
+                <a href="packages.html" data-th="แพ็คเกจ" data-en="Packages"><i class="lni lni-package"></i> <span
+                        data-th="แพ็คเกจ" data-en="Packages">Packages</span></a>
                 <a href="portfolio.html" data-th="ผลงาน" data-en="Portfolio"><i class="lni lni-briefcase"></i> <span
                         data-th="ผลงาน" data-en="Portfolio">Portfolio</span></a>
                 <a href="contact.html" data-th="ติดต่อเรา" data-en="Contact Us"><i class="lni lni-phone"></i> <span

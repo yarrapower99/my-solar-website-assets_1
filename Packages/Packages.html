@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="th">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>คำนวณความคุ้มค่าโซลาร์เซลล์</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+    <main class="page-shell">
+        <header class="hero">
+            <div class="solar-mark" aria-hidden="true">
+                <span></span>
+            </div>
+            <h1>คำนวณความคุ้มค่าโซลาร์เซลล์</h1>
+            <p>กรอกข้อมูลการใช้ไฟฟ้าของคุณ เพื่อวิเคราะห์ระบบที่เหมาะสมและความคุ้มทุน</p>
+        </header>
+
+        <section class="calculator-grid" aria-label="เครื่องคำนวณความคุ้มค่าโซลาร์เซลล์">
+            <form class="input-card" id="solar-form" novalidate>
+                <div class="field-group">
+                    <label for="monthly-bill">ค่าไฟฟ้าต่อเดือน (บาท) <strong>*</strong></label>
+                    <input id="monthly-bill" name="monthlyBill" type="number" min="500" step="100"
+                        placeholder="เช่น 3000" required />
+                    <p class="field-hint success" id="bill-hint" style="display: none;"></p>
+                </div>
+
+                <div class="field-group">
+                    <label for="building-type">ประเภทอาคาร <strong>*</strong></label>
+                    <select id="building-type" name="buildingType" required>
+                        <option value="" disabled selected>เลือกประเภทอาคาร</option>
+                        <option value="factory">โรงงานอุตสาหกรรม</option>
+                        <option value="office">สำนักงาน</option>
+                        <option value="retail">ร้านค้า / ห้างสรรพสินค้า</option>
+                        <option value="home">บ้านพักอาศัย</option>
+                        <option value="warehouse">คลังสินค้า</option>
+                    </select>
+                    <p class="field-hint success" id="building-hint" style="display: none;"></p>
+                </div>
+
+                <fieldset class="field-group">
+                    <legend>ระบบไฟฟ้าของบ้าน</legend>
+                    <div class="radio-row">
+                        <label><input type="radio" name="phase" value="single" /> <span>1 เฟส</span></label>
+                        <label><input type="radio" name="phase" value="three" checked /> <span>3 เฟส</span></label>
+                        <label><input type="radio" name="phase" value="unknown" /> <span>ไม่ทราบ</span></label>
+                    </div>
+                </fieldset>
+
+                <div class="field-group">
+                    <label for="daytime-use">อัตราส่วนการใช้ไฟฟ้าช่วงกลางวัน (%)</label>
+                    <div class="range-wrap">
+                        <span class="range-icon sun" aria-hidden="true"></span>
+                        <input id="daytime-use" name="daytimeUse" type="range" min="10" max="95" value="50" />
+                        <span class="range-icon moon" aria-hidden="true"></span>
+                    </div>
+                    <div class="usage-split" aria-live="polite">
+                        <div>
+                            <span>ช่วงกลางวัน</span>
+                            <strong id="day-percent">50%</strong>
+                        </div>
+                        <div>
+                            <span>ช่วงกลางคืน</span>
+                            <strong id="night-percent">50%</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="note-box">
+                    <div class="note-title">
+                        <span class="info-dot">i</span>
+                        <strong>เคล็ดลับการใช้งาน</strong>
+                    </div>
+                    <p><b>1</b> ค่าไฟฟ้าต่ำกว่า 500 บาท อาจไม่คุ้มค่าติดตั้ง</p>
+                    <p><b>2</b> ผลการคำนวณเป็นการประมาณการเบื้องต้น ราคาและผลประหยัดจริงอาจแตกต่างตามสภาพหน้างาน</p>
+                    <p><b>3</b> ติดต่อเราเพื่อรับคำปรึกษาพร้อมวิศวกร</p>
+                </aside>
+
+                <button class="primary-button" type="submit">
+                    <span aria-hidden="true">▦</span>
+                    คำนวณความคุ้มค่า
+                </button>
+            </form>
+
+            <section class="results-area" aria-live="polite">
+                <!-- Placeholder state when not calculated yet -->
+                <div id="results-placeholder" class="results-placeholder">
+                    <div class="placeholder-icon">
+                        <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor"
+                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="5" fill="currentColor"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                    </div>
+                    <h2>พร้อมคำนวณ</h2>
+                    <p>กรอกข้อมูลด้านซ้ายแล้วกดคำนวณ</p>
+                </div>
+
+                <!-- Results container, hidden by default -->
+                <div id="results-content" style="display: none;">
+                    <div class="success-banner">
+                        <div class="check-ring" aria-hidden="true"></div>
+                        <div>
+                            <h2>คำนวณเสร็จแล้ว!</h2>
+                            <p>ระบบโซลาร์เซลล์ที่เหมาะสมกับคุณ</p>
+                        </div>
+                    </div>
+
+                    <nav class="tabs" aria-label="มุมมองผลลัพธ์">
+                        <button class="tab active" type="button" data-tab="summary">สรุป</button>
+                        <button class="tab" type="button" data-tab="chart">กราฟ</button>
+                        <button class="tab" type="button" data-tab="years">25 ปี</button>
+                    </nav>
+
+                    <div class="tab-panel active" id="summary-panel">
+                        <div class="result-grid">
+                            <article class="result-card recommend-card">
+                                <h3><span class="target-icon" aria-hidden="true"></span>ระบบที่แนะนำ</h3>
+                                <div class="stat-grid">
+                                    <div><span>ขนาดระบบ</span><strong id="system-size">0 kW</strong></div>
+                                    <div><span>จำนวนแผง</span><strong id="panel-count">0 แผง</strong></div>
+                                    <div><span>พื้นที่หลังคา</span><strong id="roof-area">0 ตร.ม.</strong></div>
+                                    <div><span>กำลังแผง</span><strong id="panel-watt">650W</strong></div>
+                                </div>
+                            </article>
+
+                            <article class="result-card saving-card">
+                                <h3><span aria-hidden="true">↗</span> ผลประหยัด</h3>
+                                <div class="saving-grid">
+                                    <div><span>ประหยัด/เดือน</span><strong id="monthly-saving">฿0</strong></div>
+                                    <div><span>ประหยัด/ปี</span><strong id="yearly-saving">฿0</strong></div>
+                                    <div><span>ลดค่าไฟได้</span><strong id="saving-rate">0%</strong></div>
+                                    <div><span>คืนทุน</span><strong id="payback">0 ปี</strong></div>
+                                </div>
+                            </article>
+
+                            <article class="result-card investment-card">
+                                <h3><span class="money-icon" aria-hidden="true">฿</span>การลงทุน</h3>
+                                <dl>
+                                    <div>
+                                        <dt>ราคาระบบ</dt>
+                                        <dd id="system-cost">฿0</dd>
+                                    </div>
+                                    <div>
+                                        <dt>ราคาต่อ kW</dt>
+                                        <dd id="cost-per-kw">฿0</dd>
+                                    </div>
+                                </dl>
+                            </article>
+
+                            <article class="result-card roi-card">
+                                <h3><span aria-hidden="true">▥</span>สรุป 25 ปี</h3>
+                                <dl>
+                                    <div>
+                                        <dt>ประหยัดรวม</dt>
+                                        <dd id="total-saving">฿0</dd>
+                                    </div>
+                                    <div>
+                                        <dt>กำไรสุทธิ</dt>
+                                        <dd id="net-profit">฿0</dd>
+                                    </div>
+                                    <div>
+                                        <dt>ROI</dt>
+                                        <dd id="roi">0%</dd>
+                                    </div>
+                                </dl>
+                            </article>
+                        </div>
+
+                        <article class="environment-card">
+                            <h3><span class="leaf-icon" aria-hidden="true"></span>ผลกระทบสิ่งแวดล้อม (ต่อปี)</h3>
+                            <div class="environment-grid">
+                                <div><span>ลด CO₂</span><strong id="co2">0.0 ตัน</strong></div>
+                                <div><span>เทียบเท่าปลูกต้นไม้</span><strong id="trees">0 ต้น</strong></div>
+                                <div><span>ผลิตไฟฟ้าสะอาด</span><strong id="clean-energy">0 kWh</strong></div>
+                            </div>
+                        </article>
+                        <p class="calculation-note">* ผลการคำนวณเป็นการประมาณการเบื้องต้น
+                            ราคาและผลประหยัดจริงอาจแตกต่างตามสภาพหน้างาน</p>
+                    </div>
+
+                    <div class="tab-panel" id="chart-panel">
+                        <article class="result-card chart-card">
+                            <div class="chart-heading">
+                                <h3>กราฟผลตอบแทนสะสม</h3>
+                                <p>แสดงเงินลงทุนเทียบกับเงินประหยัดสะสมตลอด 25 ปี</p>
+                            </div>
+                            <canvas id="saving-chart" width="760" height="360"
+                                aria-label="กราฟผลตอบแทนสะสม 25 ปี"></canvas>
+                        </article>
+                    </div>
+
+                    <div class="tab-panel" id="years-panel">
+                        <article class="result-card table-card">
+                            <h3>ประมาณการรายปี</h3>
+                            <div class="table-scroll">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>ปี</th>
+                                            <th>ประหยัดต่อปี</th>
+                                            <th>สะสมสุทธิ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="year-table"></tbody>
+                                </table>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <!-- Packages Section -->
+        <section class="packages-section" id="packages-section">
+            <header class="packages-header">
+                <h2>แพ็คเกจติดตั้งโซลาร์เซลล์</h2>
+                <p>เลือกแพ็คเกจที่ตอบโจทย์การใช้งานและคุ้มค่าที่สุดสำหรับคุณ</p>
+            </header>
+
+            <div class="packages-tabs">
+                <button type="button" class="package-tab active" data-tab="on-grid">On-Grid</button>
+                <button type="button" class="package-tab" data-tab="hybrid">Hybrid</button>
+                <button type="button" class="package-tab" data-tab="off-grid">Off-Grid</button>
+            </div>
+
+            <!-- On-Grid Tab Content -->
+            <div class="package-grid active" id="pkg-on-grid">
+                <!-- Starter Package -->
+                <div class="package-card">
+                    <div class="package-card-header">
+                        <h3>Starter</h3>
+                        <p class="package-phase">3 kW • 1 เฟส</p>
+                        <div class="package-price-box">
+                            <span class="price-start">เริ่มต้นที่</span>
+                            <span class="price-val">฿85,500</span>
+                        </div>
+                    </div>
+                    <div class="package-card-body">
+                        <div class="package-specs-list">
+                            <div class="spec-row"><span>ประหยัด/เดือน</span><strong>฿1,200 - 1,800</strong></div>
+                            <div class="spec-row"><span>แผงโซลาร์</span><strong>5 แผง</strong></div>
+                            <div class="spec-row"><span>พื้นที่ติดตั้ง</span><strong>12-15 ตร.ม.</strong></div>
+                            <div class="spec-row"><span>ผลิตไฟได้</span><strong>~400 หน่วย/เดือน</strong></div>
+                            <div class="spec-row"><span>คืนทุน</span><strong>4-5 ปี</strong></div>
+                        </div>
+                        <hr class="card-divider" />
+                        <ul class="package-features">
+                            <li class="checked">Inverter HUAWEI 3kW</li>
+                            <li class="checked">รับประกัน Inverter 10 ปี</li>
+                            <li class="checked">รับประกันแผง 25 ปี</li>
+                            <li class="checked">รับประกันงานติดตั้ง 2 ปี</li>
+                            <li class="checked">ระบบ Monitoring</li>
+                            <li class="crossed">ล้างแผงฟรี 1 ครั้ง/ปี</li>
+                        </ul>
+                        <button type="button" class="package-btn">เลือกแพ็คเกจนี้</button>
+                    </div>
+                </div>
+
+                <!-- Home Package (Featured) -->
+                <div class="package-card featured">
+                    <div class="card-badge">★ ขายดีที่สุด</div>
+                    <div class="package-card-header">
+                        <h3>Home</h3>
+                        <p class="package-phase">5 kW • 1 เฟส</p>
+                        <div class="package-price-box">
+                            <span class="price-start">เริ่มต้นที่</span>
+                            <span class="price-val">฿142,500</span>
+                        </div>
+                    </div>
+                    <div class="package-card-body">
+                        <div class="package-specs-list">
+                            <div class="spec-row"><span>ประหยัด/เดือน</span><strong>฿2,000 - 3,000</strong></div>
+                            <div class="spec-row"><span>แผงโซลาร์</span><strong>8 แผง</strong></div>
+                            <div class="spec-row"><span>พื้นที่ติดตั้ง</span><strong>20-24 ตร.ม.</strong></div>
+                            <div class="spec-row"><span>ผลิตไฟได้</span><strong>~700 หน่วย/เดือน</strong></div>
+                            <div class="spec-row"><span>คืนทุน</span><strong>4-5 ปี</strong></div>
+                        </div>
+                        <hr class="card-divider" />
+                        <ul class="package-features">
+                            <li class="checked">Inverter HUAWEI 5kW</li>
+                            <li class="checked">รับประกัน Inverter 10 ปี</li>
+                            <li class="checked">รับประกันแผง 25 ปี</li>
+                            <li class="checked">รับประกันงานติดตั้ง 2 ปี</li>
+                            <li class="checked">ระบบ Monitoring</li>
+                            <li class="checked">ล้างแผงฟรี 1 ครั้ง/ปี</li>
+                        </ul>
+                        <button type="button" class="package-btn">เลือกแพ็คเกจนี้</button>
+                    </div>
+                </div>
+
+                <!-- Plus Package -->
+                <div class="package-card">
+                    <div class="package-card-header">
+                        <h3>Plus</h3>
+                        <p class="package-phase">8 kW • 1 เฟส</p>
+                        <div class="package-price-box">
+                            <span class="price-start">เริ่มต้นที่</span>
+                            <span class="price-val">฿228,000</span>
+                        </div>
+                    </div>
+                    <div class="package-card-body">
+                        <div class="package-specs-list">
+                            <div class="spec-row"><span>ประหยัด/เดือน</span><strong>฿3,500 - 5,500</strong></div>
+                            <div class="spec-row"><span>แผงโซลาร์</span><strong>12 แผง</strong></div>
+                            <div class="spec-row"><span>พื้นที่ติดตั้ง</span><strong>30-36 ตร.ม.</strong></div>
+                            <div class="spec-row"><span>ผลิตไฟได้</span><strong>~1,100 หน่วย/เดือน</strong></div>
+                            <div class="spec-row"><span>คืนทุน</span><strong>4-5 ปี</strong></div>
+                        </div>
+                        <hr class="card-divider" />
+                        <ul class="package-features">
+                            <li class="checked">Inverter HUAWEI 8kW</li>
+                            <li class="checked">รับประกัน Inverter 10 ปี</li>
+                            <li class="checked">รับประกันแผง 25 ปี</li>
+                            <li class="checked">รับประกันงานติดตั้ง 2 ปี</li>
+                            <li class="checked">ระบบ Monitoring</li>
+                            <li class="checked">ล้างแผงฟรี 1 ครั้ง/ปี</li>
+                        </ul>
+                        <button type="button" class="package-btn">เลือกแพ็คเกจนี้</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hybrid Tab Content -->
+            <div class="package-grid" id="pkg-hybrid" style="display: none;">
+                <!-- Essential Package -->
+                <div class="package-card">
+                    <div class="package-card-header">
+                        <h3>Essential</h3>
+                        <p class="package-phase">5 kW • 1 เฟส</p>
+                        <div class="battery-pill">🔋 แบตเตอรี่ 5 kWh</div>
+                        <div class="package-price-box">
+                            <span class="price-start">เริ่มต้นที่</span>
+                            <span class="price-val">฿185,000</span>
+                        </div>
+                    </div>
+                    <div class="package-card-body">
+                        <div class="package-specs-list">
+                            <div class="spec-row"><span>ประหยัด/เดือน</span><strong>฿2,500 - 3,500</strong></div>
+                            <div class="spec-row"><span>แผงโซลาร์</span><strong>8 แผง</strong></div>
+                            <div class="spec-row"><span>พื้นที่ติดตั้ง</span><strong>20-24 ตร.ม.</strong></div>
+                            <div class="spec-row"><span>ผลิตไฟได้</span><strong>~700 หน่วย/เดือน</strong></div>
+                            <div class="spec-row"><span>คืนทุน</span><strong>5-6 ปี</strong></div>
+                            <div class="spec-row"><span>สำรองไฟได้</span><strong>3-4 ชม.</strong></div>
+                        </div>
+                        <hr class="card-divider" />
+                        <ul class="package-features">
+                            <li class="checked">Inverter SOLIS Hybrid 5kW</li>
+                            <li class="checked">รับประกัน Inverter 5 ปี</li>
+                            <li class="checked">รับประกันแบตเตอรี่ 7 ปี</li>
+                            <li class="checked">รับประกันแผง 25 ปี</li>
+                            <li class="checked">รับประกันงานติดตั้ง 3 ปี</li>
+                            <li class="crossed">Full Backup ทั้งบ้าน</li>
+                        </ul>
+                        <button type="button" class="package-btn">เลือกแพ็คเกจนี้</button>
+                    </div>
+                </div>
+
+                <!-- Family Package (Featured) -->
+                <div class="package-card featured">
+                    <div class="card-badge">★ คุ้มค่าที่สุด</div>
+                    <div class="package-card-header">
+                        <h3>Family</h3>
+                        <p class="package-phase">6 kW • 1 เฟส</p>
+                        <div class="battery-pill">🔋 แบตเตอรี่ 10 kWh</div>
+                        <div class="package-price-box">
+                            <span class="price-start">เริ่มต้นที่</span>
+                            <span class="price-val">฿245,000</span>
+                        </div>
+                    </div>
+                    <div class="package-card-body">
+                        <div class="package-specs-list">
+                            <div class="spec-row"><span>ประหยัด/เดือน</span><strong>฿3,000 - 4,000</strong></div>
+                            <div class="spec-row"><span>แผงโซลาร์</span><strong>10 แผง</strong></div>
+                            <div class="spec-row"><span>พื้นที่ติดตั้ง</span><strong>25-30 ตร.ม.</strong></div>
+                            <div class="spec-row"><span>ผลิตไฟได้</span><strong>~900 หน่วย/เดือน</strong></div>
+                            <div class="spec-row"><span>คืนทุน</span><strong>5-6 ปี</strong></div>
+                            <div class="spec-row"><span>สำรองไฟได้</span><strong>6-8 ชม.</strong></div>
+                        </div>
+                        <hr class="card-divider" />
+                        <ul class="package-features">
+                            <li class="checked">Inverter SOLIS Hybrid 6kW</li>
+                            <li class="checked">รับประกัน Inverter 5 ปี</li>
+                            <li class="checked">รับประกันแบตเตอรี่ 10 ปี</li>
+                            <li class="checked">รับประกันแผง 25 ปี</li>
+                            <li class="checked">รับประกันงานติดตั้ง 3 ปี</li>
+                            <li class="checked">Full Backup ทั้งบ้าน</li>
+                        </ul>
+                        <button type="button" class="package-btn">เลือกแพ็คเกจนี้</button>
+                    </div>
+                </div>
+
+                <!-- Premium Package -->
+                <div class="package-card">
+                    <div class="package-card-header">
+                        <h3>Premium</h3>
+                        <p class="package-phase">8 kW • 1 เฟส</p>
+                        <div class="battery-pill">🔋 แบตเตอรี่ 15 kWh</div>
+                        <div class="package-price-box">
+                            <span class="price-start">เริ่มต้นที่</span>
+                            <span class="price-val">฿320,000</span>
+                        </div>
+                    </div>
+                    <div class="package-card-body">
+                        <div class="package-specs-list">
+                            <div class="spec-row"><span>ประหยัด/เดือน</span><strong>฿3,500 - 5,000</strong></div>
+                            <div class="spec-row"><span>แผงโซลาร์</span><strong>12 แผง</strong></div>
+                            <div class="spec-row"><span>พื้นที่ติดตั้ง</span><strong>30-36 ตร.ม.</strong></div>
+                            <div class="spec-row"><span>ผลิตไฟได้</span><strong>~1,100 หน่วย/เดือน</strong></div>
+                            <div class="spec-row"><span>คืนทุน</span><strong>5-6 ปี</strong></div>
+                            <div class="spec-row"><span>สำรองไฟได้</span><strong>10-12 ชม.</strong></div>
+                        </div>
+                        <hr class="card-divider" />
+                        <ul class="package-features">
+                            <li class="checked">Inverter SOLIS Hybrid 8kW</li>
+                            <li class="checked">รับประกัน Inverter 5 ปี</li>
+                            <li class="checked">รับประกันแบตเตอรี่ 10 ปี</li>
+                            <li class="checked">รับประกันแผง 25 ปี</li>
+                            <li class="checked">รับประกันงานติดตั้ง 3 ปี</li>
+                            <li class="checked">Full Backup ทั้งบ้าน</li>
+                        </ul>
+                        <button type="button" class="package-btn">เลือกแพ็คเกจนี้</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Off-Grid Tab Content -->
+            <div class="package-grid" id="pkg-off-grid" style="display: none;">
+                <!-- Eco Cabin -->
+                <div class="package-card">
+                    <div class="package-card-header">
+                        <h3>Eco Cabin</h3>
+                        <p class="package-phase">1.6 kW • 1 เฟส</p>
+                        <div class="battery-pill">🔋 แบตเตอรี่ 2.4 kWh</div>
+                        <div class="package-price-box">
+                            <span class="price-start">เริ่มต้นที่</span>
+                            <span class="price-val">฿55,000</span>
+                        </div>
+                    </div>
+                    <div class="package-card-body">
+                        <div class="package-specs-list">
+                            <div class="spec-row"><span>ลักษณะการใช้งาน</span><strong>ระบบแยกอิสระ 100%</strong></div>
+                            <div class="spec-row"><span>แผงโซลาร์</span><strong>3 แผง</strong></div>
+                            <div class="spec-row"><span>พื้นที่ติดตั้ง</span><strong>8-10 ตร.ม.</strong></div>
+                            <div class="spec-row"><span>ผลิตไฟได้</span><strong>~200 หน่วย/เดือน</strong></div>
+                            <div class="spec-row"><span>สำรองไฟได้</span><strong>4-6 ชม. (ตามโหลด)</strong></div>
+                        </div>
+                        <hr class="card-divider" />
+                        <ul class="package-features">
+                            <li class="checked">Inverter Off-Grid 1.6kW</li>
+                            <li class="checked">รับประกัน Inverter 2 ปี</li>
+                            <li class="checked">รับประกันแบตเตอรี่ 3 ปี</li>
+                            <li class="checked">รับประกันแผง 25 ปี</li>
+                            <li class="checked">รับประกันงานติดตั้ง 1 ปี</li>
+                        </ul>
+                        <button type="button" class="package-btn">เลือกแพ็คเกจนี้</button>
+                    </div>
+                </div>
+
+                <!-- Smart Off-Grid -->
+                <div class="package-card featured">
+                    <div class="card-badge">★ แนะนำสำหรับสวน/ไร่</div>
+                    <div class="package-card-header">
+                        <h3>Smart Off-Grid</h3>
+                        <p class="package-phase">3.2 kW • 1 เฟส</p>
+                        <div class="battery-pill">🔋 แบตเตอรี่ 4.8 kWh</div>
+                        <div class="package-price-box">
+                            <span class="price-start">เริ่มต้นที่</span>
+                            <span class="price-val">฿98,000</span>
+                        </div>
+                    </div>
+                    <div class="package-card-body">
+                        <div class="package-specs-list">
+                            <div class="spec-row"><span>ลักษณะการใช้งาน</span><strong>ระบบแยกอิสระ 100%</strong></div>
+                            <div class="spec-row"><span>แผงโซลาร์</span><strong>5 แผง</strong></div>
+                            <div class="spec-row"><span>พื้นที่ติดตั้ง</span><strong>12-15 ตร.ม.</strong></div>
+                            <div class="spec-row"><span>ผลิตไฟได้</span><strong>~400 หน่วย/เดือน</strong></div>
+                            <div class="spec-row"><span>สำรองไฟได้</span><strong>8-10 ชม. (ตามโหลด)</strong></div>
+                        </div>
+                        <hr class="card-divider" />
+                        <ul class="package-features">
+                            <li class="checked">Inverter Off-Grid 3.2kW</li>
+                            <li class="checked">รับประกัน Inverter 2 ปี</li>
+                            <li class="checked">รับประกันแบตเตอรี่ 3 ปี</li>
+                            <li class="checked">รับประกันแผง 25 ปี</li>
+                            <li class="checked">รับประกันงานติดตั้ง 2 ปี</li>
+                        </ul>
+                        <button type="button" class="package-btn">เลือกแพ็คเกจนี้</button>
+                    </div>
+                </div>
+
+                <!-- Off-Grid Premium -->
+                <div class="package-card">
+                    <div class="package-card-header">
+                        <h3>Off-Grid Premium</h3>
+                        <p class="package-phase">5.5 kW • 1 เฟส</p>
+                        <div class="battery-pill">🔋 แบตเตอรี่ 9.6 kWh</div>
+                        <div class="package-price-box">
+                            <span class="price-start">เริ่มต้นที่</span>
+                            <span class="price-val">฿159,000</span>
+                        </div>
+                    </div>
+                    <div class="package-card-body">
+                        <div class="package-specs-list">
+                            <div class="spec-row"><span>ลักษณะการใช้งาน</span><strong>ระบบแยกอิสระ 100%</strong></div>
+                            <div class="spec-row"><span>แผงโซลาร์</span><strong>8 แผง</strong></div>
+                            <div class="spec-row"><span>พื้นที่ติดตั้ง</span><strong>20-24 ตร.ม.</strong></div>
+                            <div class="spec-row"><span>ผลิตไฟได้</span><strong>~700 หน่วย/เดือน</strong></div>
+                            <div class="spec-row"><span>สำรองไฟได้</span><strong>12-16 ชม. (ตามโหลด)</strong></div>
+                        </div>
+                        <hr class="card-divider" />
+                        <ul class="package-features">
+                            <li class="checked">Inverter Off-Grid 5.5kW</li>
+                            <li class="checked">รับประกัน Inverter 3 ปี</li>
+                            <li class="checked">รับประกันแบตเตอรี่ 5 ปี</li>
+                            <li class="checked">รับประกันแผง 25 ปี</li>
+                            <li class="checked">รับประกันงานติดตั้ง 2 ปี</li>
+                        </ul>
+                        <button type="button" class="package-btn">เลือกแพ็คเกจนี้</button>
+                    </div>
+                </div>
+            </div>
+
+            <p class="packages-footer-note">* ราคาอาจเปลี่ยนแปลงตามสภาพหน้างานจริง</p>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
