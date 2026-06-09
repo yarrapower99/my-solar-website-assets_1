@@ -2495,10 +2495,120 @@ h3 {
 
 #product-info {
     background: #f0fdf4 !important;
+    margin-bottom: 24px;
+    padding-bottom: 0;
 }
 
 #product-info .section-card {
-    background: #f0fdf4;
+    background: #fff7ed;
+    border: 1px solid transparent;
+    box-shadow: none;
+}
+
+#product-info .product-info-card {
+    padding: 28px 28px 50px;
+}
+
+#product-info .product-info-heading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 28px;
+}
+
+#product-info .product-info-title {
+    margin: 50px 0 10px;
+    color: #ed7803;
+    display: inline-block;
+}
+
+.product-brand-panel {
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 24px;
+}
+
+.product-brand-panel .section-card {
+    border-radius: 28px;
+    padding: 28px 28px 36px;
+    box-shadow: none;
+}
+
+.product-brand-panel h2 {
+    margin: 0 0 12px;
+    text-align: center;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+}
+
+.product-brand-panel h2::after {
+    content: "";
+    display: block;
+    width: 72px;
+    height: 4px;
+    border-radius: 999px;
+    margin: 10px auto 0;
+    opacity: 0.18;
+}
+
+.product-brand-panel .product-gallery {
+    margin-top: 8px;
+    gap: 18px;
+}
+
+.aiko-panel .section-card {
+    background: linear-gradient(135deg, #fff7ed 0%, #fffaf5 100%);
+    border: 1px solid transparent;
+}
+
+.aiko-panel h2 {
+    color: #FF5000;
+}
+
+.aiko-panel h2::after {
+    background: linear-gradient(90deg, rgba(255, 80, 0, 0.25), rgba(255, 80, 0, 0.08));
+}
+
+.longi-panel .section-card {
+    background: linear-gradient(135deg, #fff5f5 0%, #fffaf9 100%);
+    border: 1px solid transparent;
+}
+
+.longi-panel h2 {
+    color: #E20610;
+}
+
+.longi-panel h2::after {
+    background: linear-gradient(90deg, rgba(226, 6, 16, 0.25), rgba(226, 6, 16, 0.08));
+}
+
+.jinko-panel .section-card {
+    background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
+    border: 1px solid transparent;
+}
+
+.jinko-panel h2 {
+    color: #25a844;
+}
+
+.jinko-panel h2::after {
+    background: linear-gradient(90deg, rgba(37, 168, 68, 0.25), rgba(37, 168, 68, 0.08));
+}
+
+.delta-panel .section-card {
+    background: linear-gradient(135deg, #eff6ff 0%, #f8fbff 100%);
+    border: 1px solid transparent;
+}
+
+.delta-panel h2 {
+    color: #0087DC;
+}
+
+.delta-panel h2::after {
+    background: linear-gradient(90deg, rgba(0, 135, 220, 0.25), rgba(0, 135, 220, 0.08));
 }
 
 #portfolio-sup-section {
@@ -2564,12 +2674,23 @@ h3 {
     overflow: hidden;
 }
 
+.news-img-wrap.portrait {
+    aspect-ratio: 3 / 4;
+    max-height: 420px;
+}
+
 .news-img-wrap img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.4s ease;
     display: block;
+}
+
+.news-img-wrap.portrait img {
+    object-fit: contain;
+    object-position: center;
+    background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
 }
 
 .news-card:hover .news-img-wrap img {
@@ -2602,6 +2723,8 @@ h3 {
     line-height: 1.75;
     color: #374151;
     margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
     display: -webkit-box;
     -webkit-line-clamp: 5;
     line-clamp: 5;
@@ -2667,12 +2790,21 @@ h3 {
     overflow: hidden;
 }
 
+.news-modal-img-wrap.portrait-wrap {
+    align-items: flex-start;
+    padding-top: 8px;
+}
+
 .news-modal-img-wrap img {
     width: 100%;
     height: auto;
     max-height: 460px;
     object-fit: contain;
     display: block;
+}
+
+.news-modal-img-wrap.portrait-wrap img {
+    max-height: 560px;
 }
 
 .news-modal-info {
@@ -2693,6 +2825,8 @@ h3 {
     line-height: 1.85;
     color: #374151;
     margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
 @media (max-width: 600px) {

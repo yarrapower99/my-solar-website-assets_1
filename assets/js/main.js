@@ -1,6 +1,6 @@
 const localImages = {
     "assets/profile": ["LINE_ALBUM_KMCH 172.2kW_260128_253.jpg"],
-    "assets/logo_use": ["1.1delta.jpg", "1.sungrow.jpeg", "2.1.jinko.jpg", "2.2.longi.jpeg", "4.prysmian.png", "5.Carrier.png", "6.byd.png", "7.solis.jpg", "9.eaton.png", "8.antai.png"],
+    "assets/logo_use": ["delta.jpg", "sungrow.jpeg", "aiko.jpg", "EVEEnergy.png", "eaton.png","prysmian.png"],
     "assets/portfolio_sup": ["12.js plastic.jpg", "11.บ้านคุณเบล.jpg", "10.บ้านคุณตง.jpg", "9.บ้านคุณเกียรติ2.jpg", "8.บ้านคุณเกียรติ1.jpg", "7.แม่ครัวฉลากทอง.jpg", "6.KMCH.jpeg", "่5.JSplastic.jpeg", "4.บ้านคุณโจ.jpeg", "3.WashXpress.png", "2.DPU.jpeg", "1.โรงพยาบาล มิตรไมตรี.png"],
     "assets/Partners": ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "K.Yo_-1-768x679.jpeg", "K.Yo_-2-768x690.jpeg", "K.Yo_-2-768x768.png", "PV-Panel-7-768x768.png", "PV-Panel-8-768x768.png", "PV-Panel.png-1-768x671.jpeg", "PV-Panel.png-2-768x687.jpeg"],
     "assets/products": [
@@ -13,6 +13,7 @@ const localImages = {
         "S450S-L S1000S-L S2000S-L.png",
         "SR20D-M.png"
     ],
+    "assets/aiko": ["STELLAR 3N+72 Dual-Glass 650W-685W.png", "STELLAR 2N+78 Dual-Glass 765W-800W.png", "STELLAR 2N+66 Dual-Glass 645W-680W.png", "STELLAR 1N+72 Dual-Glass 635W-660W.png", "STELLAR 1N+66 Dual-Glass 645W-680W.png"],
     "assets/longi": ["Hi-MO X10.jpg", "Hi-MO 7.jpeg"],
     "assets/trina": ["TSM-NEG19RC.20 610-635W.jpg", "TSM-NEG21C.0 700-725W.jpg"],
     "assets/jinko": ["JKM650-670N-66QL6-BDV-F1-EN.jpg", "JKM710-735N-66HL5-BDV-Z4-EN.jpg"],
@@ -57,7 +58,12 @@ const localPDFs = [
     "ST510CS-4H.pdf",
     "TSM-NEG19RC.20 610-635W.pdf",
     "TSM-NEG21C.0 700-725W.pdf",
-    "BK863i Collaborative Touch Panel.pdf"
+    "BK863i Collaborative Touch Panel.pdf",
+    "STELLAR 3N+72 Dual-Glass 650W-685W.pdf",
+    "STELLAR 2N+78 Dual-Glass 765W-800W.pdf",
+    "STELLAR 2N+66 Dual-Glass 645W-680W.pdf",
+    "STELLAR 1N+72 Dual-Glass 635W-660W.pdf",
+    "STELLAR 1N+66 Dual-Glass 645W-680W.pdf",
 ];
 
 // Helper function to load local images
@@ -288,10 +294,10 @@ function loadSharedComponents() {
         <button id="backToTop" onclick="scrollToTop()"><i class="lni lni-arrow-upward"></i></button>
 
         <!-- Floating Social Buttons -->
-        <a href="https://line.me/ti/p/@yarrapower" target="_blank" class="line-float-btn">
+        <a href="https://line.me/ti/p/@yarrapower" target="_blank" rel="noopener noreferrer nofollow" class="line-float-btn">
             <i class="lni lni-line"></i>
         </a>
-        <a href="https://www.facebook.com/profile.php?id=61574924817355" target="_blank" class="fb-float-btn"
+        <a href="https://www.facebook.com/profile.php?id=61574924817355" target="_blank" rel="noopener noreferrer nofollow" class="fb-float-btn"
             title="Facebook Yarrapower">
             <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" alt="Facebook Logo">
         </a>
@@ -586,23 +592,56 @@ if (portfolioContainer) {
     bindGalleryLightbox('portfolio-gallery');
 }
 
+function normalizeForPDFMatch(value) {
+    return value
+        .toLowerCase()
+        .replace(/[\-_+]/g, ' ')
+        .replace(/dual glass/g, ' ')
+        .replace(/glass/g, ' ')
+        .replace(/stellar/g, ' ')
+        .replace(/aiko/g, ' ')
+        .replace(/plus/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+function extractPowerNumbers(value) {
+    return (value.match(/\b\d{3,4}\b/g) || [])
+        .map(Number)
+        .filter(num => num >= 300 && num <= 900);
+}
+
 // Helper function to find a matching PDF robustly
 function findMatchingPDF(imgSrc, productName) {
     if (!localPDFs || localPDFs.length === 0) return null;
 
-    // Decode URL and get filename without extension
     const decodedUrl = decodeURIComponent(imgSrc);
-    const filenameNoExt = decodedUrl.split('/').pop().replace(/\.[^/.]+$/, "").toLowerCase().trim().replace(/[_-]/g, ' ');
-    const productNameLower = productName.toLowerCase().trim().replace(/[_-]/g, ' ');
+    const filenameNoExt = decodedUrl.split('/').pop().replace(/\.[^/.]+$/, "");
+    const productNameText = productName || '';
+
+    const filenameNorm = normalizeForPDFMatch(filenameNoExt);
+    const productNorm = normalizeForPDFMatch(productNameText);
 
     return localPDFs.find(pdf => {
-        const pdfLower = pdf.toLowerCase().replace(/\.[^/.]+$/, "").trim().replace(/[_-]/g, ' ');
-        return pdfLower === filenameNoExt ||
-            pdfLower === productNameLower ||
-            pdfLower.includes(productNameLower) ||
-            productNameLower.includes(pdfLower) ||
-            // Handle common model number matches (e.g. NEG19RC.20)
-            (productNameLower.match(/neg\d+[a-z.]+/i) && pdfLower.includes(productNameLower.match(/neg\d+[a-z.]+/i)[0]));
+        const pdfName = pdf.replace(/\.[^/.]+$/, "");
+        const pdfNorm = normalizeForPDFMatch(pdfName);
+
+        const directMatch =
+            pdfNorm === filenameNorm ||
+            pdfNorm === productNorm ||
+            pdfNorm.includes(productNorm) ||
+            productNorm.includes(pdfNorm);
+
+        if (directMatch) return true;
+
+        const imagePowerNumbers = extractPowerNumbers(`${filenameNoExt} ${productNameText}`);
+        const pdfPowerNumbers = extractPowerNumbers(pdfName);
+        const powerOverlap = imagePowerNumbers.filter(num => pdfPowerNumbers.includes(num));
+
+        if (powerOverlap.length >= 2) return true;
+
+        const modelMatch = productNameText.match(/neg\d+[a-z.]+/i);
+        return !!modelMatch && pdfNorm.includes(modelMatch[0].toLowerCase());
     });
 }
 
@@ -751,6 +790,19 @@ if (longiContainer) {
     });
 }
 
+// Generate Jinko Images
+const jinkoContainer = document.getElementById('jinko-gallery');
+if (jinkoContainer) {
+    loadLocalImages("assets/jinko", jinkoContainer, (images, container) => {
+        const fragment = document.createDocumentFragment();
+        images.forEach(file => {
+            fragment.appendChild(createProductCard(file));
+        });
+        container.appendChild(fragment);
+        bindGalleryLightbox('jinko-gallery');
+    });
+}
+
 // Generate Trina Images
 const trinaContainer = document.getElementById('trina-gallery');
 if (trinaContainer) {
@@ -764,16 +816,16 @@ if (trinaContainer) {
     });
 }
 
-// Generate Jinko Images
-const jinkoContainer = document.getElementById('jinko-gallery');
-if (jinkoContainer) {
-    loadLocalImages("assets/jinko", jinkoContainer, (images, container) => {
+// Generate Aiko Images
+const aikoContainer = document.getElementById('aiko-gallery');
+if (aikoContainer) {
+    loadLocalImages("assets/aiko", aikoContainer, (images, container) => {
         const fragment = document.createDocumentFragment();
         images.forEach(file => {
             fragment.appendChild(createProductCard(file));
         });
         container.appendChild(fragment);
-        bindGalleryLightbox('jinko-gallery');
+        bindGalleryLightbox('aiko-gallery');
     });
 }
 
@@ -1016,10 +1068,36 @@ function closeProductModal() {
 let currentNewsImages = [];
 let currentNewsIndex = 0;
 
+function updatePortraitNewsCards() {
+    document.querySelectorAll('.news-card .news-img-wrap').forEach(wrapper => {
+        const img = wrapper.querySelector('img');
+        if (!img || !img.naturalWidth || !img.naturalHeight) return;
+
+        if (img.naturalHeight > img.naturalWidth) {
+            wrapper.classList.add('portrait');
+        } else {
+            wrapper.classList.remove('portrait');
+        }
+    });
+}
+
+window.addEventListener('load', updatePortraitNewsCards);
+document.addEventListener('DOMContentLoaded', updatePortraitNewsCards);
+
 function updateNewsModalImage() {
     const mainImg = document.getElementById("news-modal-img");
     if (mainImg && currentNewsImages.length > 0) {
         mainImg.src = currentNewsImages[currentNewsIndex];
+        mainImg.onload = () => {
+            const wrap = mainImg.closest('.news-modal-img-wrap');
+            if (mainImg.naturalHeight > mainImg.naturalWidth) {
+                wrap?.classList.add('portrait-wrap');
+                mainImg.classList.add('portrait');
+            } else {
+                wrap?.classList.remove('portrait-wrap');
+                mainImg.classList.remove('portrait');
+            }
+        };
     }
     const additionalContainer = document.getElementById("news-modal-additional-images");
     if (additionalContainer && additionalContainer.children.length > 0) {
@@ -1086,8 +1164,17 @@ function openNewsModal(imgSrc, date, cardElementOrText) {
         }
     }
 
-    document.getElementById("news-modal-date").textContent = date;
-    
+    const dateEl = document.getElementById("news-modal-date");
+    const hasDate = typeof date === 'string' ? date.trim().toLowerCase() !== 'null' && date.trim() !== '' : Boolean(date);
+
+    if (hasDate) {
+        dateEl.textContent = date;
+        dateEl.style.display = 'inline-block';
+    } else {
+        dateEl.textContent = '';
+        dateEl.style.display = 'none';
+    }
+
     let textTh = '';
     let textEn = '';
     if (typeof cardElementOrText === 'string') {
@@ -1259,3 +1346,4 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
