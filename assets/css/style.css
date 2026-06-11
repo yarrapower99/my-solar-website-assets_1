@@ -2500,8 +2500,8 @@ h3 {
 }
 
 #product-info .section-card {
-    background: #fff7ed;
-    border: 1px solid transparent;
+    background: linear-gradient(180deg, #fffefc 0%, #fff8f2 42%, #ffe7d7 100%);
+    border: none;
     box-shadow: none;
 }
 
@@ -2511,17 +2511,39 @@ h3 {
 
 #product-info .product-info-heading {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 20px;
+    gap: 25px;
     flex-wrap: wrap;
     padding: 28px;
 }
 
+#product-info .product-info-heading img,
+.product-brand-panel .brand-heading img {
+    width: 240px;
+    height: 92px;
+    object-fit: contain;
+    display: block;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    transition: transform 180ms ease, filter 180ms ease;
+}
+
+#product-info .product-info-heading img:hover,
+.product-brand-panel .brand-heading img:hover {
+    transform: translateY(-2px) scale(1.02);
+    filter: saturate(1.05);
+}
+
 #product-info .product-info-title {
-    margin: 50px 0 10px;
+    margin: 0;
     color: #ed7803;
     display: inline-block;
+    text-align: center;
 }
 
 .product-brand-panel {
@@ -2537,8 +2559,36 @@ h3 {
     box-shadow: none;
 }
 
+.product-brand-panel .brand-heading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 12px;
+}
+
+.brand-logo-frame {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 2px;
+}
+
+.product-brand-panel .brand-heading img {
+    width: 240px;
+    height: 92px;
+    object-fit: contain;
+    display: block;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
 .product-brand-panel h2 {
-    margin: 0 0 12px;
+    margin: 0;
     text-align: center;
     letter-spacing: 0.02em;
     line-height: 1.2;
@@ -2560,8 +2610,8 @@ h3 {
 }
 
 .aiko-panel .section-card {
-    background: linear-gradient(135deg, #fff7ed 0%, #fffaf5 100%);
-    border: 1px solid transparent;
+    background: linear-gradient(180deg, #fffefa 0%, #fff3ea 42%, #ffd2b0 100%);
+    border: none;
 }
 
 .aiko-panel h2 {
@@ -2599,8 +2649,8 @@ h3 {
 }
 
 .delta-panel .section-card {
-    background: linear-gradient(135deg, #eff6ff 0%, #f8fbff 100%);
-    border: 1px solid transparent;
+    background: linear-gradient(180deg, #f9fcff 0%, #edf5ff 42%, #dcedff 100%);
+    border: none;
 }
 
 .delta-panel h2 {
