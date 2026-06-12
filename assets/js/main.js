@@ -216,11 +216,11 @@ function loadSharedComponents() {
             </div>
 
             <div class="nav-contact">
-                <a href="tel:0614549191" class="nav-phone">
-                    <i class="lni lni-phone"></i> 061-454-9191
-                </a>
-                <a href="tel:0814549191" class="nav-phone secondary">
+                <a href="tel:0814549191" class="nav-phone">
                     <i class="lni lni-phone"></i> 081-454-9191
+                </a>
+                <a href="tel:0634549191" class="nav-phone secondary">
+                    <i class="lni lni-phone"></i> 063-454-9191
                 </a>
                 <a href="tel:0944549191" class="nav-phone secondary">
                     <i class="lni lni-phone"></i> 094-454-9191
@@ -282,8 +282,8 @@ function loadSharedComponents() {
                 </div>
                 <div class="footer-col">
                     <h4 data-th="ติดต่อสอบถาม" data-en="Contact Us">Contact Us</h4>
-                    <p data-th="โทร: 061-454-9191, 081-454-9191, 094-454-9191" data-en="Phone: 061-454-9191, 081-454-9191, 094-454-9191">Phone:
-                        061-454-9191, 081-454-9191, 094-454-9191</p>
+                    <p data-th="โทร: 081-454-9191, 063-454-9191, 094-454-9191" data-en="Phone: 081-454-9191, 063-454-9191, 094-454-9191">Phone:
+                        081-454-9191, 063-454-9191, 094-454-9191</p>
                     <p>Line: @yarrapower</p>
                     <p>Email: info@yarrapower.com</p>
                 </div>
