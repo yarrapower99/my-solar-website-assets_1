@@ -1,0 +1,6 @@
+Place your two Delta flyer image files here and name them exactly:
+
+Delta Flyer 1.jpg
+Delta Flyer 2.jpg
+
+Then refresh the products page to see them appear at the start of the Delta gallery.

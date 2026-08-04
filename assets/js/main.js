@@ -1,7 +1,7 @@
 const localImages = {
     "assets/profile": ["LINE_ALBUM_KMCH 172.2kW_260128_253.jpg"],
-    "assets/logo_use": ["delta.jpg", "sungrow.jpeg", "aiko.jpg", "EVEEnergy.png", "eaton.png","prysmian.png"],
-    "assets/portfolio_sup": ["12.js plastic.jpg", "11.บ้านคุณเบล.jpg", "10.บ้านคุณตง.jpg", "9.บ้านคุณเกียรติ2.jpg", "8.บ้านคุณเกียรติ1.jpg", "7.แม่ครัวฉลากทอง.jpg", "6.KMCH.jpeg", "่5.JSplastic.jpeg", "4.บ้านคุณโจ.jpeg", "3.WashXpress.png", "2.DPU.jpeg", "1.โรงพยาบาล มิตรไมตรี.png"],
+    "assets/logo_use": ["delta.png", "sungrow.jpeg", "aiko.jpg", "EVEEnergy.png", "eaton.png","prysmian.png"],
+    "assets/portfolio_sup": ["12.js plastic.jpg", "11.บ้านคุณเบล.jpg", "10.บ้านคุณตง.jpg", "9.บ้านคุณเกียรติ2.jpg", "8.บ้านคุณเกียรติ1.jpg", "7.แม่ครัวฉลากทอง.jpg", "6.KMCH.jpeg", "่5.JSplastic.jpeg", "4.บ้านคุณโจ.jpeg", "3.WashXPress.png", "2.DPU.jpeg", "1.โรงพยาบาล มิตรไมตรี.png"],
     "assets/Partners": ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "K.Yo_-1-768x679.jpeg", "K.Yo_-2-768x690.jpeg", "K.Yo_-2-768x768.png", "PV-Panel-7-768x768.png", "PV-Panel-8-768x768.png", "PV-Panel.png-1-768x671.jpeg", "PV-Panel.png-2-768x687.jpeg"],
     "assets/products": [
         "SG5.0RS.png",
@@ -17,7 +17,7 @@ const localImages = {
     "assets/longi": ["Hi-MO X10.jpg", "Hi-MO 7.jpeg"],
     "assets/trina": ["TSM-NEG19RC.20 610-635W.jpg", "TSM-NEG21C.0 700-725W.jpg"],
     "assets/jinko": ["JKM650-670N-66QL6-BDV-F1-EN.jpg", "JKM710-735N-66HL5-BDV-Z4-EN.jpg"],
-    "assets/delta": ["AC Charger  AC MAX - Basic.png", "AC Charger  AC MAX - Smart.png", "BK863i Collaborative Touch Panel.jpg"],
+    "assets/delta": ["Delta_Intelligent_Energy_Solutions.jpg", "Delta_Intelligent_Water Management_Solutions.jpg", "AC Charger  AC MAX - Basic.png", "AC Charger  AC MAX - Smart.png", "BK863i Collaborative Touch Panel.jpg"],
     "assets/portfolio/home": ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpeg", "7.jpeg", "8.png", "9.jpeg", "10.jpeg", "11.png", "12.jpeg", "13.jpeg", "14.jpeg", "15.jpeg", "16.jpeg", "17.jpg", "18.jpg", "19.jpg", "20.jpg", "21.jpg", "22.jpg", "23.jpg", "24.jpg", "25.jpeg", "26.jpeg", "27.jpg"],
     "assets/portfolio/factory": ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "7.jpg", "8.jpg", "9.jpg", "10.jpeg", "11.jpeg", "12.jpeg", "13.png", "14.jpeg", "15.jpeg", "16.jpeg", "17.jpeg", "18.png", "19.png", "20.png", "21.jpeg", "22.jpeg", "23.jpeg", "24.jpeg", "25.jpeg", "26.jpeg", "27.jpeg", "28.jpeg", "29.jpg", "30.jpg"],
 };
@@ -77,6 +77,19 @@ function loadLocalImages(path, container, processFn) {
     } else {
         console.error(`Local images not found for path: ${path}`);
     }
+}
+
+function sortProductFiles(files) {
+    return [...files].sort((a, b) => {
+        const aName = (a.name || '').toUpperCase();
+        const bName = (b.name || '').toUpperCase();
+        const aIsAc = aName.includes('AC');
+        const bIsAc = bName.includes('AC');
+
+        if (aIsAc && !bIsAc) return 1;
+        if (!aIsAc && bIsAc) return -1;
+        return 0;
+    });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -193,6 +206,10 @@ function loadSharedComponents() {
             <a href="index.html#home">
                 <img src="assets/icon/S__4620410_preview_rev_1.png" alt="Yarrapower Logo">
             </a>
+            <div class="delta-logo-wrapper">
+                <img class="delta-logo" src="assets/logo_use/delta.png" alt="Delta Authorized Distributor">
+                <span class="delta-label">Authorized Distributor</span>
+            </div>
         </div>
 
         <div class="hamburger" onclick="toggleMenu()">
@@ -657,6 +674,9 @@ function createProductCard(file) {
     img.src = file.download_url;
     img.alt = file.name;
     img.loading = "lazy";
+    if (file.name === 'Delta_Authorized_Distributor.jpg') {
+        img.classList.add('small-delta-image');
+    }
     observer.observe(img);
 
     const name = document.createElement('div');
@@ -772,7 +792,8 @@ const productContainer = document.getElementById('product-gallery');
 if (productContainer) {
     loadLocalImages("assets/products", productContainer, (images, container) => {
         const fragment = document.createDocumentFragment();
-        images.forEach(file => {
+        const orderedImages = sortProductFiles(images);
+        orderedImages.forEach(file => {
             fragment.appendChild(createProductCard(file));
         });
         container.appendChild(fragment);
@@ -785,7 +806,8 @@ const longiContainer = document.getElementById('longi-gallery');
 if (longiContainer) {
     loadLocalImages("assets/longi", longiContainer, (images, container) => {
         const fragment = document.createDocumentFragment();
-        images.forEach(file => {
+        const orderedImages = sortProductFiles(images);
+        orderedImages.forEach(file => {
             fragment.appendChild(createProductCard(file));
         });
         container.appendChild(fragment);
@@ -798,7 +820,8 @@ const jinkoContainer = document.getElementById('jinko-gallery');
 if (jinkoContainer) {
     loadLocalImages("assets/jinko", jinkoContainer, (images, container) => {
         const fragment = document.createDocumentFragment();
-        images.forEach(file => {
+        const orderedImages = sortProductFiles(images);
+        orderedImages.forEach(file => {
             fragment.appendChild(createProductCard(file));
         });
         container.appendChild(fragment);
@@ -811,7 +834,8 @@ const trinaContainer = document.getElementById('trina-gallery');
 if (trinaContainer) {
     loadLocalImages("assets/trina", trinaContainer, (images, container) => {
         const fragment = document.createDocumentFragment();
-        images.forEach(file => {
+        const orderedImages = sortProductFiles(images);
+        orderedImages.forEach(file => {
             fragment.appendChild(createProductCard(file));
         });
         container.appendChild(fragment);
@@ -824,7 +848,8 @@ const aikoContainer = document.getElementById('aiko-gallery');
 if (aikoContainer) {
     loadLocalImages("assets/aiko", aikoContainer, (images, container) => {
         const fragment = document.createDocumentFragment();
-        images.forEach(file => {
+        const orderedImages = sortProductFiles(images);
+        orderedImages.forEach(file => {
             fragment.appendChild(createProductCard(file));
         });
         container.appendChild(fragment);
@@ -838,8 +863,9 @@ if (deltaContainer) {
     loadLocalImages("assets/delta", deltaContainer, (images, container) => {
         const fragment = document.createDocumentFragment();
         const rendered = new Set(); // track products already rendered as grouped cards
+        const orderedImages = sortProductFiles(images);
 
-        images.forEach(file => {
+        orderedImages.forEach(file => {
             const lastDot = file.name.lastIndexOf('.');
             const rawName = lastDot !== -1 ? file.name.substring(0, lastDot) : file.name;
 
