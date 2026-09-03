@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YarraPower — Project Management</title>
+<style>
+:root {
+  --primary:#f97316; --primary-light:#fff7ed; --primary-dark:#c2410c;
+  --secondary:#1e3a5f; --success:#16a34a; --warning:#d97706;
+  --danger:#dc2626; --purple:#7c3aed; --blue:#2563eb; --cyan:#0891b2;
+  --bg:#f8fafc; --card:#ffffff; --border:#e2e8f0;
+  --text:#1e293b; --text-muted:#64748b; --text-xs:#94a3b8;
+  --radius:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* ── Auth ── */
+#auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,var(--secondary) 0%,#2d5f99 100%);}
+.auth-box{background:white;border-radius:16px;padding:36px 40px;width:100%;max-width:420px;box-shadow:0 24px 64px rgba(0,0,0,.25);}
+.auth-logo{text-align:center;margin-bottom:24px;}
+.auth-logo h1{font-size:22px;font-weight:800;color:var(--secondary);}
+.auth-logo p{font-size:12px;color:var(--text-muted);margin-top:4px;}
+.auth-mode-badge{display:inline-block;font-size:10px;font-weight:700;background:#fef9c3;color:#854d0e;border:1px solid #fde68a;padding:2px 8px;border-radius:99px;margin-top:6px;}
+.auth-field{margin-bottom:14px;}
+.auth-field label{display:block;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;}
+.auth-field input,.auth-field select{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:14px;font-family:inherit;outline:none;}
+.auth-field input:focus,.auth-field select:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(249,115,22,.12);}
+.auth-btn{width:100%;padding:11px;background:var(--primary);color:white;border:none;border-radius:var(--radius);font-size:14px;font-weight:700;cursor:pointer;}
+.auth-btn:hover{background:var(--primary-dark);}
+.auth-error{background:#fef2f2;color:var(--danger);border:1px solid #fca5a5;border-radius:var(--radius);padding:8px 12px;font-size:12px;font-weight:600;margin-bottom:12px;display:none;}
+
+/* ── Denied ── */
+#denied-screen{display:none;align-items:center;justify-content:center;min-height:100vh;background:var(--bg);}
+.denied-box{background:white;border-radius:16px;padding:40px;max-width:420px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.1);}
+.denied-icon{font-size:48px;margin-bottom:16px;}
+.denied-title{font-size:20px;font-weight:800;color:var(--danger);margin-bottom:8px;}
+.denied-sub{font-size:13px;color:var(--text-muted);margin-bottom:20px;line-height:1.6;}
+
+/* ── Topbar ── */
+#app-screen{display:none;}
+.topbar{background:var(--secondary);color:white;padding:0 24px;height:56px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:100;}
+.topbar-logo{font-size:18px;font-weight:800;color:var(--primary);}
+.topbar-logo span{color:white;}
+.topbar-title{font-size:14px;color:#94a3b8;}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.topbar-link{font-size:12px;color:#94a3b8;background:rgba(255,255,255,.08);padding:5px 12px;border-radius:6px;border:1px solid rgba(255,255,255,.12);cursor:pointer;text-decoration:none;}
+.topbar-link:hover{background:rgba(255,255,255,.15);color:white;}
+.user-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:99px;padding:4px 10px;font-size:12px;font-weight:600;color:white;}
+.role-badge{font-size:10px;background:var(--primary-light);color:var(--primary-dark);padding:1px 6px;border-radius:99px;font-weight:700;}
+.logout-btn{background:none;border:none;cursor:pointer;color:rgba(255,255,255,.5);font-size:14px;padding:0;margin-left:2px;}
+.logout-btn:hover{color:var(--danger);}
+
+/* ── Layout ── */
+.container{max-width:1280px;margin:0 auto;padding:24px;}
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;}
+.page-title{font-size:22px;font-weight:800;color:var(--secondary);}
+.page-sub{font-size:13px;color:var(--text-muted);margin-top:2px;}
+
+/* ── Alert Panel ── */
+.alert-panel{border-radius:12px;margin-bottom:20px;overflow:hidden;border:1px solid #fecaca;}
+.alert-panel-header{background:#fef2f2;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
+.alert-panel-title{font-size:13px;font-weight:700;color:var(--danger);display:flex;align-items:center;gap:8px;}
+.alert-panel-body{background:white;padding:12px 16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px;}
+.alert-item{border-radius:8px;padding:10px 12px;font-size:12px;border-left:3px solid;}
+.alert-item.overdue{background:#fef2f2;border-color:var(--danger);color:var(--danger);}
+.alert-item.warn7{background:#fff7ed;border-color:var(--warning);color:var(--warning);}
+.alert-item.warn14{background:#fefce8;border-color:#ca8a04;color:#854d0e;}
+.alert-item-title{font-weight:700;margin-bottom:2px;}
+.alert-item-sub{font-size:11px;opacity:.85;}
+.no-alerts{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:12px 16px;font-size:13px;color:var(--success);font-weight:600;margin-bottom:20px;}
+
+/* ── Stats ── */
+.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 18px;}
+.stat-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:4px;}
+.stat-value{font-size:26px;font-weight:800;color:var(--secondary);}
+.stat-sub{font-size:11px;color:var(--text-muted);margin-top:2px;}
+
+/* ── Toolbar ── */
+.toolbar{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap;}
+.search-box{flex:1;min-width:180px;position:relative;}
+.search-box input{width:100%;padding:8px 12px 8px 34px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;outline:none;background:white;}
+.search-box input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(249,115,22,.1);}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:14px;pointer-events:none;}
+.filter-select{padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;background:white;outline:none;cursor:pointer;}
+
+/* ── Buttons ── */
+.btn{padding:8px 16px;border-radius:var(--radius);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s;display:inline-flex;align-items:center;gap:4px;}
+.btn-primary{background:var(--primary);color:white;}
+.btn-primary:hover{background:var(--primary-dark);}
+.btn-outline{background:white;color:var(--secondary);border:1px solid var(--border);}
+.btn-outline:hover{border-color:var(--primary);color:var(--primary);}
+.btn-success{background:#dcfce7;color:var(--success);border:1px solid #bbf7d0;}
+.btn-success:hover{background:var(--success);color:white;}
+.btn-sm{padding:4px 10px;font-size:11px;}
+.btn-danger{background:#fef2f2;color:var(--danger);border:1px solid #fecaca;}
+.btn-danger:hover{background:var(--danger);color:white;}
+.btn-ghost{background:transparent;color:var(--text-muted);border:none;padding:4px 6px;}
+.btn-ghost:hover{color:var(--danger);}
+
+/* ── Project Cards ── */
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:16px;}
+.project-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:box-shadow .2s,transform .2s;}
+.project-card:hover{box-shadow:0 4px 20px rgba(0,0,0,.08);transform:translateY(-1px);}
+.project-card-top{padding:14px 16px 10px;border-left:4px solid var(--primary);}
+.type-ci .project-card-top{border-left-color:var(--purple);}
+.card-id-row{display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap;}
+.project-id{font-size:11px;font-weight:700;color:var(--text-muted);font-family:monospace;background:var(--bg);padding:2px 7px;border-radius:4px;border:1px solid var(--border);}
+.type-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px;text-transform:uppercase;}
+.type-res .type-badge{background:#fff7ed;color:var(--primary);}
+.type-ci .type-badge{background:#f5f3ff;color:var(--purple);}
+.project-name{font-size:14px;font-weight:700;color:var(--secondary);margin-bottom:2px;line-height:1.3;}
+.project-customer{font-size:12px;color:var(--text-muted);}
+.project-card-body{padding:10px 16px 12px;}
+.mini-info{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;margin-bottom:10px;}
+.mini-item label{display:block;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;color:var(--text-xs);margin-bottom:1px;}
+.mini-item span{font-size:12px;color:var(--text);}
+.card-progress{margin-bottom:10px;}
+.cp-label{font-size:11px;color:var(--text-muted);margin-bottom:4px;display:flex;justify-content:space-between;}
+.progress-bar-bg{background:#f1f5f9;border-radius:99px;height:5px;overflow:hidden;}
+.progress-bar-fill{height:100%;border-radius:99px;background:var(--success);transition:width .4s;}
+.card-alerts{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;}
+.alert-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px;}
+.badge-overdue{background:#fef2f2;color:var(--danger);}
+.badge-warn7{background:#fff7ed;color:var(--warning);}
+.badge-warn14{background:#fefce8;color:#854d0e;}
+.card-actions{display:flex;gap:6px;padding-top:10px;border-top:1px solid var(--border);}
+.status-badge{display:inline-flex;align-items:center;font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;}
+.s-active{background:#dcfce7;color:var(--success);}
+.s-lead{background:#fff7ed;color:var(--warning);}
+.s-completed{background:#f0fdf4;color:#166534;}
+.s-onhold{background:#f1f5f9;color:var(--text-muted);}
+.s-cancelled{background:#fef2f2;color:var(--danger);}
+
+/* ── Empty ── */
+.empty-state{text-align:center;padding:60px 20px;background:var(--card);border:1px dashed var(--border);border-radius:12px;}
+.empty-icon{font-size:48px;margin-bottom:12px;}
+.empty-title{font-size:18px;font-weight:700;color:var(--secondary);margin-bottom:6px;}
+.empty-sub{font-size:14px;color:var(--text-muted);margin-bottom:20px;}
+
+/* ── Modal ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:1000;align-items:center;justify-content:center;padding:12px;}
+.modal-overlay.open{display:flex;}
+.modal{background:white;border-radius:14px;width:100%;max-width:700px;max-height:94vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.18);}
+.modal-lg{max-width:820px;}
+.modal-header{padding:18px 24px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:white;z-index:1;}
+.modal-header h3{font-size:16px;font-weight:800;color:var(--secondary);}
+.modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-muted);width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;}
+.modal-close:hover{background:var(--bg);}
+.modal-body{padding:20px 24px;}
+.modal-footer{padding:12px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;align-items:center;}
+
+/* ── Form ── */
+.form-section{margin-bottom:22px;}
+.form-section-header{display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.form-section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);}
+.section-optional{font-size:10px;font-weight:600;background:#f1f5f9;color:var(--text-muted);padding:2px 7px;border-radius:99px;}
+.section-required{font-size:10px;font-weight:600;background:#fef2f2;color:var(--danger);padding:2px 7px;border-radius:99px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-group.span2{grid-column:span 2;}
+.form-group label{font-size:12px;font-weight:600;color:var(--text);}
+.form-group label .req{color:var(--danger);}
+.form-group input,.form-group select,.form-group textarea{padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;outline:none;font-family:inherit;color:var(--text);}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(249,115,22,.1);}
+.form-group input:read-only{background:var(--bg);color:var(--text-muted);cursor:not-allowed;}
+.form-group textarea{resize:vertical;}
+.type-toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.type-option{border:2px solid var(--border);border-radius:10px;padding:12px;cursor:pointer;text-align:center;transition:all .15s;}
+.type-option:hover{border-color:var(--primary);background:var(--primary-light);}
+.type-option.sel-res{border-color:var(--primary);background:#fff7ed;}
+.type-option.sel-ci{border-color:var(--purple);background:#f5f3ff;}
+.type-option input[type=radio]{display:none;}
+.type-icon{font-size:22px;margin-bottom:4px;}
+.type-label{font-size:13px;font-weight:700;}
+.type-desc{font-size:11px;color:var(--text-muted);margin-top:2px;}
+
+/* C&I collapsible section */
+.ci-section{overflow:hidden;transition:max-height .3s ease,opacity .3s ease;max-height:0;opacity:0;}
+.ci-section.visible{max-height:800px;opacity:1;}
+.ci-section-inner{background:#f5f3ff;border:1px solid #ddd6fe;border-radius:10px;padding:14px 16px;margin-bottom:16px;}
+.ci-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--purple);margin-bottom:10px;}
+
+/* Battery toggle */
+.battery-section{overflow:hidden;transition:max-height .3s ease,opacity .3s ease;max-height:0;opacity:0;}
+.battery-section.visible{max-height:200px;opacity:1;}
+
+/* Toggle switch */
+.toggle-row{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
+.toggle-label{font-size:12px;font-weight:600;color:var(--text);}
+.toggle{position:relative;width:36px;height:20px;flex-shrink:0;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;inset:0;background:#cbd5e1;border-radius:99px;cursor:pointer;transition:.3s;}
+.toggle-slider:before{content:'';position:absolute;height:14px;width:14px;left:3px;bottom:3px;background:white;border-radius:50%;transition:.3s;}
+.toggle input:checked + .toggle-slider{background:var(--primary);}
+.toggle input:checked + .toggle-slider:before{transform:translateX(16px);}
+
+/* Payment rows */
+.pp-table{width:100%;border-collapse:collapse;margin-top:8px;}
+.pp-table th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--text-muted);padding:5px 8px;text-align:left;background:#f8fafc;}
+.pp-table td{padding:5px 4px;vertical-align:middle;}
+.pp-table input,.pp-table select{padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;width:100%;outline:none;}
+.pp-table input:focus,.pp-table select:focus{border-color:var(--primary);}
+.pp-total-row{font-size:12px;color:var(--text-muted);margin-top:6px;text-align:right;}
+.pp-total-row.over{color:var(--danger);font-weight:700;}
+.pp-total-row.ok{color:var(--success);font-weight:700;}
+
+/* ── View Modal Tabs ── */
+.view-hero{color:white;padding:20px 24px;}
+.view-hero-id{font-size:11px;font-family:monospace;background:rgba(255,255,255,.15);display:inline-block;padding:2px 8px;border-radius:4px;margin-bottom:8px;}
+.view-hero-name{font-size:20px;font-weight:800;margin-bottom:3px;}
+.view-hero-customer{font-size:13px;opacity:.85;}
+.tab-bar{display:flex;border-bottom:2px solid var(--border);background:white;padding:0 24px;}
+.tab-btn{padding:12px 16px;font-size:13px;font-weight:600;color:var(--text-muted);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;}
+.tab-btn:hover{color:var(--secondary);}
+.tab-btn.active{color:var(--primary);border-bottom-color:var(--primary);}
+.tab-content{display:none;padding:20px 24px;}
+.tab-content.active{display:block;}
+
+/* Detail grid */
+.detail-section{margin-bottom:20px;}
+.detail-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);margin-bottom:10px;}
+.detail-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.detail-item label{display:block;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;color:var(--text-xs);margin-bottom:2px;}
+.detail-item span{font-size:13px;color:var(--text);}
+
+/* Milestone tracker */
+.milestone-list{display:flex;flex-direction:column;gap:8px;}
+.ms-row{border:1px solid var(--border);border-radius:8px;padding:10px 14px;display:grid;grid-template-columns:auto 1fr auto auto;gap:10px;align-items:center;}
+.ms-row.ms-complete{border-color:#bbf7d0;background:#f0fdf4;}
+.ms-row.ms-blocked{border-color:#fca5a5;background:#fef2f2;}
+.ms-row.ms-inprogress{border-color:#93c5fd;background:#eff6ff;}
+.ms-row.ms-overdue{border-color:#fde68a;background:#fefce8;}
+.ms-status-icon{font-size:18px;width:28px;text-align:center;}
+.ms-info .ms-name{font-size:13px;font-weight:600;color:var(--text);}
+.ms-info .ms-dates{font-size:11px;color:var(--text-muted);margin-top:2px;}
+.ms-info .ms-date-overdue{color:var(--danger);font-weight:600;}
+.ms-actions{display:flex;gap:4px;}
+.ms-progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.ms-progress-title{font-size:12px;font-weight:700;color:var(--secondary);}
+.ms-progress-pct{font-size:12px;color:var(--text-muted);}
+
+/* Payment tracker */
+.payment-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
+.pay-sum-card{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;}
+.pay-sum-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;color:var(--text-muted);margin-bottom:3px;}
+.pay-sum-val{font-size:16px;font-weight:800;color:var(--secondary);}
+.pp-list{display:flex;flex-direction:column;gap:8px;}
+.pp-item{border:1px solid var(--border);border-radius:8px;padding:10px 14px;display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;}
+.pp-item.pp-paid{border-color:#bbf7d0;background:#f0fdf4;}
+.pp-item.pp-invoiced{border-color:#93c5fd;background:#eff6ff;}
+.pp-item.pp-overdue{border-color:#fca5a5;background:#fef2f2;}
+.pp-item.pp-warn{border-color:#fde68a;background:#fefce8;}
+.pp-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.pp-dot-paid{background:var(--success);}
+.pp-dot-invoiced{background:var(--blue);}
+.pp-dot-overdue{background:var(--danger);}
+.pp-dot-warn{background:var(--warning);}
+.pp-dot-pending{background:#cbd5e1;}
+.pp-info .pp-label{font-size:13px;font-weight:600;color:var(--text);}
+.pp-info .pp-meta{font-size:11px;color:var(--text-muted);margin-top:2px;}
+.pp-info .pp-amount{font-size:12px;font-weight:700;color:var(--secondary);margin-top:1px;}
+.pp-actions{display:flex;gap:4px;}
+
+/* Mini section note */
+.section-note{font-size:11px;color:var(--text-muted);margin-bottom:10px;font-style:italic;}
+
+/* Demo banner */
+
+/* Toast */
+#toast{position:fixed;bottom:24px;right:24px;background:var(--secondary);color:white;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;display:none;box-shadow:0 8px 24px rgba(0,0,0,.2);}
+#toast.show{display:block;}
+#toast.success{background:var(--success);}
+#toast.danger{background:var(--danger);}
+
+@media(max-width:640px){
+  .stats-row{grid-template-columns:repeat(2,1fr);}
+  .form-grid{grid-template-columns:1fr;}
+  .form-group.span2{grid-column:span 1;}
+  .detail-grid{grid-template-columns:1fr 1fr;}
+  .ms-row{grid-template-columns:auto 1fr;}.ms-actions{grid-column:1/-1;}
+}
+
+/* ── Traceability ── */
+.trace-summary{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:16px;}
+.trace-overall{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.trace-overall-title{font-size:13px;font-weight:700;color:var(--secondary);}
+.trace-overall-pct{font-size:13px;color:var(--text-muted);}
+.trace-stage{margin-bottom:14px;}
+.trace-stage-header{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-radius:8px;margin-bottom:6px;}
+.trace-stage-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;}
+.trace-stage-count{font-size:11px;font-weight:600;}
+.trace-step{display:grid;grid-template-columns:28px 1fr auto;gap:8px;align-items:flex-start;padding:7px 10px 7px 10px;border-radius:8px;border:1px solid transparent;margin-bottom:4px;transition:background .15s;}
+.trace-step:hover{background:var(--bg);}
+.trace-step.step-complete{background:#f0fdf4;border-color:#bbf7d0;}
+.trace-step.step-na{background:#f8fafc;border-color:var(--border);opacity:.65;}
+.trace-step-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px;}
+.num-pending{background:#e2e8f0;color:var(--text-muted);}
+.num-complete{background:var(--success);color:white;}
+.num-na{background:#94a3b8;color:white;}
+.trace-step-body{min-width:0;}
+.trace-step-desc{font-size:13px;color:var(--text);line-height:1.35;}
+.trace-step-meta{font-size:11px;color:var(--text-muted);margin-top:2px;}
+.trace-step-actions{display:flex;gap:4px;flex-shrink:0;align-items:flex-start;padding-top:2px;}
+.tbtn{font-size:10px;font-weight:600;padding:3px 8px;border-radius:6px;border:none;cursor:pointer;white-space:nowrap;line-height:1.4;}
+.tbtn-done{background:#dcfce7;color:var(--success);}
+.tbtn-done:hover{background:var(--success);color:white;}
+.tbtn-na{background:#f1f5f9;color:var(--text-muted);}
+.tbtn-na:hover{background:#e2e8f0;}
+.tbtn-undo{background:#fef2f2;color:var(--danger);}
+.tbtn-undo:hover{background:var(--danger);color:white;}
+.trace-date-input{border:1px solid #bbf7d0;border-radius:5px;font-size:11px;padding:2px 6px;font-family:inherit;color:var(--text);background:white;outline:none;cursor:pointer;margin-left:2px;}
+.trace-date-input:focus{border-color:var(--success);box-shadow:0 0 0 2px rgba(22,163,74,.15);}
+@media(max-width:640px){.trace-step{grid-template-columns:28px 1fr;}.trace-step-actions{grid-column:1/-1;padding-left:36px;}}
+</style>
+</head>
+<body>
+
+<!-- ════ AUTH SCREEN ════ -->
+<div id="auth-screen">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <div style="font-size:36px;margin-bottom:8px;">☀️</div>
+      <h1>YarraPower</h1>
+      <p>Project Management</p>
+    </div>
+    <div id="auth-online">
+      <div class="auth-error" id="auth-error-online"></div>
+      <div class="auth-field"><label>Username</label><input type="text" id="auth-username" placeholder="Enter your username" onkeydown="if(event.key==='Enter')doOnlineLogin()"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="auth-password" placeholder="Enter your password" onkeydown="if(event.key==='Enter')doOnlineLogin()"></div>
+      <button class="auth-btn" onclick="doOnlineLogin()">Sign In</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ ACCESS DENIED ════ -->
+<div id="denied-screen">
+  <div class="denied-box">
+    <div class="denied-icon">🚫</div>
+    <div class="denied-title">Access Denied</div>
+    <div class="denied-sub" id="denied-msg">Your role does not have access to Project Management.</div>
+    <a href="stock-management.html" class="btn btn-outline" style="text-decoration:none;">← Back to Stock Management</a>
+  </div>
+</div>
+
+<!-- ════ APP ════ -->
+<div id="app-screen">
+  <div class="topbar">
+    <div class="topbar-logo">Yarra<span>Power</span></div>
+    <div class="topbar-title">/ Project Management</div>
+    <div class="topbar-right">
+      <a class="topbar-link" href="stock-management.html">📦 Stock Management</a>
+      <div class="user-chip">
+        <span id="topbar-username">—</span>
+        <span class="role-badge" id="topbar-role">—</span>
+        <button class="logout-btn" onclick="doLogout()" title="Sign out">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Alert Panel -->
+    <div id="alert-panel" style="display:none;"></div>
+
+    <div class="page-header">
+      <div><div class="page-title">Projects</div><div class="page-sub">Solar PV — Residential &amp; C&amp;I</div></div>
+      <button class="btn btn-primary" onclick="openNewProjectModal()">+ New Project</button>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-label">Total</div><div class="stat-value" id="st-total">0</div></div>
+      <div class="stat-card"><div class="stat-label">Active</div><div class="stat-value" id="st-active" style="color:var(--success)">0</div></div>
+      <div class="stat-card"><div class="stat-label">Residential</div><div class="stat-value" id="st-res" style="color:var(--primary)">0</div></div>
+      <div class="stat-card"><div class="stat-label">C&amp;I</div><div class="stat-value" id="st-ci" style="color:var(--purple)">0</div></div>
+      <div class="stat-card"><div class="stat-label">🚨 Alerts</div><div class="stat-value" id="st-alerts" style="color:var(--danger)">0</div><div class="stat-sub">overdue items</div></div>
+    </div>
+
+    <div class="toolbar">
+      <div class="search-box"><span class="search-icon">🔍</span><input type="text" id="search-input" placeholder="Search project, customer, ID…" oninput="renderProjects()"></div>
+      <select class="filter-select" id="f-type" onchange="renderProjects()"><option value="">All Types</option><option value="Residential">Residential</option><option value="C&I">C&amp;I</option></select>
+      <select class="filter-select" id="f-status" onchange="renderProjects()"><option value="">All Status</option><option value="Lead">Lead</option><option value="Active">Active</option><option value="On Hold">On Hold</option><option value="Completed">Completed</option><option value="Cancelled">Cancelled</option></select>
+    </div>
+
+    <div id="projects-container"></div>
+  </div>
+</div>
+
+<!-- ════ NEW / EDIT PROJECT MODAL ════ -->
+<div class="modal-overlay" id="modal-project" onclick="if(event.target===this)closeProjModal()">
+<div class="modal modal-lg">
+  <div class="modal-header">
+    <h3 id="proj-modal-title">New Project</h3>
+    <button class="modal-close" onclick="closeProjModal()">✕</button>
+  </div>
+  <div class="modal-body">
+
+    <!-- Type -->
+    <div class="form-section">
+      <div class="form-section-header"><span class="form-section-title">Project Type</span></div>
+      <div class="type-toggle">
+        <label class="type-option" id="opt-res" onclick="selectType('Residential')">
+          <input type="radio" name="proj-type" value="Residential">
+          <div class="type-icon">🏠</div><div class="type-label">Residential</div><div class="type-desc">Home &amp; small rooftop solar</div>
+        </label>
+        <label class="type-option" id="opt-ci" onclick="selectType('C&I')">
+          <input type="radio" name="proj-type" value="C&I">
+          <div class="type-icon">🏭</div><div class="type-label">C&amp;I</div><div class="type-desc">Commercial &amp; industrial</div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Project Info (Required) -->
+    <div class="form-section">
+      <div class="form-section-header"><span class="form-section-title">Project Information</span><span class="section-required">Required</span></div>
+      <div class="form-grid">
+        <div class="form-group"><label>Project ID</label><input type="text" id="proj-id" readonly></div>
+        <div class="form-group"><label>Status</label>
+          <select id="proj-status"><option value="Lead">Lead</option><option value="Active" selected>Active</option><option value="On Hold">On Hold</option><option value="Completed">Completed</option><option value="Cancelled">Cancelled</option></select>
+        </div>
+        <div class="form-group span2"><label>Project Name <span class="req">*</span></label><input type="text" id="proj-name" placeholder="e.g. Smith Residence 10kW Rooftop Solar"></div>
+        <div class="form-group"><label>Sales Person</label><input type="text" id="proj-sales" placeholder="e.g. Tee"></div>
+        <div class="form-group"><label>Installation Date</label><input type="date" id="proj-install-date"></div>
+      </div>
+    </div>
+
+    <!-- Customer & Site (Required) -->
+    <div class="form-section">
+      <div class="form-section-header"><span class="form-section-title">Customer &amp; Site</span><span class="section-required">Required</span></div>
+      <div class="form-grid">
+        <div class="form-group"><label>Customer Name <span class="req">*</span></label><input type="text" id="proj-customer" placeholder="e.g. John Smith"></div>
+        <div class="form-group"><label>Contact Person</label><input type="text" id="proj-contact" placeholder="Same as customer if blank"></div>
+        <div class="form-group"><label>Contact Phone</label><input type="text" id="proj-phone" placeholder="e.g. 081-234-5678"></div>
+        <div class="form-group"><label>Contact Email</label><input type="email" id="proj-email" placeholder="e.g. john@email.com"></div>
+        <div class="form-group span2"><label>Site Address <span class="req">*</span></label><input type="text" id="proj-address" placeholder="Full installation site address"></div>
+        <div class="form-group"><label>Province / Region</label><input type="text" id="proj-province" placeholder="e.g. Bangkok"></div>
+        <div class="form-group"><label>Postal Code</label><input type="text" id="proj-postcode" placeholder="e.g. 10200"></div>
+      </div>
+    </div>
+
+    <!-- C&I Extra (conditional) -->
+    <div class="ci-section" id="ci-section">
+      <div class="ci-section-inner">
+        <div class="ci-section-title">🏭 C&amp;I — Additional Information</div>
+        <div class="form-grid">
+          <div class="form-group"><label>Company / Juristic Name</label><input type="text" id="ci-company" placeholder="Official registered name"></div>
+          <div class="form-group"><label>Tax ID / VAT No.</label><input type="text" id="ci-taxid" placeholder="e.g. 0105xxxxxxxxx"></div>
+          <div class="form-group"><label>Building Type</label>
+            <select id="ci-building"><option value="">— Select —</option><option>Factory</option><option>Warehouse</option><option>Office Building</option><option>Retail / Shopping</option><option>Hotel / Resort</option><option>Hospital</option><option>School / University</option><option>Other</option></select>
+          </div>
+          <div class="form-group"><label>Grid Authority</label>
+            <select id="ci-grid-auth"><option value="">— Select —</option><option>MEA (Metropolitan)</option><option>PEA (Provincial)</option><option>EGAT</option></select>
+          </div>
+          <div class="form-group"><label>Peak Demand (kVA)</label><input type="number" id="ci-peak-demand" placeholder="e.g. 500" min="0"></div>
+          <div class="form-group"><label>Available Roof Area (sqm)</label><input type="number" id="ci-roof-area" placeholder="e.g. 2000" min="0"></div>
+          <div class="form-group"><label>Roof Structure</label>
+            <select id="ci-roof-structure"><option value="">— Select —</option><option>Steel Frame / Deck</option><option>Reinforced Concrete</option><option>Timber</option><option>Membrane / Flat</option><option>Other</option></select>
+          </div>
+          <div class="form-group"><label>Contract Type</label>
+            <select id="ci-contract-type"><option value="">— Select —</option><option>Full EPC</option><option>Equipment Supply Only</option><option>EPC + O&amp;M</option><option>Design &amp; Build</option></select>
+          </div>
+          <div class="form-group span2"><label>Special Requirements / Notes</label><textarea id="ci-special" rows="2" placeholder="Grid connection notes, structural constraints, SCOD requirements…"></textarea></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- System Details (Optional) -->
+    <div class="form-section">
+      <div class="form-section-header"><span class="form-section-title">System Details</span><span class="section-optional">Optional — can be added later</span></div>
+      <div class="form-grid">
+        <div class="form-group"><label>System Size (kWp)</label><input type="number" id="proj-size" placeholder="e.g. 10" min="0" step="0.1"></div>
+        <div class="form-group"><label>Number of Panels</label><input type="number" id="proj-panels" placeholder="e.g. 20" min="0"></div>
+        <div class="form-group"><label>Panel Brand / Model</label><input type="text" id="proj-panel-model" placeholder="e.g. Jinko Tiger Neo 545W"></div>
+        <div class="form-group"><label>Inverter Brand / Model</label><input type="text" id="proj-inverter" placeholder="e.g. Solis 10kW"></div>
+        <div class="form-group"><label>Grid Connection Type</label>
+          <select id="proj-grid-conn"><option value="">— Select —</option><option>On-Grid</option><option>Hybrid</option><option>Off-Grid</option></select>
+        </div>
+        <div class="form-group">
+          <div class="toggle-row">
+            <label class="toggle"><input type="checkbox" id="proj-battery-toggle" onchange="toggleBattery(this)"><span class="toggle-slider"></span></label>
+            <span class="toggle-label">Battery Storage</span>
+          </div>
+        </div>
+        <div class="battery-section form-grid" id="battery-section" style="grid-column:span 2;padding:0;margin:0;">
+          <div class="form-group"><label>Battery Capacity (kWh)</label><input type="number" id="proj-batt-kwh" placeholder="e.g. 20" min="0" step="0.1"></div>
+          <div class="form-group"><label>Battery Brand / Model</label><input type="text" id="proj-batt-brand" placeholder="e.g. BYD Battery-Box Premium"></div>
+        </div>
+        <div class="form-group span2"><label>Notes</label><textarea id="proj-notes" rows="2" placeholder="Any technical notes…"></textarea></div>
+      </div>
+    </div>
+
+    <!-- Contract & Payment -->
+    <div class="form-section">
+      <div class="form-section-header"><span class="form-section-title">Contract &amp; Payment Schedule</span><span class="section-optional">Optional — can be added later</span></div>
+      <div class="form-grid" style="margin-bottom:14px;">
+        <div class="form-group"><label>Quotation Value (THB)</label><input type="number" id="proj-quote-value" placeholder="0.00" min="0" step="100" oninput="recalcAllPP()"></div>
+        <div class="form-group"><label>Contract Value (THB)</label><input type="number" id="proj-contract-value" placeholder="0.00" min="0" step="100" oninput="recalcAllPP()"></div>
+        <div class="form-group"><label>Payment Terms (notes)</label><input type="text" id="proj-pay-terms" placeholder="e.g. Net 30 days after invoice"></div>
+        <div class="form-group" style="align-items:flex-end;">
+          <button type="button" class="btn btn-outline btn-sm" onclick="addPPRow()">+ Add Installment</button>
+        </div>
+      </div>
+      <div class="section-note">Define each payment installment below. Enter % and the amount is auto-calculated from Contract Value. Set a Due Date to enable payment alerts.</div>
+      <table class="pp-table" id="pp-table">
+        <thead><tr><th style="width:19%">Label</th><th style="width:8%">%</th><th style="width:15%">Amount (THB)</th><th style="width:16%">Due Date</th><th style="width:19%">Trigger</th><th style="width:18%">Notes</th><th style="width:5%"></th></tr></thead>
+        <tbody id="pp-tbody"></tbody>
+      </table>
+      <div class="pp-total-row" id="pp-total-row"></div>
+    </div>
+
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-outline" onclick="closeProjModal()">Cancel</button>
+    <button class="btn btn-primary" onclick="saveProject()" id="proj-save-btn">Create Project</button>
+  </div>
+</div>
+</div>
+
+<!-- ════ VIEW / TRACK PROJECT MODAL ════ -->
+<div class="modal-overlay" id="modal-view" onclick="if(event.target===this)closeViewModal()">
+<div class="modal modal-lg">
+  <div class="view-hero" id="view-hero">
+    <div class="view-hero-id" id="view-id"></div>
+    <div class="view-hero-name" id="view-name"></div>
+    <div class="view-hero-customer" id="view-customer"></div>
+  </div>
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('overview')">📋 Overview</button>
+    <button class="tab-btn" onclick="switchTab('traceability')">🗺️ Traceability</button>
+    <button class="tab-btn" onclick="switchTab('status')">📍 Milestones</button>
+    <button class="tab-btn" onclick="switchTab('payments')">💰 Payments</button>
+  </div>
+  <div class="tab-content active" id="tab-overview"></div>
+  <div class="tab-content" id="tab-traceability"></div>
+  <div class="tab-content" id="tab-status"></div>
+  <div class="tab-content" id="tab-payments"></div>
+  <div class="modal-footer" style="justify-content:space-between;">
+    <button class="btn btn-danger btn-sm" id="view-delete-btn">🗑 Delete</button>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-outline" onclick="closeViewModal()">Close</button>
+      <button class="btn btn-primary btn-sm" id="view-edit-btn">✏️ Edit</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════ QUICK EDIT MODAL (milestones & payments) ════ -->
+<div class="modal-overlay" id="modal-quickedit" onclick="if(event.target===this)closeQuickEdit()">
+<div class="modal" style="max-width:440px;">
+  <div class="modal-header">
+    <h3 id="qe-title">Edit</h3>
+    <button class="modal-close" onclick="closeQuickEdit()">✕</button>
+  </div>
+  <div class="modal-body" id="qe-body"></div>
+  <div class="modal-footer">
+    <button class="btn btn-outline" onclick="closeQuickEdit()">Cancel</button>
+    <button class="btn btn-primary" id="qe-save-btn">Save</button>
+  </div>
+</div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════
+//  CONFIG & STATE
+// ══════════════════════════════════════════════════
+const API = 'api.php';
+const ALLOWED = ['Project Manager','Director','Super User'];
+const TODAY = new Date(); TODAY.setHours(0,0,0,0);
+let currentUser = null, editingId = null, selectedType = 'Residential', viewingId = null;
+let _projects = [];
+
+// ══════════════════════════════════════════════════
+//  MILESTONE TEMPLATES
+// ══════════════════════════════════════════════════
+// ══════════════════════════════════════════════════
+//  TRACEABILITY TEMPLATES
+// ══════════════════════════════════════════════════
+const TRACEABILITY_TEMPLATES = {
+  Residential: [
+    {stage:'Sales',         step:'Lead received'},
+    {stage:'Sales',         step:'Site survey completed'},
+    {stage:'Sales',         step:'Proposal / quotation sent'},
+    {stage:'Sales',         step:'Contract signed + deposit paid'},
+    {stage:'Pre-install',   step:'BOQ finalized, PO issued'},
+    {stage:'Pre-install',   step:'Equipment delivered to site'},
+    {stage:'Pre-install',   step:'PEA/MEA grid connection application submitted'},
+    {stage:'Installation',  step:'Installation completed'},
+    {stage:'Installation',  step:'Internal QC passed'},
+    {stage:'Commissioning', step:'T&C completed'},
+    {stage:'Commissioning', step:'PEA/MEA inspection passed'},
+    {stage:'Commissioning', step:'Net metering meter installed'},
+    {stage:'Handover',      step:'System handover + customer sign-off'},
+    {stage:'Handover',      step:'Final invoice issued / payment received'},
+    {stage:'After-sales',   step:'Monitoring app set up, warranty registered'},
+  ],
+  'C&I': [
+    {stage:'BD',            step:'Lead / RFP received'},
+    {stage:'BD',            step:'Site survey + load profile analysis'},
+    {stage:'BD',            step:'Feasibility + financial model submitted'},
+    {stage:'BD',            step:'Proposal submitted'},
+    {stage:'Contract',      step:'Contract negotiation'},
+    {stage:'Contract',      step:'EPC/PPA contract signed + down payment'},
+    {stage:'Engineering',   step:'System design (SLD, layout, yield simulation)'},
+    {stage:'Engineering',   step:'Structural engineering approved'},
+    {stage:'Engineering',   step:'Design approved by client'},
+    {stage:'Permitting',    step:'Building / installation permit submitted'},
+    {stage:'Permitting',    step:'PEA/MEA VSPP or SSUP application submitted'},
+    {stage:'Permitting',    step:'All permits approved'},
+    {stage:'Procurement',   step:'PO issued (panels, inverters, structure, cables)'},
+    {stage:'Procurement',   step:'Equipment delivered + inspected'},
+    {stage:'Construction',  step:'Mobilization / site readiness'},
+    {stage:'Construction',  step:'Civil & structural works completed'},
+    {stage:'Construction',  step:'Electrical installation & string connections'},
+    {stage:'Construction',  step:'Inverter / transformer installed'},
+    {stage:'Commissioning', step:'Pre-commissioning checks passed'},
+    {stage:'Commissioning', step:'T&C + performance test (PR ratio)'},
+    {stage:'Commissioning', step:'PEA/MEA inspection passed'},
+    {stage:'Handover',      step:'COD declared'},
+    {stage:'Handover',      step:'As-built drawings + O&M manual delivered'},
+    {stage:'Handover',      step:'Customer training completed'},
+    {stage:'Handover',      step:'Final payment received'},
+    {stage:'O&M',           step:'Monitoring platform live, preventive maintenance scheduled'},
+  ]
+};
+
+const STAGE_COLORS = {
+  'Sales':        {bg:'#fff7ed',border:'#fdba74',color:'#c2410c'},
+  'Pre-install':  {bg:'#eff6ff',border:'#93c5fd',color:'#1d4ed8'},
+  'Installation': {bg:'#ecfeff',border:'#67e8f9',color:'#0e7490'},
+  'Commissioning':{bg:'#f0fdf4',border:'#86efac',color:'#15803d'},
+  'Handover':     {bg:'#f5f3ff',border:'#c4b5fd',color:'#6d28d9'},
+  'After-sales':  {bg:'#f8fafc',border:'#cbd5e1',color:'#475569'},
+  'BD':           {bg:'#fff7ed',border:'#fdba74',color:'#c2410c'},
+  'Contract':     {bg:'#fef2f2',border:'#fca5a5',color:'#b91c1c'},
+  'Engineering':  {bg:'#eff6ff',border:'#93c5fd',color:'#1d4ed8'},
+  'Permitting':   {bg:'#fffbeb',border:'#fcd34d',color:'#b45309'},
+  'Procurement':  {bg:'#f0fdfa',border:'#5eead4',color:'#0f766e'},
+  'Construction': {bg:'#fef3c7',border:'#fcd34d',color:'#92400e'},
+  'O&M':          {bg:'#f8fafc',border:'#cbd5e1',color:'#475569'},
+};
+
+function defaultTraceability(type){
+  return (TRACEABILITY_TEMPLATES[type]||TRACEABILITY_TEMPLATES['Residential']).map((t,i)=>({
+    id:i+1, stage:t.stage, step:t.step, status:'Pending', completedDate:'', notes:''
+  }));
+}
+
+function renderTabTraceability(p){
+  const steps = p.traceability && p.traceability.length ? p.traceability : defaultTraceability(p.type);
+  const total = steps.length;
+  const done  = steps.filter(s=>s.status==='Complete').length;
+  const pct   = total ? Math.round(done/total*100) : 0;
+  const isCI  = p.type==='C&I';
+  const barColor = pct===100?'var(--success)':isCI?'var(--purple)':'var(--primary)';
+
+  // Group by stage preserving order
+  const stageOrder=[], stageMap={};
+  steps.forEach((s,i)=>{
+    if(!stageMap[s.stage]){stageMap[s.stage]={name:s.stage,steps:[]};stageOrder.push(s.stage);}
+    stageMap[s.stage].steps.push({...s,idx:i});
+  });
+
+  const stagesHtml = stageOrder.map(sName=>{
+    const sg = stageMap[sName];
+    const sc = STAGE_COLORS[sName]||{bg:'#f8fafc',border:'#e2e8f0',color:'#475569'};
+    const sgDone = sg.steps.filter(s=>s.status==='Complete').length;
+    const sgNA   = sg.steps.filter(s=>s.status==='N/A').length;
+    const sgActive = sg.steps.length - sgNA;
+    const statusLabel = sgDone===sg.steps.length?'✅ Complete'
+      : sgDone>0?`${sgDone}/${sgActive} done`
+      : sgNA===sg.steps.length?'N/A'
+      : '–';
+
+    const stepsHtml = sg.steps.map(s=>{
+      const isDone=s.status==='Complete', isNA=s.status==='N/A';
+      const numCls = isDone?'num-complete':isNA?'num-na':'num-pending';
+      const numTxt = isDone?'✓':isNA?'—':s.id;
+      const stepCls = isDone?'step-complete':isNA?'step-na':'';
+      const actions = (isDone||isNA)
+        ? `<button class="tbtn tbtn-undo" onclick="updateTraceStep('${p.id}',${s.idx},'Pending')">↩</button>`
+        : `<button class="tbtn tbtn-done" onclick="updateTraceStep('${p.id}',${s.idx},'Complete')">✓ Done</button><button class="tbtn tbtn-na" onclick="updateTraceStep('${p.id}',${s.idx},'N/A')">N/A</button>`;
+      const metaHtml = isDone
+        ? `<div class="trace-step-meta">Done:&nbsp;<input type="date" class="trace-date-input" value="${escAttr(s.completedDate||'')}" onchange="updateTraceStepDate('${p.id}',${s.idx},this.value)" title="Edit completion date">${s.notes?` · ${escHtml(s.notes)}`:''}</div>`
+        : s.notes?`<div class="trace-step-meta">${escHtml(s.notes)}</div>`:'';
+      return `<div class="trace-step ${stepCls}">
+        <div class="trace-step-num ${numCls}">${numTxt}</div>
+        <div class="trace-step-body">
+          <div class="trace-step-desc">${escHtml(s.step)}</div>
+          ${metaHtml}
+        </div>
+        <div class="trace-step-actions">${actions}</div>
+      </div>`;
+    }).join('');
+
+    return `<div class="trace-stage">
+      <div class="trace-stage-header" style="background:${sc.bg};border:1px solid ${sc.border};">
+        <span class="trace-stage-title" style="color:${sc.color};">● ${escHtml(sName)}</span>
+        <span class="trace-stage-count" style="color:${sc.color};">${statusLabel}</span>
+      </div>
+      ${stepsHtml}
+    </div>`;
+  }).join('');
+
+  document.getElementById('tab-traceability').innerHTML=`
+    <div class="trace-summary">
+      <div class="trace-overall">
+        <span class="trace-overall-title">Overall Progress</span>
+        <span class="trace-overall-pct">${done} / ${total} steps complete · ${pct}%</span>
+      </div>
+      <div class="progress-bar-bg" style="height:10px;">
+        <div class="progress-bar-fill" style="width:${pct}%;background:${barColor};"></div>
+      </div>
+    </div>
+    ${stagesHtml}
+    <div style="margin-top:12px;">
+      <button class="btn btn-outline btn-sm" onclick="resetTraceability('${p.id}')">↺ Reset to Template</button>
+    </div>`;
+}
+
+async function updateTraceStep(projId,idx,status){
+  const p=_projects.find(x=>x.id===projId); if(!p) return;
+  if(!p.traceability||!p.traceability.length) p.traceability=defaultTraceability(p.type);
+  const s=p.traceability[idx]; if(!s) return;
+  s.status=status;
+  if(status==='Complete'&&!s.completedDate) s.completedDate=new Date().toISOString().split('T')[0];
+  if(status==='Pending'){ s.completedDate=''; }
+  await persistProject(p); renderTabTraceability(p); renderAll();
+  showToast('Step updated','success');
+}
+
+async function updateTraceStepDate(projId,idx,dateValue){
+  const p=_projects.find(x=>x.id===projId); if(!p) return;
+  if(!p.traceability||!p.traceability.length) return;
+  const s=p.traceability[idx]; if(!s) return;
+  s.completedDate=dateValue;
+  await persistProject(p);
+  showToast('Date saved','success');
+}
+
+async function resetTraceability(projId){
+  if(!confirm('Reset traceability to the default template? All progress will be cleared.')) return;
+  const p=_projects.find(x=>x.id===projId); if(!p) return;
+  p.traceability=defaultTraceability(p.type);
+  await persistProject(p); renderTabTraceability(p); showToast('Traceability reset','success');
+}
+
+const MS_TEMPLATES = {
+  Residential: [
+    'Site Survey & Measurement','Customer Design Approval','Equipment Procurement',
+    'Installation Permits / HOA','Solar Panel Installation','Inverter & Electrical Wiring',
+    'System Testing','PEA / MEA Grid Application','Commissioning & Handover'
+  ],
+  'C&I': [
+    'Site Survey & Structural Assessment','Engineering Design & Approval',
+    'Permit & Grid Application','Equipment Procurement',
+    'Civil & Structural Work','Equipment Installation',
+    'Electrical & Safety Testing','PEA / MEA Inspection & Approval',
+    'Commissioning & Load Test','Handover, Training & As-Built Docs'
+  ]
+};
+
+function defaultMilestones(type) {
+  return (MS_TEMPLATES[type] || MS_TEMPLATES['Residential']).map((name, i) => ({
+    id: 'ms' + (i+1), name, status: 'Pending', targetDate: '', actualDate: '', assignedTo: '', notes: ''
+  }));
+}
+
+// ══════════════════════════════════════════════════
+//  AUTH
+// ══════════════════════════════════════════════════
+async function initAuth() {
+  try {
+    const resp = await fetch(`${API}?action=check_session`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:'{}', credentials:'same-origin'
+    });
+    const j = await resp.json();
+    if (j.logged_in && j.user) {
+      const user = j.user;
+      if (!ALLOWED.includes(user.role)) { showDenied(user.role); return; }
+      currentUser = user; enterApp();
+    } else {
+      document.getElementById('auth-online').style.display = '';
+    }
+  } catch(e) {
+    // Server unreachable — show login form with error
+    document.getElementById('auth-online').style.display = '';
+    const err = document.getElementById('auth-error-online');
+    err.textContent = 'Cannot reach server. Please check your connection or contact your administrator.';
+    err.style.display = 'block';
+  }
+}
+async function doOnlineLogin(){
+  const u=document.getElementById('auth-username').value.trim(), p=document.getElementById('auth-password').value;
+  const err=document.getElementById('auth-error-online'); err.style.display='none';
+  try{
+    const r=await apiCall('login',{username:u,password:p});
+    currentUser=r.user; document.getElementById('auth-password').value='';
+    if(!ALLOWED.includes(currentUser.role)){showDenied(currentUser.role);return;}
+    enterApp();
+  }catch(e){ err.textContent=e.message||'Incorrect username or password.'; err.style.display='block'; document.getElementById('auth-password').value=''; }
+}
+function showDenied(role){
+  document.getElementById('auth-screen').style.display='none';
+  document.getElementById('denied-screen').style.display='flex';
+  document.getElementById('denied-msg').innerHTML=`You are logged in as <strong>${escHtml(role)}</strong>.<br><br>Required: <strong>Project Manager, Director,</strong> or <strong>Super User</strong>.`;
+}
+function enterApp(){
+  document.getElementById('auth-screen').style.display='none';
+  document.getElementById('denied-screen').style.display='none';
+  document.getElementById('app-screen').style.display='block';
+  document.getElementById('topbar-username').textContent=currentUser.name||currentUser.username;
+  document.getElementById('topbar-role').textContent=currentUser.role;
+  loadAndRender();
+}
+async function doLogout(){
+  if(!confirm('Sign out?')) return;
+  try{ await apiCall('logout'); }catch(e){}
+  location.reload();
+}
+
+// ══════════════════════════════════════════════════
+//  API / DATA
+// ══════════════════════════════════════════════════
+async function apiCall(action,data={}){
+  const r=await fetch(`${API}?action=${action}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data),credentials:'same-origin'});
+  const j=await r.json();
+  if(!j.success) throw new Error(j.error||'Server error');
+  return j;
+}
+async function loadProjects(){
+  try{ const r=await apiCall('get_projects'); _projects=r.projects||[]; }catch(e){ showToast('Load error: '+e.message,'danger'); }
+  _projects=_projects.map(p=>({
+    ...p,
+    milestones: typeof p.milestones==='string'?JSON.parse(p.milestones||'[]'):p.milestones||[],
+    payment_periods: typeof p.payment_periods==='string'?JSON.parse(p.payment_periods||'[]'):p.payment_periods||[],
+    traceability: typeof p.traceability==='string'?JSON.parse(p.traceability||'[]'):p.traceability||[]
+  }));
+}
+async function loadAndRender(){ await loadProjects(); renderAll(); }
+
+// ══════════════════════════════════════════════════
+//  ALERTS
+// ══════════════════════════════════════════════════
+function getAlerts(){
+  const alerts=[];
+  _projects.forEach(p=>{
+    if(p.status==='Cancelled'||p.status==='Completed') return;
+    (p.milestones||[]).forEach(ms=>{
+      if(ms.status==='Complete') return;
+      if(!ms.targetDate) return;
+      const d=new Date(ms.targetDate); d.setHours(0,0,0,0);
+      const diff=Math.ceil((d-TODAY)/86400000);
+      if(diff<0) alerts.push({type:'overdue',cat:'milestone',project:p,ms,diff});
+      else if(diff<=7) alerts.push({type:'warn7',cat:'milestone',project:p,ms,diff});
+      else if(diff<=14) alerts.push({type:'warn14',cat:'milestone',project:p,ms,diff});
+    });
+    (p.payment_periods||[]).forEach(pp=>{
+      if(pp.status==='Paid') return;
+      if(!pp.dueDate) return;
+      const d=new Date(pp.dueDate); d.setHours(0,0,0,0);
+      const diff=Math.ceil((d-TODAY)/86400000);
+      if(diff<0) alerts.push({type:'overdue',cat:'payment',project:p,pp,diff});
+      else if(diff<=7) alerts.push({type:'warn7',cat:'payment',project:p,pp,diff});
+      else if(diff<=14) alerts.push({type:'warn14',cat:'payment',project:p,pp,diff});
+    });
+  });
+  return alerts.sort((a,b)=>a.diff-b.diff);
+}
+function renderAlerts(){
+  const alerts=getAlerts();
+  const overdue=alerts.filter(a=>a.type==='overdue').length;
+  document.getElementById('st-alerts').textContent=overdue;
+  if(!alerts.length){ document.getElementById('alert-panel').innerHTML='<div class="no-alerts">✅ No overdue or upcoming alerts — all milestones and payments are on track.</div>'; document.getElementById('alert-panel').style.display=''; return; }
+  const rows=alerts.map(a=>{
+    const cls={overdue:'overdue',warn7:'warn7',warn14:'warn14'}[a.type];
+    const diffLabel=a.diff<0?`${Math.abs(a.diff)} days overdue`:(a.diff===0?'Due today':`Due in ${a.diff} days`);
+    if(a.cat==='milestone') return `<div class="alert-item ${cls}"><div class="alert-item-title">📍 ${escHtml(a.ms.name)}</div><div class="alert-item-sub">${escHtml(a.project.name)} · ${diffLabel}</div></div>`;
+    else return `<div class="alert-item ${cls}"><div class="alert-item-title">💰 ${escHtml(a.pp.label)}</div><div class="alert-item-sub">${escHtml(a.project.name)} · ฿${Number(a.pp.amount||0).toLocaleString()} · ${diffLabel}</div></div>`;
+  }).join('');
+  const count=alerts.length;
+  document.getElementById('alert-panel').innerHTML=`<div class="alert-panel"><div class="alert-panel-header" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'':'none'"><span class="alert-panel-title">🚨 ${count} Alert${count!==1?'s':''} — Overdue &amp; Upcoming (14 days)</span><span style="font-size:12px;color:var(--text-muted)">Click to toggle ▾</span></div><div class="alert-panel-body">${rows}</div></div>`;
+  document.getElementById('alert-panel').style.display='';
+}
+
+// ══════════════════════════════════════════════════
+//  PAYMENT ROW BUILDER
+// ══════════════════════════════════════════════════
+let ppRowId=0;
+// Original payment-period objects keyed by row id — preserves status / paid dates /
+// confirmations when a project is edited (previously these were wiped to "Pending").
+let _ppOrig={};
+function addPPRow(data={}){
+  ppRowId++;
+  const rid='pp'+ppRowId;
+  _ppOrig[rid]=data||{};
+  const tr=document.createElement('tr');
+  tr.id='pp-row-'+rid;
+  const statusHint=data.status&&data.status!=='Pending'?` title="Status: ${escAttr(data.status)}${data.paidDate?' · Paid '+escAttr(data.paidDate):''} — preserved on save"`:'';
+  tr.innerHTML=`<td><input type="text" placeholder="e.g. Deposit" value="${escAttr(data.label||'')}"${statusHint}></td>
+    <td><input type="number" placeholder="%" min="0" max="100" step="1" value="${data.percent||''}" oninput="recalcPP(this,'${rid}')"></td>
+    <td><input type="number" placeholder="฿" min="0" step="100" value="${data.amount||''}" id="pp-amt-${rid}"></td>
+    <td><input type="date" value="${escAttr(data.dueDate||'')}" title="Due date — drives payment alerts"></td>
+    <td><input type="text" placeholder="e.g. On contract signing" value="${escAttr(data.trigger||'')}"></td>
+    <td><input type="text" placeholder="Notes" value="${escAttr(data.notes||'')}"></td>
+    <td><button class="btn btn-ghost" onclick="removePP('${rid}')">✕</button></td>`;
+  document.getElementById('pp-tbody').appendChild(tr);
+  updatePPTotal();
+}
+function removePP(rid){
+  const orig=_ppOrig[rid]||{};
+  if((orig.status==='Paid'||orig.status==='Invoiced')&&!confirm(`This installment is already "${orig.status}". Remove it anyway?`)) return;
+  const el=document.getElementById('pp-row-'+rid); if(el) el.remove(); delete _ppOrig[rid]; updatePPTotal();
+}
+function recalcPP(input,rid){
+  const pct=parseFloat(input.value)||0;
+  const contractVal=parseFloat(document.getElementById('proj-contract-value').value)||parseFloat(document.getElementById('proj-quote-value').value)||0;
+  const amtEl=document.getElementById('pp-amt-'+rid);
+  if(amtEl && contractVal) amtEl.value=(contractVal*pct/100).toFixed(0);
+  updatePPTotal();
+}
+function recalcAllPP(){
+  document.querySelectorAll('#pp-tbody tr').forEach(tr=>{
+    const pctInput=tr.cells[1]?.querySelector('input');
+    const amtInput=tr.cells[2]?.querySelector('input');
+    const rid=tr.id.replace('pp-row-','');
+    if(pctInput&&amtInput){
+      const pct=parseFloat(pctInput.value)||0;
+      const contractVal=parseFloat(document.getElementById('proj-contract-value').value)||parseFloat(document.getElementById('proj-quote-value').value)||0;
+      if(contractVal) amtInput.value=(contractVal*pct/100).toFixed(0);
+    }
+  });
+  updatePPTotal();
+}
+function updatePPTotal(){
+  let totalPct=0;
+  document.querySelectorAll('#pp-tbody tr').forEach(tr=>{ totalPct+=parseFloat(tr.cells[1]?.querySelector('input')?.value||0); });
+  const el=document.getElementById('pp-total-row');
+  if(!el) return;
+  if(totalPct===0){ el.textContent=''; return; }
+  const is100=Math.abs(totalPct-100)<0.01;
+  const cls=is100?'ok':totalPct>100?'over':'';
+  el.className='pp-total-row '+(cls);
+  el.textContent=`Total allocated: ${totalPct.toFixed(1)}%${is100?' ✓':totalPct>100?' ⚠️ Over 100%':' (remaining: '+(100-totalPct).toFixed(1)+'%)'}`;
+}
+function collectPPRows(){
+  const rows=[];
+  document.querySelectorAll('#pp-tbody tr').forEach((tr,i)=>{
+    const cells=tr.cells;
+    const rid=tr.id.replace('pp-row-','');
+    const orig=_ppOrig[rid]||{}; // preserve payment status, dates & confirmations
+    rows.push({
+      id: orig.id||'pp'+(i+1),
+      label: cells[0]?.querySelector('input')?.value||'',
+      percent: parseFloat(cells[1]?.querySelector('input')?.value)||0,
+      amount: parseFloat(cells[2]?.querySelector('input')?.value)||0,
+      dueDate: cells[3]?.querySelector('input')?.value||'',
+      trigger: cells[4]?.querySelector('input')?.value||'',
+      status: orig.status||'Pending',
+      invoiceDate: orig.invoiceDate||'',
+      paidDate: orig.paidDate||'',
+      confirmedBy: orig.confirmedBy||'',
+      confirmedDate: orig.confirmedDate||'',
+      notes: cells[5]?.querySelector('input')?.value||''
+    });
+  });
+  return rows;
+}
+
+// ══════════════════════════════════════════════════
+//  FORM STATE
+// ══════════════════════════════════════════════════
+function selectType(type){
+  selectedType=type;
+  document.getElementById('opt-res').className='type-option'+(type==='Residential'?' sel-res':'');
+  document.getElementById('opt-ci').className='type-option'+(type==='C&I'?' sel-ci':'');
+  const ci=document.getElementById('ci-section');
+  if(type==='C&I'){ ci.classList.add('visible'); } else { ci.classList.remove('visible'); }
+  if(!editingId) document.getElementById('proj-id').value='(assigned on save)';
+}
+function toggleBattery(cb){
+  document.getElementById('battery-section').classList.toggle('visible',cb.checked);
+}
+function openNewProjectModal(){
+  editingId=null; selectedType='Residential';
+  document.getElementById('proj-modal-title').textContent='New Project';
+  document.getElementById('proj-save-btn').textContent='Create Project';
+  // Reset all fields
+  ['proj-name','proj-customer','proj-contact','proj-phone','proj-email','proj-address','proj-province','proj-postcode',
+   'proj-sales','proj-inverter','proj-notes','proj-panel-model','proj-pay-terms',
+   'ci-company','ci-taxid','ci-special','proj-batt-kwh','proj-batt-brand'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['proj-size','proj-panels','proj-quote-value','proj-contract-value'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('proj-install-date').value='';
+  document.getElementById('proj-status').value='Active';
+  document.getElementById('proj-grid-conn').value='';
+  document.getElementById('ci-building').value='';
+  document.getElementById('ci-grid-auth').value='';
+  document.getElementById('ci-roof-structure').value='';
+  document.getElementById('ci-contract-type').value='';
+  document.getElementById('ci-peak-demand').value='';
+  document.getElementById('ci-roof-area').value='';
+  document.getElementById('proj-battery-toggle').checked=false;
+  document.getElementById('battery-section').classList.remove('visible');
+  document.getElementById('pp-tbody').innerHTML='';
+  document.getElementById('pp-total-row').textContent='';
+  ppRowId=0; _ppOrig={};
+  selectType('Residential');
+  document.getElementById('modal-project').classList.add('open');
+}
+function openEditModal(id){
+  const p=_projects.find(x=>x.id===id); if(!p) return;
+  editingId=id; selectedType=p.type;
+  document.getElementById('proj-modal-title').textContent='Edit Project';
+  document.getElementById('proj-save-btn').textContent='Save Changes';
+  document.getElementById('proj-id').value=p.id;
+  document.getElementById('proj-name').value=p.name||'';
+  document.getElementById('proj-customer').value=p.customer||'';
+  document.getElementById('proj-contact').value=p.contact||'';
+  document.getElementById('proj-phone').value=p.phone||'';
+  document.getElementById('proj-email').value=p.email||'';
+  document.getElementById('proj-address').value=p.address||'';
+  document.getElementById('proj-province').value=p.province||'';
+  document.getElementById('proj-postcode').value=p.postcode||'';
+  document.getElementById('proj-sales').value=p.sales||'';
+  document.getElementById('proj-install-date').value=p.install_date||p.installDate||'';
+  document.getElementById('proj-size').value=p.size||'';
+  document.getElementById('proj-panels').value=p.panels||'';
+  document.getElementById('proj-panel-model').value=p.panel_model||'';
+  document.getElementById('proj-inverter').value=p.inverter||'';
+  document.getElementById('proj-grid-conn').value=p.grid_conn||'';
+  document.getElementById('proj-notes').value=p.notes||'';
+  document.getElementById('proj-quote-value').value=p.quote_value||p.value||'';
+  document.getElementById('proj-contract-value').value=p.contract_value||'';
+  document.getElementById('proj-pay-terms').value=p.pay_terms||'';
+  document.getElementById('proj-status').value=p.status||'Active';
+  const hasBatt=!!(p.battery_kwh||p.battery_brand);
+  document.getElementById('proj-battery-toggle').checked=hasBatt;
+  document.getElementById('battery-section').classList.toggle('visible',hasBatt);
+  document.getElementById('proj-batt-kwh').value=p.battery_kwh||'';
+  document.getElementById('proj-batt-brand').value=p.battery_brand||'';
+  // C&I
+  document.getElementById('opt-res').className='type-option'+(p.type==='Residential'?' sel-res':'');
+  document.getElementById('opt-ci').className='type-option'+(p.type==='C&I'?' sel-ci':'');
+  document.getElementById('ci-section').classList.toggle('visible',p.type==='C&I');
+  document.getElementById('ci-company').value=p.ci_company||'';
+  document.getElementById('ci-taxid').value=p.ci_taxid||'';
+  document.getElementById('ci-building').value=p.ci_building||'';
+  document.getElementById('ci-grid-auth').value=p.ci_grid_auth||'';
+  document.getElementById('ci-peak-demand').value=p.ci_peak_demand||'';
+  document.getElementById('ci-roof-area').value=p.ci_roof_area||'';
+  document.getElementById('ci-roof-structure').value=p.ci_roof_structure||'';
+  document.getElementById('ci-contract-type').value=p.ci_contract_type||'';
+  document.getElementById('ci-special').value=p.ci_special||'';
+  // Payment rows
+  document.getElementById('pp-tbody').innerHTML=''; ppRowId=0; _ppOrig={};
+  (p.payment_periods||[]).forEach(pp=>addPPRow(pp));
+  updatePPTotal();
+  closeViewModal();
+  document.getElementById('modal-project').classList.add('open');
+}
+function closeProjModal(){ document.getElementById('modal-project').classList.remove('open'); }
+
+// ══════════════════════════════════════════════════
+//  SAVE PROJECT
+// ══════════════════════════════════════════════════
+async function saveProject(){
+  const name=document.getElementById('proj-name').value.trim();
+  const customer=document.getElementById('proj-customer').value.trim();
+  const address=document.getElementById('proj-address').value.trim();
+  if(!name){ showToast('Project name is required','danger'); return; }
+  if(!customer){ showToast('Customer name is required','danger'); return; }
+  if(!address){ showToast('Site address is required','danger'); return; }
+
+  const isNew=!editingId;
+  const existingProject=_projects.find(p=>p.id===editingId);
+
+  const payload={
+    id:editingId||null, type:selectedType, name, customer, status:document.getElementById('proj-status').value,
+    contact:document.getElementById('proj-contact').value.trim(),
+    phone:document.getElementById('proj-phone').value.trim(),
+    email:document.getElementById('proj-email').value.trim(),
+    address, province:document.getElementById('proj-province').value.trim(),
+    postcode:document.getElementById('proj-postcode').value.trim(),
+    sales:document.getElementById('proj-sales').value.trim(),
+    install_date:document.getElementById('proj-install-date').value||null,
+    size:document.getElementById('proj-size').value||null,
+    panels:document.getElementById('proj-panels').value||null,
+    panel_model:document.getElementById('proj-panel-model').value.trim(),
+    inverter:document.getElementById('proj-inverter').value.trim(),
+    grid_conn:document.getElementById('proj-grid-conn').value,
+    battery_kwh:document.getElementById('proj-battery-toggle').checked?document.getElementById('proj-batt-kwh').value:null,
+    battery_brand:document.getElementById('proj-battery-toggle').checked?document.getElementById('proj-batt-brand').value.trim():'',
+    notes:document.getElementById('proj-notes').value.trim(),
+    quote_value:document.getElementById('proj-quote-value').value||null,
+    contract_value:document.getElementById('proj-contract-value').value||null,
+    pay_terms:document.getElementById('proj-pay-terms').value.trim(),
+    ci_company:document.getElementById('ci-company').value.trim(),
+    ci_taxid:document.getElementById('ci-taxid').value.trim(),
+    ci_building:document.getElementById('ci-building').value,
+    ci_grid_auth:document.getElementById('ci-grid-auth').value,
+    ci_peak_demand:document.getElementById('ci-peak-demand').value||null,
+    ci_roof_area:document.getElementById('ci-roof-area').value||null,
+    ci_roof_structure:document.getElementById('ci-roof-structure').value,
+    ci_contract_type:document.getElementById('ci-contract-type').value,
+    ci_special:document.getElementById('ci-special').value.trim(),
+    payment_periods:collectPPRows(),
+    milestones:isNew?defaultMilestones(selectedType):(existingProject?.milestones||defaultMilestones(selectedType)),
+    traceability:isNew?defaultTraceability(selectedType):(existingProject?.traceability&&existingProject.traceability.length?existingProject.traceability:defaultTraceability(selectedType)),
+    created_by:currentUser?.name||currentUser?.username||'Unknown'
+  };
+
+  try{
+    const save={...payload, milestones:JSON.stringify(payload.milestones), payment_periods:JSON.stringify(payload.payment_periods), traceability:JSON.stringify(payload.traceability)};
+    const r=await apiCall('save_project',save);
+    showToast(editingId?'Project updated ✓':`Project ${r.id} created ✓`,'success');
+  }catch(e){ showToast('Error: '+e.message,'danger'); return; }
+  closeProjModal(); await loadAndRender();
+}
+
+// ══════════════════════════════════════════════════
+//  DELETE
+// ══════════════════════════════════════════════════
+async function deleteProject(id){
+  if(!confirm('Delete this project? This cannot be undone.')) return;
+  try{ await apiCall('delete_project',{id}); }catch(e){ showToast('Error: '+e.message,'danger'); return; }
+  closeViewModal(); showToast('Project deleted','danger'); await loadAndRender();
+}
+
+// ══════════════════════════════════════════════════
+//  VIEW MODAL
+// ══════════════════════════════════════════════════
+function openViewModal(id){
+  const p=_projects.find(x=>x.id===id); if(!p) return;
+  viewingId=id;
+  // Hero
+  document.getElementById('view-id').textContent=p.id;
+  document.getElementById('view-name').textContent=p.name;
+  document.getElementById('view-customer').textContent='👤 '+p.customer;
+  document.getElementById('view-hero').style.background=p.type==='C&I'
+    ?'linear-gradient(135deg,#4c1d95,#6d28d9)':'linear-gradient(135deg,#c2410c,#f97316)';
+  // Delete/Edit
+  document.getElementById('view-delete-btn').onclick=()=>deleteProject(id);
+  document.getElementById('view-edit-btn').onclick=()=>openEditModal(id);
+  renderTabOverview(p); renderTabTraceability(p); renderTabStatus(p); renderTabPayments(p);
+  switchTab('overview');
+  document.getElementById('modal-view').classList.add('open');
+}
+function closeViewModal(){ document.getElementById('modal-view').classList.remove('open'); viewingId=null; }
+
+function switchTab(name){
+  const names=['overview','traceability','status','payments'];
+  const ids=['tab-overview','tab-traceability','tab-status','tab-payments'];
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',names[i]===name));
+  document.querySelectorAll('.tab-content').forEach((c,i)=>c.classList.toggle('active',ids[i]==='tab-'+name));
+}
+
+function renderTabOverview(p){
+  const fv=v=>v?escHtml(v):'—', fm=v=>v?'฿'+Number(v).toLocaleString():'—';
+  const fd=v=>{ if(!v) return '—'; try{return new Date(v+(v.includes('T')?'':'T00:00:00')).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});}catch(e){return v;} };
+  const SC={Active:'s-active',Lead:'s-lead',Completed:'s-completed','On Hold':'s-onhold',Cancelled:'s-cancelled'};
+  let ciBlock='';
+  if(p.type==='C&I'){
+    ciBlock=`<div class="detail-section"><div class="detail-section-title">🏭 C&I Information</div><div class="detail-grid">
+      <div class="detail-item"><label>Company Name</label><span>${fv(p.ci_company)}</span></div>
+      <div class="detail-item"><label>Tax ID</label><span>${fv(p.ci_taxid)}</span></div>
+      <div class="detail-item"><label>Building Type</label><span>${fv(p.ci_building)}</span></div>
+      <div class="detail-item"><label>Grid Authority</label><span>${fv(p.ci_grid_auth)}</span></div>
+      <div class="detail-item"><label>Peak Demand</label><span>${p.ci_peak_demand?p.ci_peak_demand+' kVA':'—'}</span></div>
+      <div class="detail-item"><label>Contract Type</label><span>${fv(p.ci_contract_type)}</span></div>
+      <div class="detail-item"><label>Roof Area</label><span>${p.ci_roof_area?p.ci_roof_area+' sqm':'—'}</span></div>
+      <div class="detail-item"><label>Roof Structure</label><span>${fv(p.ci_roof_structure)}</span></div>
+      ${p.ci_special?`<div class="detail-item" style="grid-column:span 1"><label>Special Notes</label><span>${escHtml(p.ci_special)}</span></div>`:''}
+    </div></div>`;
+  }
+  document.getElementById('tab-overview').innerHTML=`
+    <div class="detail-section"><div class="detail-section-title">Overview</div><div class="detail-grid">
+      <div class="detail-item"><label>Type</label><span>${p.type}</span></div>
+      <div class="detail-item"><label>Status</label><span class="status-badge ${SC[p.status]||''}">${p.status}</span></div>
+      <div class="detail-item"><label>Sales Person</label><span>${fv(p.sales)}</span></div>
+      <div class="detail-item"><label>Project Manager (Created By)</label><span style="font-weight:600;color:var(--secondary);">👤 ${fv(p.created_by)}</span></div>
+      <div class="detail-item"><label>Quotation Value</label><span>${fm(p.quote_value||p.value)}</span></div>
+      <div class="detail-item"><label>Contract Value</label><span>${fm(p.contract_value)}</span></div>
+      <div class="detail-item"><label>Install Date</label><span>${fd(p.install_date||p.installDate)}</span></div>
+    </div></div>
+    <div class="detail-section"><div class="detail-section-title">Customer &amp; Site</div><div class="detail-grid">
+      <div class="detail-item"><label>Contact Person</label><span>${fv(p.contact)}</span></div>
+      <div class="detail-item"><label>Phone</label><span>${fv(p.phone)}</span></div>
+      <div class="detail-item"><label>Email</label><span>${fv(p.email)}</span></div>
+      <div class="detail-item" style="grid-column:span 3"><label>Site Address</label><span>${fv(p.address)}${p.province?', '+escHtml(p.province):''}${p.postcode?' '+escHtml(p.postcode):''}</span></div>
+    </div></div>
+    ${ciBlock}
+    <div class="detail-section"><div class="detail-section-title">System Details</div><div class="detail-grid">
+      <div class="detail-item"><label>System Size</label><span>${p.size?p.size+' kWp':'—'}</span></div>
+      <div class="detail-item"><label>Panels</label><span>${p.panels?p.panels+' units':'—'}</span></div>
+      <div class="detail-item"><label>Panel Model</label><span>${fv(p.panel_model)}</span></div>
+      <div class="detail-item"><label>Inverter</label><span>${fv(p.inverter)}</span></div>
+      <div class="detail-item"><label>Grid Connection</label><span>${fv(p.grid_conn)}</span></div>
+      <div class="detail-item"><label>Battery Storage</label><span>${p.battery_kwh?p.battery_kwh+' kWh'+(p.battery_brand?' — '+p.battery_brand:''):'None'}</span></div>
+    </div></div>
+    ${p.pay_terms?`<div class="detail-section"><div class="detail-section-title">Payment Terms</div><p style="font-size:13px;color:var(--text);">${escHtml(p.pay_terms)}</p></div>`:''}
+    ${p.notes?`<div class="detail-section"><div class="detail-section-title">Notes</div><p style="font-size:13px;color:var(--text);line-height:1.6;">${escHtml(p.notes)}</p></div>`:''}
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px 14px;font-size:12px;color:#166534;">
+      🔗 Use <strong>${p.id}</strong> or customer <strong>${escHtml(p.customer)}</strong> when creating a booking in Stock Management.
+    </div>`;
+}
+
+function renderTabStatus(p){
+  const milestones=p.milestones||[];
+  const done=milestones.filter(m=>m.status==='Complete').length;
+  const pct=milestones.length?Math.round(done/milestones.length*100):0;
+  const MSI={Pending:'⬜',
+    'In Progress':'🔵',Complete:'✅',Blocked:'🔴'};
+  const MSC={'In Progress':'ms-inprogress',Complete:'ms-complete',Blocked:'ms-blocked',Pending:''};
+  const rows=milestones.map((ms,i)=>{
+    const isOverdue=ms.targetDate&&ms.status!=='Complete'&&new Date(ms.targetDate)<TODAY;
+    const extraCls=isOverdue&&ms.status!=='Complete'?'ms-overdue':(MSC[ms.status]||'');
+    const dateStr=ms.targetDate?`Target: ${fmtDate(ms.targetDate)}${ms.actualDate?' | Done: '+fmtDate(ms.actualDate):''}`:ms.actualDate?'Done: '+fmtDate(ms.actualDate):'No date set';
+    const dateCls=isOverdue?'ms-date-overdue':'';
+    return `<div class="ms-row ${extraCls}">
+      <span class="ms-status-icon">${MSI[ms.status]||'⬜'}</span>
+      <div class="ms-info"><div class="ms-name">${escHtml(ms.name)}</div><div class="ms-dates ${dateCls}">${dateStr}${ms.assignedTo?' · '+escHtml(ms.assignedTo):''}</div>${ms.notes?`<div style="font-size:11px;color:var(--text-muted);margin-top:2px;">${escHtml(ms.notes)}</div>`:''}</div>
+      <div class="ms-actions">
+        <select onchange="updateMilestoneStatus('${p.id}',${i},this.value)" style="font-size:11px;padding:3px 6px;border:1px solid var(--border);border-radius:6px;outline:none;cursor:pointer;">
+          <option ${ms.status==='Pending'?'selected':''}>Pending</option>
+          <option ${ms.status==='In Progress'?'selected':''}>In Progress</option>
+          <option ${ms.status==='Complete'?'selected':''}>Complete</option>
+          <option ${ms.status==='Blocked'?'selected':''}>Blocked</option>
+        </select>
+        <button class="btn btn-outline btn-sm" onclick="editMilestone('${p.id}',${i})" title="Edit dates & notes">✏️</button>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('tab-status').innerHTML=`
+    <div class="ms-progress-header"><span class="ms-progress-title">Milestone Progress</span><span class="ms-progress-pct">${done}/${milestones.length} complete</span></div>
+    <div class="progress-bar-bg" style="margin-bottom:16px;height:8px;"><div class="progress-bar-fill" style="width:${pct}%;background:${pct===100?'var(--success)':pct>50?'var(--primary)':'var(--blue)'};"></div></div>
+    <div class="milestone-list">${rows}</div>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="btn btn-outline btn-sm" onclick="addCustomMilestone('${p.id}')">+ Add Milestone</button>
+      <button class="btn btn-outline btn-sm" onclick="resetMilestones('${p.id}')">↺ Reset to Template</button>
+    </div>`;
+}
+
+function renderTabPayments(p){
+  const periods=p.payment_periods||[];
+  const contractVal=parseFloat(p.contract_value||p.quote_value||0);
+  const totalPaid=periods.filter(pp=>pp.status==='Paid').reduce((s,pp)=>s+parseFloat(pp.amount||0),0);
+  const totalInvoiced=periods.filter(pp=>pp.status==='Invoiced').reduce((s,pp)=>s+parseFloat(pp.amount||0),0);
+  const pctPaid=contractVal?Math.round(totalPaid/contractVal*100):0;
+  const fm=v=>v?'฿'+Number(v).toLocaleString():'—';
+  const PP_DOT={Paid:'pp-dot-paid',Invoiced:'pp-dot-invoiced',Overdue:'pp-dot-overdue',Pending:'pp-dot-pending'};
+  const PP_CLS={Paid:'pp-paid',Invoiced:'pp-invoiced',Overdue:'pp-overdue',Pending:''};
+  const ppRows=periods.map((pp,i)=>{
+    const dueD=pp.dueDate?new Date(pp.dueDate):null; dueD&&dueD.setHours(0,0,0,0);
+    const isOverdue=dueD&&pp.status!=='Paid'&&dueD<TODAY;
+    const isWarn=dueD&&pp.status!=='Paid'&&!isOverdue&&Math.ceil((dueD-TODAY)/86400000)<=7;
+    const cls=isOverdue?'pp-overdue':isWarn?'pp-warn':(PP_CLS[pp.status]||'');
+    const dotCls=isOverdue?'pp-dot-overdue':isWarn?'pp-dot-warn':(PP_DOT[pp.status]||'pp-dot-pending');
+    const meta=[
+      pp.trigger?`Trigger: ${escHtml(pp.trigger)}`:'',
+      pp.dueDate?`Due: ${fmtDate(pp.dueDate)}`:'',
+      pp.paidDate?`Paid: ${fmtDate(pp.paidDate)}`:'',
+      pp.confirmedBy?`Confirmed by: <strong>${escHtml(pp.confirmedBy)}</strong>`:''
+    ].filter(Boolean).join(' · ');
+    return `<div class="pp-item ${cls}">
+      <div class="pp-dot ${dotCls}"></div>
+      <div class="pp-info">
+        <div class="pp-label">${escHtml(pp.label||'Installment '+(i+1))} ${pp.percent?'('+pp.percent+'%)':''}</div>
+        <div class="pp-amount">${fm(pp.amount)}</div>
+        <div class="pp-meta">${meta}${pp.notes?' · '+escHtml(pp.notes):''}</div>
+      </div>
+      <div class="pp-actions">
+        <span class="status-badge ${pp.status==='Paid'?'s-completed':pp.status==='Invoiced'?'s-lead':'s-onhold'}" style="font-size:10px;">${pp.status}</span>
+        ${pp.status!=='Paid'?`<button class="btn btn-outline btn-sm" onclick="updatePaymentStatus('${p.id}',${i},'Invoiced')">📋 Invoice</button><button class="btn btn-success btn-sm" onclick="updatePaymentStatus('${p.id}',${i},'Paid')">✅ Confirm Paid</button>`:''}
+        <button class="btn btn-outline btn-sm" onclick="editPaymentPeriod('${p.id}',${i})">✏️</button>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('tab-payments').innerHTML=`
+    <div class="payment-summary">
+      <div class="pay-sum-card"><div class="pay-sum-label">Contract Value</div><div class="pay-sum-val">${fm(contractVal||null)}</div></div>
+      <div class="pay-sum-card"><div class="pay-sum-label">Paid</div><div class="pay-sum-val" style="color:var(--success);">${fm(totalPaid||null)}</div></div>
+      <div class="pay-sum-card"><div class="pay-sum-label">Invoiced (pending)</div><div class="pay-sum-val" style="color:var(--blue);">${fm(totalInvoiced||null)}</div></div>
+    </div>
+    ${contractVal?`<div class="cp-label"><span>Payment Progress</span><span>${pctPaid}% paid</span></div><div class="progress-bar-bg" style="height:8px;margin-bottom:14px;"><div class="progress-bar-fill" style="width:${pctPaid}%;"></div></div>`:''}
+    <div class="pp-list">${ppRows||'<div style="text-align:center;padding:24px;color:var(--text-muted);font-size:13px;">No payment schedule yet. Edit the project to add installments.</div>'}</div>`;
+}
+
+// ── Milestone actions ──
+async function updateMilestoneStatus(projId,idx,status){
+  const p=_projects.find(x=>x.id===projId); if(!p) return;
+  const ms=p.milestones[idx]; if(!ms) return;
+  ms.status=status;
+  if(status==='Complete'&&!ms.actualDate) ms.actualDate=new Date().toISOString().split('T')[0];
+  await persistProject(p); renderTabStatus(p); renderAll();
+  showToast('Milestone updated','success');
+}
+async function addCustomMilestone(projId){
+  const name=prompt('Milestone name:'); if(!name) return;
+  const p=_projects.find(x=>x.id===projId); if(!p) return;
+  p.milestones.push({id:'ms'+(Date.now()),name,status:'Pending',targetDate:'',actualDate:'',assignedTo:'',notes:''});
+  await persistProject(p); renderTabStatus(p);
+}
+async function resetMilestones(projId){
+  if(!confirm('Reset milestones to the default template? Custom milestones will be lost.')) return;
+  const p=_projects.find(x=>x.id===projId); if(!p) return;
+  p.milestones=defaultMilestones(p.type);
+  await persistProject(p); renderTabStatus(p); showToast('Milestones reset','success');
+}
+function editMilestone(projId,idx){
+  const p=_projects.find(x=>x.id===projId); if(!p) return;
+  const ms=p.milestones[idx]; if(!ms) return;
+  document.getElementById('qe-title').textContent='Edit Milestone';
+  document.getElementById('qe-body').innerHTML=`
+    <div style="font-size:13px;font-weight:700;color:var(--secondary);margin-bottom:14px;">${escHtml(ms.name)}</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Target Date</label><input type="date" id="qe-target" value="${escAttr(ms.targetDate||'')}"></div>
+      <div class="form-group"><label>Actual Completion</label><input type="date" id="qe-actual" value="${escAttr(ms.actualDate||'')}"></div>
+      <div class="form-group span2"><label>Assigned To</label><input type="text" id="qe-assignee" value="${escAttr(ms.assignedTo||'')}" placeholder="e.g. Tee"></div>
+      <div class="form-group span2"><label>Notes</label><textarea id="qe-notes" rows="2">${escHtml(ms.notes||'')}</textarea></div>
+    </div>`;
+  document.getElementById('qe-save-btn').onclick=async()=>{
+    ms.targetDate=document.getElementById('qe-target').value;
+    ms.actualDate=document.getElementById('qe-actual').value;
+    ms.assignedTo=document.getElementById('qe-assignee').value.trim();
+    ms.notes=document.getElementById('qe-notes').value.trim();
+    closeQuickEdit();
+    await persistProject(p); renderTabStatus(p); renderAll();
+    showToast('Milestone saved','success');
+  };
+  document.getElementById('modal-quickedit').classList.add('open');
+}
+function closeQuickEdit(){ document.getElementById('modal-quickedit').classList.remove('open'); }
+
+// ── Payment actions ──
+async function updatePaymentStatus(projId,idx,status){
+  const p=_projects.find(x=>x.id===projId); if(!p) return;
+  const pp=p.payment_periods[idx]; if(!pp) return;
+  pp.status=status;
+  if(status==='Paid'){
+    if(!pp.paidDate) pp.paidDate=new Date().toISOString().split('T')[0];
+    pp.confirmedBy=currentUser?.name||currentUser?.username||'Unknown';
+    pp.confirmedDate=new Date().toISOString().split('T')[0];
+  }
+  if(status==='Invoiced'&&!pp.invoiceDate) pp.invoiceDate=new Date().toISOString().split('T')[0];
+  if(status==='Pending'){ pp.confirmedBy=''; pp.confirmedDate=''; }
+  await persistProject(p); renderTabPayments(p); renderAll();
+  showToast(status==='Paid'?`Payment confirmed by ${pp.confirmedBy} ✓`:`Payment marked as ${status}`,'success');
+}
+function editPaymentPeriod(projId,idx){
+  const p=_projects.find(x=>x.id===projId); if(!p) return;
+  const pp=p.payment_periods[idx]; if(!pp) return;
+  document.getElementById('qe-title').textContent='Edit Installment';
+  document.getElementById('qe-body').innerHTML=`
+    <div style="font-size:13px;font-weight:700;color:var(--secondary);margin-bottom:14px;">${escHtml(pp.label||'Installment '+(idx+1))} — ฿${Number(pp.amount||0).toLocaleString()}</div>
+    <div class="form-grid">
+      <div class="form-group"><label>Due Date</label><input type="date" id="qe-due" value="${escAttr(pp.dueDate||'')}"></div>
+      <div class="form-group"><label>Invoice Date</label><input type="date" id="qe-invdate" value="${escAttr(pp.invoiceDate||'')}"></div>
+      ${pp.status==='Paid'?`<div class="form-group"><label>Paid Date</label><input type="date" id="qe-paiddate" value="${escAttr(pp.paidDate||'')}"></div>`:''}
+      <div class="form-group span2"><label>Notes</label><textarea id="qe-notes" rows="2">${escHtml(pp.notes||'')}</textarea></div>
+    </div>`;
+  document.getElementById('qe-save-btn').onclick=async()=>{
+    pp.dueDate=document.getElementById('qe-due').value;
+    pp.invoiceDate=document.getElementById('qe-invdate').value;
+    const pd=document.getElementById('qe-paiddate'); if(pd) pp.paidDate=pd.value;
+    pp.notes=document.getElementById('qe-notes').value.trim();
+    closeQuickEdit();
+    await persistProject(p); renderTabPayments(p); renderAll();
+    showToast('Installment saved','success');
+  };
+  document.getElementById('modal-quickedit').classList.add('open');
+}
+
+async function persistProject(p){
+  try{ await apiCall('save_project',{...p,milestones:JSON.stringify(p.milestones),payment_periods:JSON.stringify(p.payment_periods),traceability:JSON.stringify(p.traceability||[])}); }
+  catch(e){ showToast('Save error: '+e.message,'danger'); }
+}
+
+// ══════════════════════════════════════════════════
+//  RENDER CARDS
+// ══════════════════════════════════════════════════
+const SC={Active:'s-active',Lead:'s-lead',Completed:'s-completed','On Hold':'s-onhold',Cancelled:'s-cancelled'};
+function getProjectAlertBadges(p){
+  const badges=[];
+  const alerts=getAlerts().filter(a=>a.project.id===p.id);
+  const overdue=alerts.filter(a=>a.type==='overdue').length;
+  const w7=alerts.filter(a=>a.type==='warn7').length;
+  const w14=alerts.filter(a=>a.type==='warn14').length;
+  if(overdue) badges.push(`<span class="alert-badge badge-overdue">🔴 ${overdue} overdue</span>`);
+  if(w7) badges.push(`<span class="alert-badge badge-warn7">🟠 ${w7} due 7d</span>`);
+  if(w14) badges.push(`<span class="alert-badge badge-warn14">🟡 ${w14} due 14d</span>`);
+  return badges.join('');
+}
+function renderProjects(){
+  const search=document.getElementById('search-input').value.toLowerCase();
+  const tf=document.getElementById('f-type').value, sf=document.getElementById('f-status').value;
+  let list=_projects.filter(p=>
+    (!tf||p.type===tf)&&(!sf||p.status===sf)&&
+    (!search||[p.id,p.name,p.customer,p.address].some(v=>(v||'').toLowerCase().includes(search)))
+  );
+  const c=document.getElementById('projects-container');
+  if(!list.length){ c.innerHTML=`<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">No projects found</div><div class="empty-sub">Create your first project to get started.</div><button class="btn btn-primary" onclick="openNewProjectModal()">+ New Project</button></div>`; return; }
+  const fm=v=>v?'฿'+Number(v).toLocaleString():'—';
+  c.innerHTML=`<div class="projects-grid">${list.map(p=>{
+    const tc=p.type==='C&I'?'type-ci':'type-res';
+    const ms=p.milestones||[], done=ms.filter(m=>m.status==='Complete').length, pct=ms.length?Math.round(done/ms.length*100):0;
+    const badges=getProjectAlertBadges(p);
+    return `<div class="project-card ${tc}">
+      <div class="project-card-top">
+        <div class="card-id-row">
+          <span class="project-id">${p.id}</span>
+          <span class="type-badge">${p.type}</span>
+          <span class="status-badge ${SC[p.status]||''}" style="margin-left:auto;">${p.status}</span>
+        </div>
+        <div class="project-name">${escHtml(p.name)}</div>
+        <div class="project-customer">👤 ${escHtml(p.customer)}</div>
+      </div>
+      <div class="project-card-body">
+        ${badges?`<div class="card-alerts">${badges}</div>`:''}
+        <div class="mini-info">
+          <div class="mini-item"><label>Site</label><span>${escHtml(p.address||'—')}</span></div>
+          <div class="mini-item"><label>System</label><span>${p.size?p.size+' kWp':'—'}${p.grid_conn?' · '+p.grid_conn:''}</span></div>
+          <div class="mini-item"><label>Contract</label><span>${fm(p.contract_value||p.quote_value)}</span></div>
+          <div class="mini-item"><label>Install Date</label><span>${p.install_date||p.installDate?fmtDate(p.install_date||p.installDate):'—'}</span></div>
+        </div>
+        ${ms.length?`<div class="card-progress">
+          <div class="cp-label"><span>Milestones</span><span>${done}/${ms.length} · ${pct}%</span></div>
+          <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pct}%;background:${pct===100?'var(--success)':pct>50?'var(--primary)':'var(--blue)'};"></div></div>
+        </div>`:''}
+        <div class="card-actions">
+          <button class="btn btn-outline btn-sm" onclick="openViewModal('${p.id}')">👁 View</button>
+          <button class="btn btn-outline btn-sm" onclick="openEditModal('${p.id}')">✏️ Edit</button>
+          <button class="btn btn-outline btn-sm" style="margin-left:auto;" onclick="copyId('${p.id}')">🔗 ID</button>
+        </div>
+      </div>
+    </div>`;}).join('')}</div>`;
+}
+function renderStats(){
+  const all=_projects;
+  document.getElementById('st-total').textContent=all.length;
+  document.getElementById('st-active').textContent=all.filter(p=>p.status==='Active').length;
+  document.getElementById('st-res').textContent=all.filter(p=>p.type==='Residential').length;
+  document.getElementById('st-ci').textContent=all.filter(p=>p.type==='C&I').length;
+}
+function renderAll(){ renderStats(); renderAlerts(); renderProjects(); }
+function fmtDate(v){ if(!v) return '—'; try{ return new Date(v+(v.includes('T')?'':'T00:00:00')).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}); }catch(e){ return v; } }
+function copyId(id){ navigator.clipboard.writeText(id).then(()=>showToast('Copied: '+id,'success')); }
+function escHtml(s){ return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function escAttr(s){ return escHtml(String(s||'')); }
+
+// ── Toast ──
+let _tt;
+function showToast(msg,type=''){
+  const t=document.getElementById('toast'); t.textContent=msg; t.className='show '+(type||'');
+  clearTimeout(_tt); _tt=setTimeout(()=>{ t.className=''; },3000);
+}
+
+// ── Seed demo data ──
+// ── Boot ──
+initAuth();
+</script>
+</body>
+</html>
