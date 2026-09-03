@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YarraExam — Yarra Power Examination System</title>
+<style>
+:root{--g:#2e7d32;--gl:#4caf50;--gd:#1b5e20;--or:#e65100;--bg:#f1f8e9;--card:#fff;--tx:#1a1a1a;--mt:#666;--br:#c8e6c9;--pass:#2e7d32;--fail:#c62828;--r:12px;--sh:0 2px 12px rgba(0,0,0,.10)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Tahoma,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh}
+.hdr{background:linear-gradient(135deg,var(--gd),var(--g));color:#fff;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.2);position:sticky;top:0;z-index:100}
+.hdr-logo{display:flex;align-items:center;gap:10px}
+.hdr-logo-ic{width:38px;height:38px;background:#fff3;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.hdr-logo h1{font-size:1.3rem;font-weight:700;letter-spacing:1px}
+.hdr-logo p{font-size:.72rem;opacity:.8}
+.hdr-user{text-align:right;font-size:.82rem;opacity:.9}
+.screen{display:none;max-width:780px;margin:0 auto;padding:28px 14px}
+.screen.active{display:block}
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:28px;margin-bottom:18px}
+.card h2{color:var(--g);margin-bottom:14px}
+.card h3{color:var(--g);margin-bottom:12px}
+.fg{margin-bottom:15px}
+.fg label{display:block;font-weight:600;margin-bottom:5px;font-size:.88rem}
+.fg input,.fg select{width:100%;padding:11px 14px;border:1.5px solid var(--br);border-radius:8px;font-size:.95rem;transition:border-color .2s}
+.fg input:focus,.fg select:focus{outline:none;border-color:var(--gl)}
+.btn{display:inline-block;padding:10px 26px;border-radius:8px;font-size:.95rem;font-weight:600;cursor:pointer;border:none;transition:all .2s}
+.btn-p{background:var(--g);color:#fff;width:100%;margin-top:6px}
+.btn-p:hover{background:var(--gd);transform:translateY(-1px)}
+.btn-s{background:#f5f5f5;color:var(--tx);border:1.5px solid #ddd;width:auto}
+.btn-s:hover{background:#eee}
+.btn-d{background:#c62828;color:#fff;border:none}
+.btn-d:hover{background:#b71c1c}
+.btn-o{background:var(--or);color:#fff;border:none}
+.btn-o:hover{background:#bf360c}
+.btn-g{background:var(--g);color:#fff;border:none;width:auto;padding:10px 22px}
+.btn-g:hover{background:var(--gd)}
+.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:16px 0}
+.stat-box{background:var(--bg);border:1.5px solid var(--br);border-radius:10px;padding:12px;text-align:center}
+.stat-num{font-size:1.5rem;font-weight:700;color:var(--g)}
+.stat-lbl{font-size:.78rem;color:var(--mt)}
+.cat-list{list-style:none;margin:10px 0}
+.cat-list li{padding:7px 0;border-bottom:1px solid #f0f0f0;font-size:.88rem}
+.cat-list li:last-child{border:none}
+.badge{display:inline-block;background:var(--g);color:#fff;border-radius:4px;padding:2px 8px;font-size:.72rem;margin-right:8px;font-weight:600}
+/* exam */
+.topbar{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:12px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.timer{font-size:1.35rem;font-weight:700;color:var(--g);font-variant-numeric:tabular-nums}
+.timer.warn{color:var(--or)}
+.timer.danger{color:#c62828;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.prog-wrap{flex:1;min-width:140px}
+.prog-lbl{font-size:.78rem;color:var(--mt);margin-bottom:3px}
+.prog-bar{height:7px;background:#e0e0e0;border-radius:4px;overflow:hidden}
+.prog-fill{height:100%;background:var(--g);border-radius:4px;transition:width .3s}
+.qcard{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:26px;margin-bottom:14px}
+.q-meta{font-size:.75rem;color:var(--mt);margin-bottom:7px;display:flex;gap:7px;align-items:center}
+.q-cat{background:var(--g);color:#fff;border-radius:4px;padding:2px 8px;font-size:.7rem;font-weight:600}
+.q-type{background:#e8f5e9;color:var(--g);border-radius:4px;padding:2px 8px;font-size:.7rem;border:1px solid var(--br)}
+.q-txt{font-size:1.02rem;font-weight:500;line-height:1.65;margin-bottom:18px}
+.q-num{font-weight:700;color:var(--g);margin-right:4px}
+.opts{display:flex;flex-direction:column;gap:9px}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border:2px solid #e0e0e0;border-radius:9px;cursor:pointer;background:#fafafa;transition:all .16s;font-size:.92rem;text-align:left}
+.opt:hover{border-color:var(--gl);background:#e8f5e9}
+.opt.sel{border-color:var(--g);background:#e8f5e9}
+.opt-l{min-width:26px;height:26px;border-radius:50%;border:2px solid #bbb;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.82rem;flex-shrink:0;margin-top:1px;color:#666}
+.opt.sel .opt-l{background:var(--g);border-color:var(--g);color:#fff}
+.tf-row{display:flex;gap:10px;margin-top:6px}
+.tf-btn{flex:1;padding:13px;border:2px solid #e0e0e0;border-radius:9px;cursor:pointer;font-size:.95rem;font-weight:600;background:#fafafa;text-align:center;transition:all .16s}
+.tf-btn:hover{border-color:var(--gl);background:#e8f5e9}
+.tf-t{border-color:var(--g);background:#e8f5e9;color:var(--g)}
+.tf-f{border-color:#c62828;background:#ffebee;color:#c62828}
+.nav-row{display:flex;gap:10px;justify-content:space-between;margin-top:16px;flex-wrap:wrap}
+.btn-nav{padding:9px 22px;border-radius:8px;font-size:.92rem;font-weight:600;cursor:pointer;border:2px solid;transition:all .2s}
+.btn-prv{border-color:#bbb;background:#fff;color:var(--tx)}
+.btn-prv:hover:not(:disabled){border-color:var(--g)}
+.btn-nxt{border-color:var(--g);background:var(--g);color:#fff}
+.btn-nxt:hover:not(:disabled){background:var(--gd)}
+.btn-sub{border-color:var(--or);background:var(--or);color:#fff}
+.btn-sub:hover{background:#bf360c}
+.btn-nav:disabled{opacity:.4;cursor:not-allowed}
+.nav-grid{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.nd{width:30px;height:30px;border-radius:6px;border:2px solid #ddd;background:#fafafa;cursor:pointer;font-size:.75rem;font-weight:600;display:flex;align-items:center;justify-content:center;color:#999;transition:all .14s}
+.nd.ans{background:#e8f5e9;border-color:var(--g);color:var(--g)}
+.nd.cur{border-color:var(--gd);background:var(--gd);color:#fff}
+/* results */
+.res-hero{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:32px;text-align:center;margin-bottom:16px}
+.res-icon{font-size:3.2rem;margin-bottom:10px}
+.res-v{font-size:1.7rem;font-weight:700;margin-bottom:5px}
+.res-v.pass{color:var(--pass)}
+.res-v.fail{color:var(--fail)}
+.res-s{font-size:2.8rem;font-weight:700;margin:10px 0}
+.res-s.pass{color:var(--pass)}
+.res-s.fail{color:var(--fail)}
+.res-sub{font-size:.9rem;color:var(--mt)}
+.cat-res{margin-bottom:12px}
+.cat-res-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
+.cat-res-nm{font-weight:600;font-size:.88rem}
+.cat-res-sc{font-weight:700;font-size:.9rem}
+.cat-bar{height:9px;background:#e0e0e0;border-radius:5px;overflow:hidden}
+.cat-bar-f{height:100%;border-radius:5px}
+.rev-item{border:1.5px solid #e0e0e0;border-radius:9px;padding:14px;margin-bottom:10px}
+.rev-item.ok{border-color:#81c784;background:#f1f8e9}
+.rev-item.err{border-color:#e57373;background:#ffebee}
+.rev-q{font-weight:500;margin-bottom:7px;font-size:.88rem;line-height:1.5}
+.rev-a{font-size:.83rem}
+.rev-ur{color:var(--fail);margin-bottom:2px}
+.rev-ca{color:var(--pass);margin-bottom:3px}
+.rev-ex{font-size:.78rem;color:var(--mt);font-style:italic;border-top:1px solid #e0e0e0;padding-top:5px;margin-top:5px}
+/* history */
+.htbl{width:100%;border-collapse:collapse;font-size:.85rem}
+.htbl th{background:#e8f5e9;padding:9px 11px;text-align:left;border-bottom:2px solid var(--br)}
+.htbl td{padding:9px 11px;border-bottom:1px solid #f0f0f0}
+.htbl tr:hover td{background:#fafafa}
+.pill{display:inline-block;border-radius:20px;padding:2px 11px;font-size:.75rem;font-weight:600}
+.pill-p{background:#e8f5e9;color:var(--pass)}
+.pill-f{background:#ffebee;color:var(--fail)}
+/* admin */
+.tab-row{display:flex;gap:2px;margin-bottom:18px;border-bottom:2px solid var(--br);overflow-x:auto}
+.tab-btn{padding:9px 16px;border:none;background:none;cursor:pointer;font-size:.85rem;font-weight:600;color:var(--mt);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s;white-space:nowrap}
+.tab-btn.active{color:var(--g);border-bottom-color:var(--g)}
+.staff-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #f0f0f0}
+.staff-info{flex:1}
+.staff-nm{font-weight:600;font-size:.9rem}
+.staff-id{font-size:.78rem;color:var(--mt)}
+/* certificate */
+.cert-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:999;align-items:center;justify-content:center}
+.cert-modal.open{display:flex}
+.cert-box{background:#fff;border-radius:var(--r);padding:0;max-width:680px;width:95%;max-height:90vh;overflow:auto}
+.cert-content{padding:36px;text-align:center;border:6px solid var(--g);margin:12px;border-radius:8px;position:relative}
+.cert-content::before{content:"";position:absolute;inset:8px;border:2px solid var(--gl);border-radius:4px;pointer-events:none}
+.cert-logo{font-size:2.4rem;margin-bottom:4px}
+.cert-co{font-size:.95rem;font-weight:700;color:var(--gd);letter-spacing:2px;text-transform:uppercase}
+.cert-title{font-size:1.6rem;font-weight:700;color:var(--gd);margin:14px 0 6px;border-bottom:2px solid var(--gl);padding-bottom:10px}
+.cert-sub{font-size:.9rem;color:var(--mt);margin-bottom:18px}
+.cert-name{font-size:1.9rem;font-weight:700;color:var(--g);margin:12px 0}
+.cert-detail{font-size:.88rem;color:#555;line-height:1.8;margin:14px 0}
+.cert-score{font-size:1.5rem;font-weight:700;color:var(--g)}
+.cert-footer{margin-top:20px;padding-top:16px;border-top:1px solid #e0e0e0;display:flex;justify-content:space-around;font-size:.8rem;color:var(--mt)}
+.cert-sig{text-align:center}
+.cert-sig div:first-child{border-top:1px solid #999;padding-top:4px;margin-top:28px;font-weight:600;font-size:.85rem;color:var(--tx)}
+/* actions */
+.action-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+.alert{padding:10px 14px;border-radius:8px;margin-top:10px;font-size:.88rem}
+.alert-e{background:#ffebee;color:#c62828;border:1px solid #ffcdd2}
+.alert-s{background:#e8f5e9;color:var(--g);border:1px solid var(--br)}
+.mt12{margin-top:12px}
+.tc{text-align:center}
+.muted{color:var(--mt);font-size:.83rem}
+.sep{margin:14px 0;border:none;border-top:1px solid #f0f0f0}
+@media print{
+  .no-print{display:none!important}
+  .cert-content{border-color:#2e7d32!important}
+  body{background:#fff}
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-logo">
+    <div class="hdr-logo-ic">☀️</div>
+    <div><h1>YarraExam</h1><p>Yarra Power — Internal Examination System v2.0</p></div>
+  </div>
+  <div class="hdr-user" id="hdrUser"></div>
+</div>
+
+<!-- LOGIN -->
+<div class="screen active" id="sLogin">
+  <div style="max-width:420px;margin:40px auto 0">
+    <div class="card">
+      <div style="text-align:center;margin-bottom:18px"><div style="font-size:2.2rem">☀️</div><h2 style="margin-bottom:4px">เข้าสู่ระบบ</h2><p class="muted">YarraExam — EPC Rooftop Solar Certification</p></div>
+      <div class="fg"><label>รหัสพนักงาน</label><input type="text" id="inUser" placeholder="เช่น YP001" autocomplete="username"></div>
+      <div class="fg"><label>รหัสผ่าน</label><div style="position:relative"><input type="password" id="inPass" placeholder="รหัสผ่าน" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()" style="padding-right:42px"><button type="button" onclick="togglePw()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:1.1rem;color:#888;padding:0;line-height:1" id="eyeBtn" title="แสดง/ซ่อนรหัสผ่าน">👁</button></div></div>
+      <button class="btn btn-p" id="loginBtn" onclick="doLogin()">เข้าสู่ระบบ →</button>
+      <div id="loginErr" class="alert alert-e" style="display:none"></div>
+      <p class="muted" style="margin-top:12px;font-size:.78rem;text-align:center">ชื่อบนใบประกาศจะใช้ชื่อที่ลงทะเบียนไว้ในระบบ<br>หากยังไม่มีบัญชี กรุณาติดต่อ Admin</p>
+    </div>
+  </div>
+</div>
+
+<!-- INSTRUCTIONS -->
+<div class="screen" id="sInst">
+  <div class="card">
+    <h2>📋 คำชี้แจงการสอบ</h2>
+    <p class="muted" style="margin-bottom:14px">สวัสดี <strong id="wName"></strong> — กรุณาอ่านก่อนเริ่มการสอบ</p>
+    <div class="stat-grid">
+      <div class="stat-box"><div class="stat-num" id="stQ">28</div><div class="stat-lbl">จำนวนข้อสอบ</div></div>
+      <div class="stat-box"><div class="stat-num" id="stS">100</div><div class="stat-lbl">คะแนนเต็ม</div></div>
+      <div class="stat-box"><div class="stat-num" id="stT">60</div><div class="stat-lbl">เวลา (นาที)</div></div>
+      <div class="stat-box"><div class="stat-num" id="stP">90</div><div class="stat-lbl">คะแนนผ่าน (90%)</div></div>
+    </div>
+    <h3>หมวดข้อสอบ</h3>
+    <ul class="cat-list">
+      <li><span class="badge">A</span>ระบบโซลาร์และอุปกรณ์ — 11 ข้อ (40 คะแนน)</li>
+      <li><span class="badge">B</span>กฎหมายและมาตรฐานไทย — 3 ข้อ (10 คะแนน)</li>
+      <li><span class="badge">C</span>กระบวนการ EPC — 11 ข้อ (40 คะแนน)</li>
+      <li><span class="badge">D</span>ความปลอดภัย — 3 ข้อ (10 คะแนน)</li>
+    </ul>
+    <hr class="sep">
+    <ul style="padding-left:16px;font-size:.88rem;line-height:1.85;color:#444">
+      <li>ข้อสอบสุ่มใหม่ทุกครั้ง — คนละชุดกันทุกรอบ (สุ่มและตรวจโดยเซิร์ฟเวอร์)</li>
+      <li>ปรนัย: <strong>4 คะแนน/ข้อ</strong> &nbsp;|&nbsp; ถูก/ผิด: <strong>2 คะแนน/ข้อ</strong></li>
+      <li>เกณฑ์ผ่าน <strong>90% (≥90/100 คะแนน)</strong></li>
+      <li>เมื่อหมดเวลา ระบบส่งข้อสอบอัตโนมัติ</li>
+      <li>สามารถย้อนกลับแก้คำตอบได้ก่อนส่ง</li>
+      <li>ผู้ที่ผ่านการสอบจะได้รับใบประกาศนียบัตร</li>
+    </ul>
+  </div>
+  <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+    <button class="btn btn-s" onclick="doLogout()">ออกจากระบบ</button>
+    <button class="btn btn-s" onclick="showHist()">ประวัติการสอบ</button>
+    <button class="btn btn-g" id="startBtn" onclick="startExam()">เริ่มการสอบ ▶</button>
+  </div>
+</div>
+
+<!-- EXAM -->
+<div class="screen" id="sExam">
+  <div class="topbar">
+    <div><div class="muted" style="font-size:.75rem">เวลาเหลือ</div><div class="timer" id="timerEl">60:00</div></div>
+    <div class="prog-wrap"><div class="prog-lbl" id="progLbl">ข้อ 1 / 28</div><div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div></div>
+    <div><button class="btn btn-sub" style="padding:8px 14px;font-size:.82rem" onclick="confirmSub()">ส่งข้อสอบ</button></div>
+  </div>
+  <div class="qcard" id="qCard"></div>
+  <div class="nav-row">
+    <button class="btn-nav btn-prv" id="btnPrv" onclick="prevQ()">← ก่อนหน้า</button>
+    <div style="display:flex;gap:8px">
+      <button class="btn-nav btn-nxt" id="btnNxt" onclick="nextQ()">ถัดไป →</button>
+      <button class="btn-nav btn-sub" id="btnSub" onclick="confirmSub()" style="display:none">ส่งข้อสอบ ✓</button>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px;padding:14px">
+    <div class="muted" style="margin-bottom:7px;font-size:.78rem">กดข้อที่ต้องการกลับไปแก้ไข (เขียว = ตอบแล้ว)</div>
+    <div class="nav-grid" id="navGrid"></div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div class="screen" id="sRes">
+  <div class="res-hero">
+    <div class="res-icon" id="resIc"></div>
+    <div class="res-v" id="resV"></div>
+    <div class="res-s" id="resS"></div>
+    <div class="res-sub" id="resSub"></div>
+  </div>
+  <div class="card"><h3>📊 ผลแยกตามหมวด</h3><div id="catBd"></div></div>
+  <div class="card"><h3>🔍 ทบทวนข้อที่ตอบผิด</h3><div id="revList"></div></div>
+  <div class="action-row" id="resActions">
+    <button class="btn btn-s" onclick="showHist()">ประวัติการสอบ</button>
+    <button class="btn btn-s" onclick="showCert()" id="btnCert" style="display:none">🏆 ดูใบประกาศ</button>
+    <button class="btn btn-g" onclick="showInst()">สอบอีกครั้ง 🔄</button>
+    <button class="btn btn-s" onclick="doLogout()">ออกจากระบบ</button>
+  </div>
+</div>
+
+<!-- HISTORY -->
+<div class="screen" id="sHist">
+  <div class="card">
+    <h3>📜 ประวัติการสอบ</h3>
+    <div id="histContent"><p class="muted">กำลังโหลด…</p></div>
+    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-s" onclick="histBack()">← กลับ</button>
+      <button class="btn btn-s" onclick="showInst()">สอบใหม่</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="screen" id="sAdmin">
+  <div class="card">
+    <h2>🛠 Admin — YarraExam Dashboard</h2>
+    <p class="muted" style="margin:4px 0 10px;font-size:.8rem">เข้าสู่ระบบ Admin ด้วยบัญชี Director / Super User ของระบบ Stock Management</p>
+    <div class="tab-row" id="adminTabs">
+      <button class="tab-btn active" onclick="adminTab('stats',this)">📊 สถิติ</button>
+      <button class="tab-btn" onclick="adminTab('results',this)">📋 ผลทั้งหมด</button>
+      <button class="tab-btn" onclick="adminTab('staff',this)">👥 จัดการพนักงาน</button>
+      <button class="tab-btn" onclick="adminTab('bank',this)">📚 คลังข้อสอบ</button>
+    </div>
+    <div id="adminContent"><p class="muted">กำลังโหลด…</p></div>
+    <hr class="sep">
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-s" onclick="doLogout()">ออกจากระบบ</button>
+      <button class="btn btn-s" onclick="exportCSV()">⬇ Export CSV</button>
+      <button class="btn btn-d" onclick="clearAll()">🗑 ลบผลทั้งหมด</button>
+    </div>
+  </div>
+</div>
+
+<!-- CERTIFICATE MODAL -->
+<div class="cert-modal" id="certModal">
+  <div class="cert-box">
+    <div class="cert-content" id="certContent">
+      <div class="cert-logo">☀️</div>
+      <div class="cert-co">Yarra Power Co., Ltd.</div>
+      <div class="cert-title">ประกาศนียบัตรผ่านการทดสอบ<br><span style="font-size:.75em;font-weight:400">Certificate of Competency</span></div>
+      <div class="cert-sub">ขอรับรองว่า</div>
+      <div class="cert-name" id="certName"></div>
+      <div class="cert-detail" id="certDetail"></div>
+      <div class="cert-score" id="certScore"></div>
+      <div class="cert-footer">
+        <div class="cert-sig"><div>ผู้บริหาร / Management</div><div style="color:var(--mt);font-size:.75rem">Yarra Power Co., Ltd.</div></div>
+        <div style="text-align:center;font-size:.78rem;color:var(--mt)"><div id="certDate"></div><div style="margin-top:4px">YarraExam v2.0</div></div>
+        <div class="cert-sig"><div>HR / Training</div><div style="color:var(--mt);font-size:.75rem">Yarra Power Co., Ltd.</div></div>
+      </div>
+    </div>
+    <div class="no-print" style="padding:14px;display:flex;gap:10px;justify-content:center">
+      <button class="btn btn-g" onclick="window.print()">🖨 พิมพ์ / Print</button>
+      <button class="btn btn-s" onclick="closeCert()">ปิด</button>
+    </div>
+  </div>
+</div>
+<script>
+// ════════════════════════════════════════════════════════════
+//  YarraExam v2.0 — server-graded edition
+//  • Questions come from api.php (exam_start); the answer key
+//    never reaches the browser before submission.
+//  • Scoring, pass/fail and history are computed server-side.
+//  • Certificate uses the registered staff name, not typed text.
+//  • Timer is anchored to a server deadline (tab-throttle safe).
+// ════════════════════════════════════════════════════════════
+const API = 'api.php';
+const LETTERS = ["ก","ข","ค","ง"];
+const CAT_LABELS = {A:"ระบบโซลาร์และอุปกรณ์",B:"กฎหมายและมาตรฐานไทย",C:"กระบวนการ EPC",D:"ความปลอดภัย"};
+
+let S = { staff:null, exam:[], ans:{}, idx:0, deadline:0, clockOffset:0,
+          timerInt:null, lastResult:null, histFrom:'sInst', adminRows:[] };
+
+// ── API ──────────────────────────────────────────────────
+async function api(action, data = {}) {
+  const r = await fetch(`${API}?action=${action}`, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    credentials:'same-origin', body:JSON.stringify(data)
+  });
+  let j; try { j = await r.json(); } catch(e) { throw new Error('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์'); }
+  if (!j.success) throw new Error(j.error || 'Server error');
+  return j;
+}
+
+// ── HELPERS ──────────────────────────────────────────────
+function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+function showSc(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));document.getElementById(id).classList.add("active");window.scrollTo(0,0)}
+function fmt(s){const m=Math.floor(s/60),sc=s%60;return`${String(m).padStart(2,"0")}:${String(sc).padStart(2,"0")}`}
+function ccol(p){return p>=.9?"#2e7d32":p>=.7?"#f57c00":"#c62828"}
+function fmtDT(v){try{return new Date(v.replace(' ','T')).toLocaleString('th-TH')}catch(e){return v||''}}
+
+// ── AUTH ─────────────────────────────────────────────────
+async function doLogin(){
+  const u=document.getElementById("inUser").value.trim();
+  const p=document.getElementById("inPass").value;
+  const err=document.getElementById("loginErr");
+  const btn=document.getElementById("loginBtn");
+  err.style.display="none";
+  if(!u||!p){err.textContent="กรุณากรอกรหัสพนักงานและรหัสผ่าน";err.style.display="block";return}
+  btn.disabled=true;btn.textContent="กำลังเข้าสู่ระบบ…";
+  try{
+    const r=await api('exam_login',{staffId:u,password:p});
+    S.staff=r.staff;
+    document.getElementById("inPass").value="";
+    setHdr();
+    if(S.staff.isAdmin)showAdmin();else showInst();
+  }catch(e){err.textContent=e.message;err.style.display="block"}
+  btn.disabled=false;btn.textContent="เข้าสู่ระบบ →";
+}
+async function doLogout(){
+  clearInterval(S.timerInt);
+  try{await api('exam_logout')}catch(e){}
+  S={staff:null,exam:[],ans:{},idx:0,deadline:0,clockOffset:0,timerInt:null,lastResult:null,histFrom:'sInst',adminRows:[]};
+  document.getElementById("inPass").value="";
+  document.getElementById("inUser").value="";
+  setHdr();showSc("sLogin");
+}
+function setHdr(){
+  const el=document.getElementById("hdrUser");
+  if(S.staff)el.innerHTML=`<div>${esc(S.staff.fullname)}</div><div style="opacity:.7">${esc(S.staff.id)}${S.staff.isAdmin?" (Admin)":""}</div>`;
+  else el.innerHTML="";
+}
+function togglePw(){const inp=document.getElementById("inPass"),btn=document.getElementById("eyeBtn");if(inp.type==="password"){inp.type="text";btn.textContent="🙈"}else{inp.type="password";btn.textContent="👁"}}
+
+// ── INSTRUCTIONS ─────────────────────────────────────────
+function showInst(){
+  clearInterval(S.timerInt);
+  document.getElementById("wName").textContent=S.staff?S.staff.fullname:"";
+  showSc("sInst");
+}
+
+// ── EXAM ─────────────────────────────────────────────────
+async function startExam(){
+  const btn=document.getElementById("startBtn");
+  btn.disabled=true;btn.textContent="กำลังเตรียมข้อสอบ…";
+  try{
+    const r=await api('exam_start');
+    S.exam=r.questions;S.ans={};S.idx=0;
+    S.deadline=r.deadlineMs;
+    S.clockOffset=r.serverNowMs-Date.now();
+    document.getElementById("stQ").textContent=r.questions.length;
+    document.getElementById("stS").textContent=r.maxPts;
+    document.getElementById("stP").textContent=r.passPts;
+    document.getElementById("stT").textContent=r.timeMins;
+    clearInterval(S.timerInt);
+    S.timerInt=setInterval(tick,500);
+    tick();
+    renderQ();renderGrid();showSc("sExam");
+  }catch(e){alert("เริ่มการสอบไม่สำเร็จ: "+e.message)}
+  btn.disabled=false;btn.textContent="เริ่มการสอบ ▶";
+}
+function remainingSec(){return Math.max(0,Math.round((S.deadline-(Date.now()+S.clockOffset))/1000))}
+function tick(){
+  const sec=remainingSec();
+  const el=document.getElementById("timerEl");
+  el.textContent=fmt(sec);
+  el.className="timer";
+  if(sec<=300)el.className+=" warn";
+  if(sec<=60)el.className+=" danger";
+  if(sec<=0){clearInterval(S.timerInt);submitExam(true)}
+}
+function renderQ(){
+  const n=S.exam.length,i=S.idx,q=S.exam[i];
+  document.getElementById("progLbl").textContent=`ข้อ ${i+1} / ${n}`;
+  document.getElementById("progFill").style.width=`${((i+1)/n*100).toFixed(0)}%`;
+  let h=`<div class="q-meta"><span class="q-cat">${q.cat} — ${CAT_LABELS[q.cat]||""}</span><span class="q-type">${q.type==="mc"?"ปรนัย":"ถูก/ผิด"}</span><span style="margin-left:auto;color:#bbb;font-size:.68rem">${esc(q.id)}</span></div>
+  <div class="q-txt"><span class="q-num">ข้อ ${i+1}.</span> ${esc(q.q)}</div>`;
+  if(q.type==="mc"){
+    h+=`<div class="opts">`;
+    (q.opts||[]).forEach((o,oi)=>{h+=`<div class="opt${S.ans[q.id]===oi?" sel":""}" onclick="selMC('${esc(q.id)}',${oi})"><div class="opt-l">${LETTERS[oi]}</div><div>${esc(o)}</div></div>`});
+    h+=`</div>`;
+  }else{
+    const st=S.ans[q.id]===true?" tf-t":"",sf=S.ans[q.id]===false?" tf-f":"";
+    h+=`<div class="tf-row"><div class="tf-btn${st}" onclick="selTF('${esc(q.id)}',true)">✔ ถูก</div><div class="tf-btn${sf}" onclick="selTF('${esc(q.id)}',false)">✘ ผิด</div></div>`;
+  }
+  document.getElementById("qCard").innerHTML=h;
+  document.getElementById("btnPrv").disabled=i===0;
+  document.getElementById("btnNxt").style.display=i<n-1?"inline-block":"none";
+  document.getElementById("btnSub").style.display=i===n-1?"inline-block":"none";
+  renderGrid();
+}
+function selMC(id,idx){S.ans[id]=idx;renderQ()}
+function selTF(id,v){S.ans[id]=v;renderQ()}
+function prevQ(){if(S.idx>0){S.idx--;renderQ()}}
+function nextQ(){if(S.idx<S.exam.length-1){S.idx++;renderQ()}}
+function goQ(i){S.idx=i;renderQ()}
+function renderGrid(){
+  document.getElementById("navGrid").innerHTML=S.exam.map((q,i)=>{
+    const ans=S.ans[q.id];const ok=ans!==undefined&&ans!==null;const cur=i===S.idx;
+    return`<div class="nd${cur?" cur":ok?" ans":""}" onclick="goQ(${i})">${i+1}</div>`;
+  }).join("");
+}
+function confirmSub(){
+  const un=S.exam.filter(q=>S.ans[q.id]===undefined||S.ans[q.id]===null).length;
+  if(un>0){if(!confirm(`ยังมี ${un} ข้อที่ยังไม่ได้ตอบ ต้องการส่งหรือไม่?`))return}
+  else{if(!confirm("ต้องการส่งข้อสอบหรือไม่?"))return}
+  submitExam(false);
+}
+let _submitting=false;
+async function submitExam(auto){
+  if(_submitting)return;_submitting=true;
+  clearInterval(S.timerInt);
+  try{
+    const r=await api('exam_submit',{answers:S.ans});
+    S.lastResult=r.result;
+    showRes();
+  }catch(e){
+    alert((auto?"หมดเวลา — ":"")+"ส่งข้อสอบไม่สำเร็จ: "+e.message);
+    if(!auto&&remainingSec()>0){S.timerInt=setInterval(tick,500)}
+    else showInst();
+  }
+  _submitting=false;
+}
+
+// ── RESULTS ──────────────────────────────────────────────
+function showRes(){
+  const r=S.lastResult;if(!r){showInst();return}
+  const pct=r.totPts/r.maxPts;
+  document.getElementById("resIc").textContent=r.passed?"🎉":"😔";
+  const v=document.getElementById("resV");v.textContent=r.passed?"ผ่านการสอบ ✓":"ไม่ผ่านการสอบ";v.className="res-v "+(r.passed?"pass":"fail");
+  const s=document.getElementById("resS");s.textContent=`${r.totPts} / ${r.maxPts}`;s.className="res-s "+(r.passed?"pass":"fail");
+  document.getElementById("resSub").textContent=`ตอบถูก ${r.totOk}/${r.totQ} ข้อ (${(pct*100).toFixed(1)}%) | เกณฑ์ผ่าน ${r.pass} คะแนน | ใช้เวลา ${Math.floor(r.elapsed/60)} นาที ${r.elapsed%60} วินาที`;
+  let ch="";Object.keys(CAT_LABELS).forEach(cat=>{
+    const c=r.catR[cat];if(!c||!c.tot)return;
+    const cp=c.pts/c.max;const col=ccol(cp);
+    ch+=`<div class="cat-res"><div class="cat-res-hdr"><span class="cat-res-nm">[${cat}] ${CAT_LABELS[cat]}</span><span class="cat-res-sc" style="color:${col}">${c.pts}/${c.max} คะแนน — ${c.ok}/${c.tot} ข้อ (${(cp*100).toFixed(0)}%)</span></div><div class="cat-bar"><div class="cat-bar-f" style="width:${(cp*100).toFixed(0)}%;background:${col}"></div></div></div>`;
+  });
+  document.getElementById("catBd").innerHTML=ch;
+  let rh="";
+  const wrong=r.wrong||[];
+  if(!wrong.length)rh='<p style="color:var(--pass);font-weight:600">🎊 ตอบถูกทุกข้อ!</p>';
+  else wrong.slice(0,25).forEach(w=>{
+    const yl=w.type==="mc"?(w.ua!==undefined&&w.ua!==null?`${LETTERS[w.ua]}. ${esc((w.opts||[])[w.ua]??"")}`:"(ไม่ได้ตอบ)"):(w.ua===undefined||w.ua===null?"(ไม่ได้ตอบ)":w.ua?"✔ ถูก":"✘ ผิด");
+    const cl=w.type==="mc"?`${LETTERS[w.ans]}. ${esc((w.opts||[])[w.ans]??"")}`:(w.ans?"✔ ถูก":"✘ ผิด");
+    rh+=`<div class="rev-item err"><div class="rev-q">[${w.cat}/${w.type==="mc"?"ปรนัย":"ถูก/ผิด"}] ${esc(w.q)}</div><div class="rev-a"><div class="rev-ur">คำตอบของคุณ: ${yl}</div><div class="rev-ca">เฉลย: ${cl}</div><div class="rev-ex">${esc(w.exp||"")}</div></div></div>`;
+  });
+  if(wrong.length>25)rh+=`<p class="muted tc">...และอีก ${wrong.length-25} ข้อ</p>`;
+  document.getElementById("revList").innerHTML=rh;
+  document.getElementById("btnCert").style.display=r.passed?"inline-block":"none";
+  showSc("sRes");
+}
+
+// ── CERTIFICATE ──────────────────────────────────────────
+function showCert(){
+  const r=S.lastResult;if(!r||!r.passed)return;
+  document.getElementById("certName").textContent=r.name; // registered name from server
+  document.getElementById("certDetail").innerHTML=`ได้ผ่านการทดสอบ <strong>YarraExam — EPC Rooftop Solar</strong><br>หมวดวิชา: ระบบโซลาร์, กฎหมายไทย, กระบวนการ EPC และความปลอดภัย<br>รหัสพนักงาน: ${esc(r.user)}`;
+  document.getElementById("certScore").textContent=`คะแนน ${r.totPts}/${r.maxPts} (${(r.totPts/r.maxPts*100).toFixed(0)}%)`;
+  document.getElementById("certDate").textContent=new Date(r.date).toLocaleString("th-TH");
+  document.getElementById("certModal").classList.add("open");
+}
+function closeCert(){document.getElementById("certModal").classList.remove("open")}
+
+// ── HISTORY ──────────────────────────────────────────────
+async function showHist(){
+  S.histFrom=document.querySelector(".screen.active")?.id||'sInst';
+  showSc("sHist");
+  const el=document.getElementById("histContent");
+  el.innerHTML='<p class="muted">กำลังโหลด…</p>';
+  try{
+    const r=await api('exam_history');
+    const h=r.results||[];
+    el.innerHTML=h.length===0?'<p class="muted">ยังไม่มีประวัติการสอบ</p>':`<table class="htbl"><thead><tr><th>วันที่</th><th>ชื่อ</th><th>รหัส</th><th>คะแนน</th><th>ผล</th></tr></thead><tbody>${h.map(e=>`<tr><td>${fmtDT(e.taken_at)}</td><td>${esc(e.staff_name)}</td><td>${esc(e.staff_id)}</td><td>${e.score}/${r.maxPts} (${(e.score/r.maxPts*100).toFixed(0)}%)</td><td><span class="pill ${e.passed?"pill-p":"pill-f"}">${e.passed?"ผ่าน":"ไม่ผ่าน"}</span></td></tr>`).join("")}</tbody></table>`;
+  }catch(e){el.innerHTML=`<p class="muted">โหลดไม่สำเร็จ: ${esc(e.message)}</p>`}
+}
+function histBack(){
+  if(S.histFrom==='sRes'&&S.lastResult)showRes();
+  else if(S.staff&&S.staff.isAdmin)showAdmin();
+  else showInst();
+}
+
+// ── ADMIN ─────────────────────────────────────────────────
+function showAdmin(){adminTab("stats",document.querySelector(".tab-btn"));showSc("sAdmin")}
+async function adminTab(tab,btn){
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+  if(btn)btn.classList.add("active");
+  const el=document.getElementById("adminContent");
+  el.innerHTML='<p class="muted">กำลังโหลด…</p>';
+  try{
+    if(tab==="stats"||tab==="results"){
+      const r=await api('exam_history');
+      const h=S.adminRows=r.results||[];
+      const maxPts=r.maxPts||100;
+      if(tab==="stats"){
+        const tot=h.length,passed=h.filter(e=>e.passed).length,avg=tot?Math.round(h.reduce((s,e)=>s+e.score/maxPts,0)/tot*100):0;
+        const users=[...new Set(h.map(e=>e.staff_id))].length;
+        el.innerHTML=`<div class="stat-grid" style="grid-template-columns:repeat(4,1fr)">
+          <div class="stat-box"><div class="stat-num">${tot}</div><div class="stat-lbl">สอบทั้งหมด</div></div>
+          <div class="stat-box"><div class="stat-num" style="color:var(--pass)">${passed}</div><div class="stat-lbl">ผ่าน</div></div>
+          <div class="stat-box"><div class="stat-num" style="color:var(--fail)">${tot-passed}</div><div class="stat-lbl">ไม่ผ่าน</div></div>
+          <div class="stat-box"><div class="stat-num">${avg}%</div><div class="stat-lbl">คะแนนเฉลี่ย</div></div>
+        </div>
+        <div class="stat-grid" style="margin-top:0">
+          <div class="stat-box"><div class="stat-num">${users}</div><div class="stat-lbl">พนักงานที่สอบ</div></div>
+          <div class="stat-box"><div class="stat-num">${tot?Math.round(passed/tot*100):0}%</div><div class="stat-lbl">อัตราผ่าน</div></div>
+        </div>
+        <h3 style="margin-top:14px">ผลล่าสุด 10 รายการ</h3>
+        ${tot===0?'<p class="muted">ยังไม่มีข้อมูล</p>':`<table class="htbl"><thead><tr><th>วันที่</th><th>ชื่อ</th><th>คะแนน</th><th>ผล</th></tr></thead><tbody>${h.slice(0,10).map(e=>`<tr><td>${fmtDT(e.taken_at)}</td><td>${esc(e.staff_name)} (${esc(e.staff_id)})</td><td>${e.score}/${maxPts}</td><td><span class="pill ${e.passed?"pill-p":"pill-f"}">${e.passed?"ผ่าน":"ไม่ผ่าน"}</span></td></tr>`).join("")}</tbody></table>`}`;
+      }else{
+        el.innerHTML=h.length===0?'<p class="muted">ยังไม่มีผล</p>':`<p class="muted" style="margin-bottom:10px">ทั้งหมด ${h.length} รายการ</p><table class="htbl"><thead><tr><th>วันที่</th><th>ชื่อ</th><th>รหัส</th><th>คะแนน</th><th>%</th><th>เวลา (นาที)</th><th>ผล</th></tr></thead><tbody>${h.map(e=>`<tr><td>${fmtDT(e.taken_at)}</td><td>${esc(e.staff_name)}</td><td>${esc(e.staff_id)}</td><td>${e.score}/${maxPts}</td><td>${(e.score/maxPts*100).toFixed(0)}%</td><td>${e.time_taken?Math.round(e.time_taken/60):"—"}</td><td><span class="pill ${e.passed?"pill-p":"pill-f"}">${e.passed?"ผ่าน":"ไม่ผ่าน"}</span></td></tr>`).join("")}</tbody></table>`;
+      }
+    }else if(tab==="staff"){
+      const r=await api('exam_staff_list');
+      const staff=r.staff||[];
+      el.innerHTML=`<div style="margin-bottom:14px"><h3>เพิ่ม / แก้ไขพนักงาน</h3>
+      <p class="muted" style="font-size:.78rem;margin:4px 0 8px">ใส่รหัสพนักงานที่มีอยู่แล้วเพื่อแก้ชื่อหรือตั้งรหัสผ่านใหม่ · รหัสผ่านถูกเข้ารหัส (bcrypt) บนเซิร์ฟเวอร์</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+        <input id="nwId" placeholder="รหัสพนักงาน เช่น YP006" style="flex:1;min-width:120px;padding:9px 12px;border:1.5px solid var(--br);border-radius:8px;font-size:.9rem">
+        <input id="nwNm" placeholder="ชื่อ-นามสกุล (จะแสดงบนใบประกาศ)" style="flex:2;min-width:160px;padding:9px 12px;border:1.5px solid var(--br);border-radius:8px;font-size:.9rem">
+        <input id="nwPw" type="password" placeholder="รหัสผ่าน (อย่างน้อย 6 ตัว)" style="flex:1;min-width:120px;padding:9px 12px;border:1.5px solid var(--br);border-radius:8px;font-size:.9rem">
+        <button class="btn btn-g" onclick="addStaff()">💾 บันทึก</button>
+      </div><div id="staffMsg"></div></div>
+      <hr class="sep"><h3>รายชื่อพนักงาน (${staff.length} คน)</h3>
+      ${staff.length===0?'<p class="muted mt12">ยังไม่มีพนักงานในระบบ — กรุณาเพิ่มก่อน</p>':staff.map(s=>`<div class="staff-row"><div class="staff-info"><div class="staff-nm">${esc(s.fullname)}</div><div class="staff-id">${esc(s.staff_id)}${+s.is_active?"":" · ปิดใช้งาน"}</div></div><button class="btn btn-d" style="padding:5px 12px;font-size:.8rem" onclick="delStaff('${esc(s.staff_id)}')">ลบ</button></div>`).join("")}`;
+    }else if(tab==="bank"){
+      const r=await api('exam_bank_stats');
+      const bank=r.bank||{};
+      el.innerHTML=`<h3>สถิติคลังข้อสอบ</h3><div style="margin-top:10px">${Object.keys(bank).map(cat=>{const b=bank[cat];return`<div style="padding:10px 0;border-bottom:1px solid #f0f0f0"><strong>[${cat}] ${esc(b.label)}</strong><br><span class="muted">ปรนัย: ${b.mc} ข้อ (ใช้ ${b.mcUsed}) &nbsp;|&nbsp; ถูก/ผิด: ${b.tf} ข้อ (ใช้ ${b.tfUsed}) &nbsp;|&nbsp; รวม: ${b.mc+b.tf} ข้อ</span></div>`}).join("")}</div>
+      <p class="muted" style="margin-top:12px;font-size:.82rem">💡 อัปเดตคลังข้อสอบได้โดยแก้ไขไฟล์ question_bank.json บนเซิร์ฟเวอร์ — มีผลทันที ไม่ต้องแก้ไฟล์ HTML</p>`;
+    }
+  }catch(e){el.innerHTML=`<p class="muted">โหลดไม่สำเร็จ: ${esc(e.message)}</p>`}
+}
+async function addStaff(){
+  const id=document.getElementById("nwId").value.trim();
+  const nm=document.getElementById("nwNm").value.trim();
+  const pw=document.getElementById("nwPw").value;
+  const msg=document.getElementById("staffMsg");
+  if(!id||!nm){msg.innerHTML='<div class="alert alert-e">กรุณากรอกรหัสพนักงานและชื่อ</div>';return}
+  try{
+    const r=await api('exam_staff_save',{staffId:id,fullname:nm,password:pw});
+    msg.innerHTML=`<div class="alert alert-s">${r.updated?"อัปเดตข้อมูลพนักงานแล้ว":"เพิ่มพนักงานสำเร็จ"}</div>`;
+    setTimeout(()=>adminTab("staff",document.querySelector(".tab-btn.active")),900);
+  }catch(e){msg.innerHTML=`<div class="alert alert-e">${esc(e.message)}</div>`}
+}
+async function delStaff(id){
+  if(!confirm(`ต้องการลบพนักงาน ${id} ออกจากระบบ?`))return;
+  try{await api('exam_staff_delete',{staffId:id});adminTab("staff",document.querySelector(".tab-btn.active"))}
+  catch(e){alert(e.message)}
+}
+async function exportCSV(){
+  try{
+    const r=await api('exam_history');
+    const h=r.results||[];const maxPts=r.maxPts||100;
+    if(!h.length){alert("ไม่มีข้อมูล");return}
+    const rows=[["วันที่","ชื่อ","รหัสพนักงาน","คะแนน","คะแนนเต็ม","%","เวลา(วินาที)","ผล"],...h.map(e=>[e.taken_at,e.staff_name,e.staff_id,e.score,maxPts,(e.score/maxPts*100).toFixed(0),e.time_taken||"",e.passed?"ผ่าน":"ไม่ผ่าน"])];
+    const csv="﻿"+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(",")).join("\n");
+    const a=document.createElement("a");a.href="data:text/csv;charset=utf-8,"+encodeURIComponent(csv);a.download="YarraExam_Results_"+new Date().toISOString().slice(0,10)+".csv";a.click();
+  }catch(e){alert(e.message)}
+}
+async function clearAll(){
+  if(!confirm("ต้องการลบผลการสอบทั้งหมดหรือไม่? ไม่สามารถกู้คืนได้"))return;
+  if(!confirm("ยืนยันอีกครั้ง: ลบผลการสอบทั้งหมดออกจากฐานข้อมูล?"))return;
+  try{await api('exam_clear_results');adminTab("stats",document.querySelector(".tab-btn"))}
+  catch(e){alert(e.message)}
+}
+
+// ── LEAVE-PAGE GUARD DURING EXAM ─────────────────────────
+window.addEventListener("beforeunload",e=>{
+  if(document.getElementById("sExam").classList.contains("active")&&remainingSec()>0){e.preventDefault();e.returnValue=""}
+});
+
+// ── BOOT — restore session if still logged in ────────────
+(async function(){
+  try{
+    const r=await api('exam_check_session');
+    if(r.logged_in&&r.staff){S.staff=r.staff;setHdr();if(S.staff.isAdmin)showAdmin();else showInst();}
+  }catch(e){}
+})();
+</script>
+</body>
+</html>
