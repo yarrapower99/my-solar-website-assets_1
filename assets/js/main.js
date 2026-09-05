@@ -3,18 +3,10 @@ const localImages = {
     "assets/logo_use": ["delta.png", "sungrow.jpeg", "aiko.jpg", "EVEEnergy.png", "eaton.png","prysmian.png"],
     "assets/portfolio_sup": ["12.js plastic.jpg", "11.บ้านคุณเบล.jpg", "10.บ้านคุณตง.jpg", "9.บ้านคุณเกียรติ2.jpg", "8.บ้านคุณเกียรติ1.jpg", "7.แม่ครัวฉลากทอง.jpg", "6.KMCH.jpeg", "่5.JSplastic.jpeg", "4.บ้านคุณโจ.jpeg", "3.WashXPress.png", "2.DPU.jpeg", "1.โรงพยาบาล มิตรไมตรี.png"],
     "assets/Partners": ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "K.Yo_-1-768x679.jpeg", "K.Yo_-2-768x690.jpeg", "K.Yo_-2-768x768.png", "PV-Panel-7-768x768.png", "PV-Panel-8-768x768.png", "PV-Panel.png-1-768x671.jpeg", "PV-Panel.png-2-768x687.jpeg"],
-    "assets/products": [
-        "SG5.0RS.png",
-        "SG10RT-P2.png",
-        "SBS050.png",
-        "SP600S.png",
-        "ST255CS-2H.png",
-        "ST510CS-4H.png",
-        "S450S-L S1000S-L S2000S-L.png",
-        "SR20D-M.png"
-    ],
+    "assets/products": ["EVE261kWh.jpg","EVEERP356.jpg"],
     "assets/aiko": ["STELLAR 3N+72 Dual-Glass 650W-685W.png", "STELLAR 2N+78 Dual-Glass 765W-800W.png", "STELLAR 2N+66 Dual-Glass 645W-680W.png", "STELLAR 1N+72 Dual-Glass 635W-660W.png", "STELLAR 1N+66 Dual-Glass 645W-680W.png"],
-    "assets/longi": ["Hi-MO X10.jpg", "Hi-MO 7.jpeg"],
+    "assets/sungrow":["S450S-L S1000S-L S2000S-L.png","SBS050.png","SG5.0RS.png","SG10RT-P2.png","SP600S.png","SR20D-M.png","ST255CS-2H.png","ST510CS-4H.png"],
+    "assets/longi": ["LONGI Hi-MO X10.png"], //"Hi-MO 7.jpeg"],ซ่อน Hi-Mo 7
     "assets/trina": ["TSM-NEG19RC.20 610-635W.jpg", "TSM-NEG21C.0 700-725W.jpg"],
     "assets/jinko": ["JKM650-670N-66QL6-BDV-F1-EN.jpg", "JKM710-735N-66HL5-BDV-Z4-EN.jpg"],
     "assets/delta": ["Delta_Intelligent_Energy_Solutions.jpg", "Delta_Intelligent_Water Management_Solutions.jpg", "AC Charger  AC MAX - Basic.png", "AC Charger  AC MAX - Smart.png", "BK863i Collaborative Touch Panel.jpg"],
@@ -45,13 +37,15 @@ const localPDFs = [
     "AC Charger  AC MAX - Basic.pdf",
     "AC Charger  AC MAX - Smart.pdf",
     "Hi-MO 7.pdf",
-    "Hi-MO X10.pdf",
+    "LONGI Hi-MO X10 630-650.pdf",
     "JKM650-670N-66QL6-BDV-F1-EN.pdf",
     "JKM710-735N-66HL5-BDV-Z4-EN.pdf",
     "S450S-L S1000S-L S2000S-L.pdf",
     "SBS050.pdf",
-    "SG10RT-P2.pdf",
+    "EVEERP356.pdf",
+    "EVE261kWh.pdf",
     "SG5.0RS.pdf",
+    "SG10RT-P2.pdf",
     "SP600S.pdf",
     "SR20D-M.pdf",
     "ST255CS-2H.pdf",
@@ -798,6 +792,20 @@ if (productContainer) {
         });
         container.appendChild(fragment);
         bindGalleryLightbox('product-gallery');
+    });
+}
+
+// Generate Sungrow Images
+const sungrowContainer = document.getElementById('sungrow-gallery');
+if (sungrowContainer) {
+    loadLocalImages("assets/sungrow", sungrowContainer, (images, container) => {
+        const fragment = document.createDocumentFragment();
+        const orderedImages = sortProductFiles(images);
+        orderedImages.forEach(file => {
+            fragment.appendChild(createProductCard(file));
+        });
+        container.appendChild(fragment);
+        bindGalleryLightbox('sungrow-gallery');
     });
 }
 
