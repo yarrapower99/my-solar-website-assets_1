@@ -36,7 +36,6 @@ $homeMappings = @(
     @{ old = "8.jpeg";          new = "26.jpeg" },
     @{ old = "9.jpg";           new = "27.jpg"  },
     @{ old = "S__4776134.jpg";  new = "28.jpg"  }
-)
 
 # ── FACTORY: current order → new sequential names ───────────────────────────
 $factoryMappings = @(
