@@ -6,7 +6,7 @@ const localImages = {
     "assets/products": ["EVE261kWh.jpg","EVEERP356.jpg","EVE18kWh.jpg","EVEBatter18kWh.jpg"],
     "assets/aiko": ["STELLAR 3N+72 Dual-Glass 650W-685W.png", "STELLAR 2N+78 Dual-Glass 765W-800W.png", "STELLAR 2N+66 Dual-Glass 645W-680W.png", "STELLAR 1N+72 Dual-Glass 635W-660W.png", "STELLAR 1N+66 Dual-Glass 645W-680W.png"],
     "assets/sungrow":["S450S-L S1000S-L S2000S-L.png","SBS050.png","SG5.0RS.png","SG10RT-P2.png","SP600S.png","SR20D-M.png","ST255CS-2H.png","ST510CS-4H.png"],
-    "assets/longi": ["LONGI Hi-MO X10.png"], //"Hi-MO 7.jpeg"],ซ่อน Hi-Mo 7
+    "assets/longi": ["LONGI Hi-MO X10.png","Longi X10 650W.jpg"], //"Hi-MO 7.jpeg"],ซ่อน Hi-Mo 7
     "assets/trina": ["TSM-NEG19RC.20 610-635W.jpg", "TSM-NEG21C.0 700-725W.jpg"],
     "assets/jinko": ["JKM650-670N-66QL6-BDV-F1-EN.jpg", "JKM710-735N-66HL5-BDV-Z4-EN.jpg"],
     "assets/delta": ["Delta_Intelligent_Energy_Solutions.jpg", "Delta_Intelligent_Water Management_Solutions.jpg", "AC Charger  AC MAX - Basic.png", "AC Charger  AC MAX - Smart.png", "BK863i Collaborative Touch Panel.jpg","DC_CITY_CHARGER.jpg"],
