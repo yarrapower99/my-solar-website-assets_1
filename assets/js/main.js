@@ -1,15 +1,15 @@
 const localImages = {
     "assets/profile": ["LINE_ALBUM_KMCH 172.2kW_260128_253.jpg"],
-    "assets/logo_use": ["delta.png", "sungrow.jpeg", "aiko.jpg", "EVEEnergy.png", "eaton.png","prysmian.png"],
+    "assets/logo_use": ["delta.png", "sungrow.jpeg", "Longi.jpg", "EVEEnergy.png", "eaton.png","prysmian.png"],
     "assets/portfolio_sup": ["12.js plastic.jpg", "11.บ้านคุณเบล.jpg", "10.บ้านคุณตง.jpg", "9.บ้านคุณเกียรติ2.jpg", "8.บ้านคุณเกียรติ1.jpg", "7.แม่ครัวฉลากทอง.jpg", "6.KMCH.jpeg", "่5.JSplastic.jpeg", "4.บ้านคุณโจ.jpeg", "3.WashXPress.png", "2.DPU.jpeg", "1.โรงพยาบาล มิตรไมตรี.png"],
     "assets/Partners": ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "K.Yo_-1-768x679.jpeg", "K.Yo_-2-768x690.jpeg", "K.Yo_-2-768x768.png", "PV-Panel-7-768x768.png", "PV-Panel-8-768x768.png", "PV-Panel.png-1-768x671.jpeg", "PV-Panel.png-2-768x687.jpeg"],
-    "assets/products": ["EVE261kWh.jpg","EVEERP356.jpg"],
+    "assets/products": ["EVE261kWh.jpg","EVEERP356.jpg","EVE18kWh.jpg","EVEBatter18kWh.jpg"],
     "assets/aiko": ["STELLAR 3N+72 Dual-Glass 650W-685W.png", "STELLAR 2N+78 Dual-Glass 765W-800W.png", "STELLAR 2N+66 Dual-Glass 645W-680W.png", "STELLAR 1N+72 Dual-Glass 635W-660W.png", "STELLAR 1N+66 Dual-Glass 645W-680W.png"],
     "assets/sungrow":["S450S-L S1000S-L S2000S-L.png","SBS050.png","SG5.0RS.png","SG10RT-P2.png","SP600S.png","SR20D-M.png","ST255CS-2H.png","ST510CS-4H.png"],
     "assets/longi": ["LONGI Hi-MO X10.png"], //"Hi-MO 7.jpeg"],ซ่อน Hi-Mo 7
     "assets/trina": ["TSM-NEG19RC.20 610-635W.jpg", "TSM-NEG21C.0 700-725W.jpg"],
     "assets/jinko": ["JKM650-670N-66QL6-BDV-F1-EN.jpg", "JKM710-735N-66HL5-BDV-Z4-EN.jpg"],
-    "assets/delta": ["Delta_Intelligent_Energy_Solutions.jpg", "Delta_Intelligent_Water Management_Solutions.jpg", "AC Charger  AC MAX - Basic.png", "AC Charger  AC MAX - Smart.png", "BK863i Collaborative Touch Panel.jpg"],
+    "assets/delta": ["Delta_Intelligent_Energy_Solutions.jpg", "Delta_Intelligent_Water Management_Solutions.jpg", "AC Charger  AC MAX - Basic.png", "AC Charger  AC MAX - Smart.png", "BK863i Collaborative Touch Panel.jpg","DC_CITY_CHARGER.jpg"],
     "assets/portfolio/home": ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpeg", "7.jpeg", "8.png", "9.jpeg", "10.jpeg", "11.png", "12.jpeg", "13.jpeg", "14.jpeg", "15.jpeg", "16.jpeg", "17.jpg", "18.jpg", "19.jpg", "20.jpg", "21.jpg", "22.jpg", "23.jpg", "24.jpg", "25.jpeg", "26.jpeg", "27.jpg","28.jpg","29.jpg","30.jpg","31.jpg","32.jpg","33.jpg"],
     "assets/portfolio/factory": ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "7.jpg", "8.jpg", "9.jpg", "10.jpeg", "11.jpeg", "12.jpeg", "13.png", "14.jpeg", "15.jpeg", "16.jpeg", "17.jpeg", "18.png", "19.png", "20.png", "21.jpeg", "22.jpeg", "23.jpeg", "24.jpeg", "25.jpeg", "26.jpeg", "27.jpeg", "28.jpeg", "29.jpg", "30.jpg"],
 };
