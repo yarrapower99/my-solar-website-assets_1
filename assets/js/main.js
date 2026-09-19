@@ -3,7 +3,7 @@ const localImages = {
     "assets/logo_use": ["delta.png", "sungrow.jpeg", "Longi.jpg", "EVEEnergy.png", "eaton.png","prysmian.png"],
     "assets/portfolio_sup": ["12.js plastic.jpg", "11.บ้านคุณเบล.jpg", "10.บ้านคุณตง.jpg", "9.บ้านคุณเกียรติ2.jpg", "8.บ้านคุณเกียรติ1.jpg", "7.แม่ครัวฉลากทอง.jpg", "6.KMCH.jpeg", "่5.JSplastic.jpeg", "4.บ้านคุณโจ.jpeg", "3.WashXPress.png", "2.DPU.jpeg", "1.โรงพยาบาล มิตรไมตรี.png"],
     "assets/Partners": ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "K.Yo_-1-768x679.jpeg", "K.Yo_-2-768x690.jpeg", "K.Yo_-2-768x768.png", "PV-Panel-7-768x768.png", "PV-Panel-8-768x768.png", "PV-Panel.png-1-768x671.jpeg", "PV-Panel.png-2-768x687.jpeg"],
-    "assets/products": ["EVE261kWh.jpg","EVEERP356.jpg","EVEBatter18kWh.png","EVEBatter18kWh.jpg"],
+    "assets/products": ["EVE261kWh.jpg","EVEERP356.jpg","EVE 18kWh.png","EVE 18kWh.jpg"],
     "assets/aiko": ["STELLAR 3N+72 Dual-Glass 650W-685W.png", "STELLAR 2N+78 Dual-Glass 765W-800W.png", "STELLAR 2N+66 Dual-Glass 645W-680W.png", "STELLAR 1N+72 Dual-Glass 635W-660W.png", "STELLAR 1N+66 Dual-Glass 645W-680W.png"],
     "assets/sungrow":["S450S-L S1000S-L S2000S-L.png","SBS050.png","SG5.0RS.png","SG10RT-P2.png","SP600S.png","SR20D-M.png","ST255CS-2H.png","ST510CS-4H.png"],
     "assets/longi": ["LONGI Hi-MO X10.png","Longi X10 650W.jpg"], //"Hi-MO 7.jpeg"],ซ่อน Hi-Mo 7
